@@ -5,13 +5,7 @@
 # DOCKERFILE = path/file of Dockerfile
 
 lint() {
-  echo "Debug:"
-  echo "${USE_DOCKER}"
-  echo "${IMAGE}"
-  echo "${DOCKERFILE}"
-
   if [[ "${USE_DOCKER}" == 1 ]]; then
-    ls -la
     docker run --rm -i "${IMAGE}" < "${DOCKERFILE}"
   else
     hadolint "${DOCKERFILE}"
