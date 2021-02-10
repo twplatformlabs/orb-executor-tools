@@ -1,0 +1,39 @@
+# src/commands/lint.yaml
+
+description: run Hadolint against Dockerfile
+
+parameters:
+
+  use-docker:
+    description: Hadolint not installed on executor build agent, run hadolint docker image to perform test
+    type: boolean
+    default: true
+
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
+
+  registry:
+    description: Support for alternative or private registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Support for alternative image
+    type: string
+    default: hadolint/hadolint
+
+  tag:
+    description: Support for specific image version tag
+    type: string
+    default: ""
+
+steps:
+  - run:
+      name: run scripts/lint.sh to perform hadolint inspection of Dockerfile
+      environment:
+        USE_DOCKER: << parameters.use-docker >>
+        DOCKERFILE: << parameters.dockerfile >>
+        IMAGE: << parameters.registry >>/<< parameters.image >><<#parameters.tag>>:<<parameters.tag>><</parameters.tag>>
+      command: << include(scripts/lint.sh) >>
