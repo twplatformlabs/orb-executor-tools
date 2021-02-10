@@ -38,7 +38,7 @@ jobs:
       - run:
           name: setup for lint test
           command: |
-            cat <<EOF > Dockerfile
+            cat /<<EOF > Dockerfile
               FROM scratch
               ADD hello /
               CMD ["/hello"]
