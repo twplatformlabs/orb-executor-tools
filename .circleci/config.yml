@@ -35,6 +35,15 @@ jobs:
     steps:
       - checkout
       - setup_remote_docker
+      - run:
+          name: setup for lint test
+          command: |
+            cat <<EOF > Dockerfile
+              FROM scratch
+              ADD hello /
+              CMD ["/hello"]
+            EOF
+      - executor-tools/lint
 
 workflows:
 

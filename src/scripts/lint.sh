@@ -1,6 +1,6 @@
 # scripts/lint.sh
 # 
-# USE_DOCKER = boolean, use docker image to run hadolint
+# USE_DOCKER = if 1 use docker image to run hadolint
 # IMAGE = Image to use for Docker hadolint run
 # DOCKERFILE = path/file of Dockerfile
 
