@@ -40,7 +40,7 @@ jobs:
           command: |
             cat \<<EOF > Dockerfile
               FROM scratch
-              ADD hello /
+              COPY hello /
               CMD ["/hello"]
             EOF
       - executor-tools/lint
