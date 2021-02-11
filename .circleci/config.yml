@@ -29,7 +29,7 @@ parameters:
 
 jobs:
   # jobs to perform orb testing of the executor-tools commands
-  integration-test-1:
+  integration-test-lint:
     docker:
       - image: twdps/di-circleci-base-image:stable
     steps:
@@ -80,11 +80,11 @@ workflows:
 
   # triggered by "trigger-integration-tests-workflow"
   # job, and run tests on <your orb>@dev:${CIRCLE_SHA1:0:7}.
-  integration-test-deploy:
+  integration-test_deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      - integration-test-1
+      - integration-test-lint
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       # as that will determine whether a patch, minor or major
@@ -98,7 +98,7 @@ workflows:
           fail-if-semver-not-indicated: true
           publish-version-tag: false
           requires:
-            - integration-test-1
+            - integration-test-lint
           filters:
             branches:
               only: master
