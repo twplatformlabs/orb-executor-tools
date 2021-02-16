@@ -31,7 +31,8 @@ jobs:
   # jobs to perform orb integration testing of the executor-tools commands
   integration-test-lint:
     docker:
-      - image: twdps/di-circleci-base-image:stable
+      - image: twdps/di-circleci-infra-image:stable
+    context: twdps-orb-authors
     steps:
       - checkout
       - setup_remote_docker
