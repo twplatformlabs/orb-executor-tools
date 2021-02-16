@@ -1,0 +1,63 @@
+# src/commands/confirm-registry.yaml
+
+description: validate docker registry credentials
+
+parameters:
+
+  registry:
+    description: Docker registry
+    type: string
+    default: docker.io
+
+  docker-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  docker-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+  
+  aws-ecr-image:
+    description: AWS ecr image repository and name
+    type: string
+    default: ""
+
+  aws-access-key-id:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_ACCESS_KEY_ID  
+
+  aws-secret-access-key:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_SECRET_ACCESS_KEY   
+
+  aws-region:
+    description: AWS region used for aws credentials
+    type: string
+    default: AWS_DEFAULT_REGION
+
+steps:
+  - unless:
+      condition: << parameters.aws-ecr-image >>
+      name: Confirm Docker registry credentials are available and valid
+      environment:
+        REGISTRY: << parameters.registry >>
+        DOCKER_LOGIN: << parameters.docker-login >>
+        DOCKER_PASSWORD: << parameters.docker-password >>
+      steps:
+        - run:
+            command: << include(scripts/confirm-registry.sh) >>
+  - when:
+      condition: << parameters.aws-ecr-image >>
+      name: Confirm aws ecr credentials are available and valid
+      environment:
+        AWS_ECR_IMAGE: << parameters.aws-ecr-image >>
+        AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
+        AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
+        AWS_REGION: << parameters.aws-region >>
+      steps:
+        - run:
+            command: << include(scripts/confirm-registry.sh) >>

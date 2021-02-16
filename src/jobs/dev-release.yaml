@@ -3,63 +3,73 @@
 description: Check, build, and optionally deploy a Docker image.
 
 executor: di-circleci-base-image
-# shell: << parameters.shell >>
+shell: << parameters.shell >>
 
 parameters:
 
-  # shell:
-  #   description: default shell invocation. Override to support different shells or tools like secrethub.io
-  #   type: string
-  #   default: /bin/sh -eo pipefail
+  shell:
+    description: default shell invocation. Override to support different shells or tools like secrethub.io
+    type: string
+    default: /bin/sh -eo pipefail
 
-  # dockerfile:
-  #   description: Name of dockerfile
-  #   type: string
-  #   default: Dockerfile
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
 
-  # path:
-  #   description: Path to the directory containing your Dockerfile and build context
-  #   type: string
-  #   default: .
+  path:
+    description: Path to the directory containing your Dockerfile and build context
+    type: string
+    default: .
 
-  # image:
-  #   description: Name of image
-  #   type: string
+  use-docker:
+    description: Hadolint not installed on executor build agent, run hadolint docker image to perform test
+    type: boolean
+    default: true
 
-  # tag:
-  #   description: Value for dev build tag
-  #   type: string
-  #   default: dev.$CIRCLE_SHA1
+  image:
+    description: Name of image
+    type: string
 
-  # registry:
-  #   description: Name of registry
-  #   type: string
-  #   default: docker.io
+  tag:
+    description: Value for dev build tag
+    type: string
+    default: dev.$CIRCLE_SHA1{0:7}
 
-  # registry-login:
-  #   description: username for reigstry access
-  #   type: env_var_name
-  #   default: DOCKER_LOGIN
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
 
-  # registry-password:
-  #   description: password for registry access
-  #   type: env_var_name
-  #   default: DOCKER_PASSWORD
+  docker-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
 
-  # assume-aws-role:
-  #   description: write AWS config files from environment variables
-  #   type: boolean
-  #   default: false
+  docker-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
 
-  # aws-default-region:
-  #   description: Default AWS region used in .aws/credentials after assume role
-  #   type: string
-  #   default: ""
+  aws-ecr-image:
+    description: AWS ecr image repository and name
+    type: string
+    default: ""
 
-  # aws-image-repository:
-  #   description: AWS ecr image repository and name
-  #   type: string
-  #   default: ""
+  aws-access-key-id:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_ACCESS_KEY_ID  
+
+  aws-secret-access-key:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_SECRET_ACCESS_KEY   
+
+  aws-region:
+    description: Default AWS region used in .aws/credentials after assume role
+    type: string
+    default: AWS_DEFAULT_REGION
 
   # docker-cve-scan:
   #   description: perform snyk.io docker cve scan
@@ -109,10 +119,10 @@ parameters:
   #   type: string
   #   default: ""
 
-  # after-checkout:
-  #   description: Optional steps to run after checking out the code.
-  #   type: steps
-  #   default: []
+  after-checkout:
+    description: Optional steps to run after checking out the code.
+    type: steps
+    default: []
 
   # before-build:
   #   description: Optional steps to run before building the docker image.
@@ -127,22 +137,32 @@ parameters:
 steps:
   - checkout
   - setup_remote_docker
-  - run:
-      description: test
-      command: echo "greetings"
-  # - lint
+  - when:
+      name: Run after_checkout lifecycle hook steps.
+      condition: << parameters.after-checkout >>
+      steps: << parameters.after-checkout >>
+  - lint:
+      use-docker: << parameters.use-docker >>
+      dockerfile: << parameters.dockerfile >>
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag >>
+  - confirm-registry:
+      registry: << parameters.registry >>
+      docker-login: << parameters.docker-login >>
+      docker-password: << parameters.docker-password >>
+      aws-ecr-image: << parameters.aws-ecr-image >>
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
 
-  # - when:
-  #     name: Run after_checkout lifecycle hook steps.
-  #     condition: << parameters.after-checkout >>
-  #     steps: << parameters.after-checkout >>
-  # - confirm-registry:
-  #     registry: << parameters.registry >>
-  #     registry-login: << parameters.registry-login >>
-  #     registry-password: << parameters.registry-password >>
-  #     assume-aws-role: << parameters.assume-aws-role >>
-  #     aws-default-region: << parameters.aws-default-region >>
-  #     aws-image-repository: << parameters.registry >><< parameters.image >>
+
+
+
+
+
+
+
   # - when:
   #     name: Run before_build lifecycle hook steps.
   #     condition: << parameters.before-build >>

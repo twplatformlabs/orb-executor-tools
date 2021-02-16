@@ -28,7 +28,7 @@ parameters:
     default: "dev:alpha"
 
 jobs:
-  # jobs to perform orb testing of the executor-tools commands
+  # jobs to perform orb integration testing of the executor-tools commands
   integration-test-lint:
     docker:
       - image: twdps/di-circleci-base-image:stable
@@ -44,6 +44,18 @@ jobs:
               CMD ["/hello"]
             EOF
       - executor-tools/lint
+
+  integration-test-confirm-registry:
+    docker:
+      - image: twdps/di-circleci-base-image:stable
+    shell: secrethub run -- /bin/sh -eo pipefail
+    steps:
+      - checkout
+      - setup_remote_docker
+      - executor-tools/confirm-registry
+      - executor-tools/confirm-registry:
+          aws-ecr-image: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/alpine
+          aws-region: us-east-1
 
 workflows:
 
@@ -85,6 +97,7 @@ workflows:
     jobs:
       # Run any integration tests defined within the `jobs` key.
       - integration-test-lint
+      - integration-test-confirm-registry
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
@@ -95,6 +108,7 @@ workflows:
           publish-version-tag: false
           requires:
             - integration-test-lint
+            - integration-test-confirm-registry
           filters:
             branches:
               only: master
