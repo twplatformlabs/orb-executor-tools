@@ -9,7 +9,7 @@
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
 
-confirm-registry() {
+confirm_registry() {
   if [ ! "${AWS_ECR_IMAGE}" ]; then
       if [ ! "${DOCKER_LOGIN}" ]; then
         echo "registry username is not defined."
@@ -39,5 +39,5 @@ confirm-registry() {
 
 # Will not run if sourced from another script. This is done so this script may be tested.
 if [[ "$_" == "$0" ]]; then
-    confirm-registry
+    confirm_registry
 fi

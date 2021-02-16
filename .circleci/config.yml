@@ -31,7 +31,7 @@ jobs:
   # jobs to perform orb integration testing of the executor-tools commands
   integration-test-lint:
     docker:
-      - image: twdps/di-circleci-infra-image:stable
+      - image: twdps/di-circleci-base-image:stable
     steps:
       - checkout
       - setup_remote_docker
@@ -47,7 +47,7 @@ jobs:
 
   integration-test-confirm-registry:
     docker:
-      - image: twdps/di-circleci-base-image:stable
+      - image: twdps/di-circleci-infra-image:stable
     shell: secrethub run -- /bin/sh -eo pipefail
     steps:
       - checkout
