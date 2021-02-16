@@ -18,7 +18,7 @@ parameters:
     description: password for registry access
     type: env_var_name
     default: DOCKER_PASSWORD
-  
+
   aws-ecr-image:
     description: AWS ecr image repository and name
     type: string
@@ -27,12 +27,12 @@ parameters:
   aws-access-key-id:
     description: password for registry access
     type: env_var_name
-    default: AWS_ACCESS_KEY_ID  
+    default: AWS_ACCESS_KEY_ID
 
   aws-secret-access-key:
     description: password for registry access
     type: env_var_name
-    default: AWS_SECRET_ACCESS_KEY   
+    default: AWS_SECRET_ACCESS_KEY
 
   aws-region:
     description: AWS region used for aws credentials

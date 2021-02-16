@@ -59,12 +59,12 @@ parameters:
   aws-access-key-id:
     description: password for registry access
     type: env_var_name
-    default: AWS_ACCESS_KEY_ID  
+    default: AWS_ACCESS_KEY_ID
 
   aws-secret-access-key:
     description: password for registry access
     type: env_var_name
-    default: AWS_SECRET_ACCESS_KEY   
+    default: AWS_SECRET_ACCESS_KEY
 
   aws-region:
     description: Default AWS region used in .aws/credentials after assume role
@@ -155,13 +155,6 @@ steps:
       aws-access-key-id: << parameters.aws-access-key-id >>
       aws-secret-access-key: << parameters.aws-secret-access-key >>
       aws-region: << parameters.aws-region >>
-
-
-
-
-
-
-
 
   # - when:
   #     name: Run before_build lifecycle hook steps.
