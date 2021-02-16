@@ -32,7 +32,6 @@ jobs:
   integration-test-lint:
     docker:
       - image: twdps/di-circleci-infra-image:stable
-    context: twdps-orb-authors
     steps:
       - checkout
       - setup_remote_docker
@@ -99,7 +98,8 @@ workflows:
     jobs:
       # Run any integration tests defined within the `jobs` key.
       - integration-test-lint
-      - integration-test-confirm-registry
+      - integration-test-confirm-registry:
+          context: twdps-orb-authors
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
