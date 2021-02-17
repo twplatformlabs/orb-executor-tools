@@ -75,6 +75,8 @@ jobs:
           tag: latest
           extra-build-args: '--label test="src/commands/build.yaml"'
       - executor-tools/build:
+          image: twdps/test
+          tag: latest
           aws-ecr-image: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test
       - run:
           name: validate results
