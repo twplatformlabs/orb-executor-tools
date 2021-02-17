@@ -34,7 +34,7 @@ parameters:
   tag:
     description: Value for dev build tag
     type: string
-    default: dev.$CIRCLE_SHA1{0:7}
+    default: dev.${CIRCLE_SHA1:0:7}
 
   registry:
     description: Name of registry
@@ -124,10 +124,10 @@ parameters:
     type: steps
     default: []
 
-  # before-build:
-  #   description: Optional steps to run before building the docker image.
-  #   type: steps
-  #   default: []
+  before-build:
+    description: Optional steps to run before building the docker image.
+    type: steps
+    default: []
 
   # after-build:
   #   description: Optional steps to run after building the docker image.
@@ -155,11 +155,10 @@ steps:
       aws-access-key-id: << parameters.aws-access-key-id >>
       aws-secret-access-key: << parameters.aws-secret-access-key >>
       aws-region: << parameters.aws-region >>
-
-  # - when:
-  #     name: Run before_build lifecycle hook steps.
-  #     condition: << parameters.before-build >>
-  #     steps: << parameters.before-build >>
+  - when:
+      name: Run before_build lifecycle hook steps.
+      condition: << parameters.before-build >>
+      steps: << parameters.before-build >>
   # - build:
   #     dockerfile: << parameters.dockerfile >>
   #     path: << parameters.path >>

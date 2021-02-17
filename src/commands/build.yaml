@@ -1,0 +1,60 @@
+# src/commands/build.yaml
+
+description: Build executor Docker image
+
+parameters:
+
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
+
+  path:
+    description: Path to the directory containing your Dockerfile and build context
+    type: string
+    default: .
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image
+    type: string
+
+  aws-ecr-image:
+    description: AWS ecr image repository and name
+    type: string
+    default: ""
+
+  tag:
+    description: Value for tag
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  extra-build-args:
+    description: >
+      Extra flags to pass to docker build. For examples, see
+      https://docs.docker.com/engine/reference/commandline/build
+    type: string
+    default: ""
+
+steps:
+  - unless:
+      condition: << parameters.aws-ecr-image >>
+      name: Build executor Docker image
+      environment:
+        REGISTRY: << parameters.registry >>
+        IMAGE: << parameters.image >>
+        TAG: << parameters.tag >>
+        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
+      command: << include(scripts/build.sh) >>
+  - when:
+      condition: << parameters.aws-ecr-image >>
+      name: Build executor Docker image with aws ecr naming scheme
+      environment:
+        AWS_ACR_IMAGE: << parameters.aws-ecr-image >>
+        TAG: << parameters.tag >>
+        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
+      command: << include(scripts/build.sh) >>
