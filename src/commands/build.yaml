@@ -49,7 +49,9 @@ steps:
         IMAGE: << parameters.image >>
         TAG: << parameters.tag >>
         EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
-      command: << include(scripts/build.sh) >>
+      steps:
+        - run:
+            command: << include(scripts/build.sh) >>
   - when:
       condition: << parameters.aws-ecr-image >>
       name: Build executor Docker image with aws ecr naming scheme
@@ -57,4 +59,6 @@ steps:
         AWS_ACR_IMAGE: << parameters.aws-ecr-image >>
         TAG: << parameters.tag >>
         EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
-      command: << include(scripts/build.sh) >>
+      steps:
+        - run:
+            command: << include(scripts/build.sh) >>
