@@ -57,6 +57,34 @@ jobs:
           aws-ecr-image: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/alpine
           aws-region: us-east-1
 
+  integration-test-build:
+    docker:
+      - image: twdps/di-circleci-infra-image:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: setup for docker build test
+          command: |
+            cat \<<EOF > Dockerfile
+              FROM busybox:latest
+              CMD ["date"]
+            EOF
+      - executor-tools/build:
+          image: twdps/test
+          tag: latest
+          extra-build-args: '--label test="src/commands/build.yaml"'
+      - executor-tools/build:
+          aws-ecr-image: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test
+          tag: latest
+      - run:
+          name: validate results
+          command: |
+            docker images | grep "docker.io/twdps/test"
+            docker inspect docker.io/twdps/test:latest | grep "src/commands/build.yaml"
+            docker run -it docker.io/twdps/test:latest | grep UTC
+            docker images | grep "090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
+
 workflows:
 
   dev-release:
@@ -70,8 +98,6 @@ workflows:
       # optional: Run BATS tests against your scripts
       - bats/run:
           path: ./src/tests
-          setup-steps:
-            - setup_remote_docker
       - hold-for-dev-publish:
           type: approval
           requires:
@@ -102,6 +128,7 @@ workflows:
       - integration-test-lint
       - integration-test-confirm-registry:
           context: twdps-orb-authors
+      - integration-test-build
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
@@ -113,6 +140,7 @@ workflows:
           requires:
             - integration-test-lint
             - integration-test-confirm-registry
+            - integration-test-build
           filters:
             branches:
               only: master

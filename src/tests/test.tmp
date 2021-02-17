@@ -1,0 +1,17 @@
+# src/tests/build.bats
+
+setup() {
+    source ./src/scripts/build.sh
+
+}
+
+@test 'Test standard build with extra-build-args: executor-tools/build' {
+    
+
+    build_image
+    [[ "${output}" =~ "Successfully tagged docker.io/twdps/test:latest" ]]
+}
+
+function teardown() {
+    rm Dockerfile
+}
