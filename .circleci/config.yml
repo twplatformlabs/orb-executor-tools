@@ -71,13 +71,13 @@ jobs:
               CMD ["date"]
             EOF
       - executor-tools/build:
-          image: twdps/test
-          tag: latest
+          image: "twdps/test"
+          tag: "latest"
           extra-build-args: '--label test="src/commands/build.yaml"'
       - executor-tools/build:
-          image: twdps/test
-          tag: latest
-          aws-ecr-repository: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test
+          image: "twdps/test"
+          tag: "latest"
+          aws-ecr-repository: "090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
       - run:
           name: validate results
           command: |
