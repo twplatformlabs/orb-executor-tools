@@ -70,12 +70,14 @@ workflows:
       # optional: Run BATS tests against your scripts
       - bats/run:
           path: ./src/tests
+          setup-steps:
+            - setup_remote_docker
       - hold-for-dev-publish:
           type: approval
           requires:
             - orb-tools/lint
             - orb-tools/pack
-            #- bats/run
+            - bats/run
             - shellcheck/check
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
