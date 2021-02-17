@@ -23,7 +23,7 @@ parameters:
     description: Name of image
     type: string
 
-  aws-ecr-image:
+  aws-ecr-repository:
     description: AWS ecr image repository and name
     type: string
     default: ""
@@ -42,7 +42,7 @@ parameters:
 
 steps:
   - unless:
-      condition: << parameters.aws-ecr-image >>
+      condition: << parameters.aws-ecr-repository >>
       name: Build executor Docker image
       environment:
         REGISTRY: << parameters.registry >>
@@ -53,10 +53,11 @@ steps:
         - run:
             command: << include(scripts/build.sh) >>
   - when:
-      condition: << parameters.aws-ecr-image >>
+      condition: << parameters.aws-ecr-repository >>
       name: Build executor Docker image with aws ecr naming scheme
       environment:
-        AWS_ACR_IMAGE: << parameters.aws-ecr-image >>
+        AWS_ACR_REPOSITORY: << parameters.aws-ecr-repository >>
+        IMAGE: << parameters.image >>
         TAG: << parameters.tag >>
         EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
       steps:
