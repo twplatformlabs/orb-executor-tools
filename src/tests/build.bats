@@ -3,24 +3,23 @@
 setup() {
     source ./src/scripts/build.sh
 
-    # create Dockerfiles
-
-    export DOCKERFILE="Dockerfile"
-    export PATH="scripts"
-    export EXTRA_BUILD_ARGS='--label test="build.bats"'
-
-    export REGISTRY="docker.io"
-    export IMAGE="twdps/test"
-    export AWS_ECR_IMAGE="090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps"
-    export TAG="latest"
-    cat <<EOF > Dockerfile
+    # create Dockerfile
+    run bash -c "cat <<EOF > Dockerfile
 FROM busybox:latest
 CMD ["date"]
-EOF
+EOF"
 
 }
 
 @test 'Test standard build with extra-build-args: executor-tools/build' {
+    local DOCKERFILE="Dockerfile"
+    local PATH="scripts"
+    local EXTRA_BUILD_ARGS='--label test="build.bats"'
+
+    local REGISTRY="docker.io"
+    local IMAGE="twdps/test"
+    local TAG="latest"
+
     echo "dev tests:"
     echo "DOCKERFILE = ${DOCKERFILE}"
     echo "PATH = ${PATH}"
@@ -44,6 +43,11 @@ EOF
 }
 
 @test 'Test aws ecr build: executor-tools/build' {
+    export DOCKERFILE="Dockerfile"
+    export PATH="scripts"
+    export EXTRA_BUILD_ARGS='--label test="build.bats"'
+    export AWS_ECR_IMAGE="090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
+    local TAG="latest"
     echo "dev tests:"
     echo "DOCKERFILE = ${DOCKERFILE}"
     echo "PATH = ${PATH}"
