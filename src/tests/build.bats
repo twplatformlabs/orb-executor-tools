@@ -5,9 +5,9 @@ setup() {
 
     # create Dockerfiles
 
-    export DOCKERFILE = "Dockerfile"
-    export PATH = "scripts"
-    export EXTRA_BUILD_ARGS = '--label test="build.bats"'
+    export DOCKERFILE="Dockerfile"
+    export PATH="scripts"
+    export EXTRA_BUILD_ARGS='--label test="build.bats"'
 
     export REGISTRY="docker.io"
     export IMAGE="twdps/test"
