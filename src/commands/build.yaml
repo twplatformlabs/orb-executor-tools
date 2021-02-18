@@ -48,7 +48,7 @@ steps:
         - run:
             environment:
               DOCKERFILE: << parameters.dockerfile >>
-              DOCKER_PATH: << parameters.path >>
+              DOCKERBUILD_PATH: << parameters.path >>
               REGISTRY: << parameters.registry >>
               IMAGE: << parameters.image >>
               TAG: << parameters.tag >>
@@ -61,7 +61,7 @@ steps:
         - run:
             environment:
               DOCKERFILE: << parameters.dockerfile >>
-              DOCKER_PATH: << parameters.path >>
+              DOCKERBUILD_PATH: << parameters.path >>
               AWS_ACR_REPOSITORY: << parameters.aws-ecr-repository >>
               IMAGE: << parameters.image >>
               TAG: << parameters.tag >>
