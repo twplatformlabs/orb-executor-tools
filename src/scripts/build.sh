@@ -12,17 +12,19 @@
 
 build_image() {
   if [ ! "${AWS_ECR_REPOSITORY}" ]; then
+    echo "standard:"
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${DOCKER_REGISTRY}/${IMAGE}:${TAG}"
     CMD="docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
     echo "$CMD"
     docker build -f "${DOCKERFILE}" -t "${DOCKER_REGISTRY}/${IMAGE}:${TAG}" "${DOCKERBUILD_PATH}"
   else
+    echo "aws ecr:"
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"
-    CMD="docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
+    CMD="docker build -f ${DOCKERFILE} -t ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
     echo "$CMD"
-    docker build -f "${DOCKERFILE}" -t "${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
+    docker build -f "${DOCKERFILE}" -t "\"${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}\"" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
   fi
 }
 
