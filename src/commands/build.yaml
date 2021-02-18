@@ -44,22 +44,26 @@ steps:
   - unless:
       condition: << parameters.aws-ecr-repository >>
       name: Build executor Docker image
-      environment:
-        REGISTRY: << parameters.registry >>
-        IMAGE: << parameters.image >>
-        TAG: << parameters.tag >>
-        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
       steps:
         - run:
+            environment:
+              DOCKERFILE: << parameters.dockerfile >>
+              DOCKER_PATH: << parameters.path >>
+              REGISTRY: << parameters.registry >>
+              IMAGE: << parameters.image >>
+              TAG: << parameters.tag >>
+              EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
             command: << include(scripts/build.sh) >>
   - when:
       condition: << parameters.aws-ecr-repository >>
       name: Build executor Docker image with aws ecr naming scheme
-      environment:
-        AWS_ACR_REPOSITORY: << parameters.aws-ecr-repository >>
-        IMAGE: << parameters.image >>
-        TAG: << parameters.tag >>
-        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
       steps:
         - run:
+            environment:
+              DOCKERFILE: << parameters.dockerfile >>
+              DOCKER_PATH: << parameters.path >>
+              AWS_ACR_REPOSITORY: << parameters.aws-ecr-repository >>
+              IMAGE: << parameters.image >>
+              TAG: << parameters.tag >>
+              EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
             command: << include(scripts/build.sh) >>
