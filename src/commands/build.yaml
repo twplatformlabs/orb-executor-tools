@@ -62,7 +62,7 @@ steps:
             environment:
               DOCKERFILE: << parameters.dockerfile >>
               DOCKERBUILD_PATH: << parameters.path >>
-              AWS_ACR_REPOSITORY: << parameters.aws-ecr-repository >>
+              AWS_ECR_REPOSITORY: << parameters.aws-ecr-repository >>
               IMAGE: << parameters.image >>
               TAG: << parameters.tag >>
               EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
