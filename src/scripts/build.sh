@@ -20,6 +20,8 @@ build_image() {
   else
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"
+    CMD="docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
+    echo "$CMD"
     docker build -f "${DOCKERFILE}" -t "${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
   fi
 }
