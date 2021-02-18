@@ -124,10 +124,10 @@ workflows:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      - integration-test-lint
-      - integration-test-confirm-registry:
-          context: twdps-orb-authors
-      - integration-test-build
+      # - integration-test-lint
+      # - integration-test-confirm-registry:
+      #     context: twdps-orb-authors
+      # - integration-test-build
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
@@ -136,10 +136,10 @@ workflows:
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: false
-          requires:
-            - integration-test-lint
-            - integration-test-confirm-registry
-            - integration-test-build
+          # requires:
+          #   - integration-test-lint
+          #   - integration-test-confirm-registry
+          #   - integration-test-build
           filters:
             branches:
               only: master

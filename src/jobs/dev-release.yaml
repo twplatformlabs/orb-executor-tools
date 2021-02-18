@@ -162,7 +162,7 @@ steps:
       steps: << parameters.before-build >>
   - build:
       dockerfile: << parameters.dockerfile >>
-      docker-build-path: << parameters.path >>
+      docker-build-path: << parameters.docker-build-path >>
       image: << parameters.image >>
       tag: << parameters.tag >>
       registry: << parameters.registry >>
