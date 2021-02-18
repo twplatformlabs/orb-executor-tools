@@ -4,7 +4,7 @@ description: run Hadolint against Dockerfile
 
 parameters:
 
-  use-docker:
+  lint-using-docker:
     description: Hadolint not installed on executor build agent, run hadolint docker image to perform test
     type: boolean
     default: true
@@ -33,7 +33,7 @@ steps:
   - run:
       name: run scripts/lint.sh to perform hadolint inspection of Dockerfile
       environment:
-        USE_DOCKER: << parameters.use-docker >>
+        USE_DOCKER: << parameters.lint-using-docker >>
         DOCKERFILE: << parameters.dockerfile >>
         IMAGE: << parameters.registry >>/<< parameters.image >><<#parameters.tag>>:<<parameters.tag>><</parameters.tag>>
       command: << include(scripts/lint.sh) >>

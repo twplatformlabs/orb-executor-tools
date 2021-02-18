@@ -54,8 +54,10 @@ jobs:
       - setup_remote_docker
       - executor-tools/confirm-registry
       - executor-tools/confirm-registry:
-          aws-ecr-image: 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/alpine
-          aws-region: us-east-1
+          aws-ecr: true
+          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          image: "twdps/alpine"
+          aws-region: "us-east-1"
 
   integration-test-build:
     docker:

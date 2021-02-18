@@ -19,10 +19,10 @@ parameters:
     type: env_var_name
     default: DOCKER_PASSWORD
 
-  aws-ecr-image:
-    description: AWS ecr image repository and name
-    type: string
-    default: ""
+  aws-ecr:
+    description: Use aws ecr
+    type: boolean
+    default: false
 
   aws-access-key-id:
     description: password for registry access
@@ -41,7 +41,7 @@ parameters:
 
 steps:
   - unless:
-      condition: << parameters.aws-ecr-image >>
+      condition: << parameters.aws-ecr >>
       name: Confirm Docker registry credentials are available and valid
       steps:
         - run:
@@ -51,12 +51,14 @@ steps:
               DOCKER_PASSWORD: << parameters.docker-password >>
             command: << include(scripts/confirm-registry.sh) >>
   - when:
-      condition: << parameters.aws-ecr-image >>
+      condition: << parameters.aws-ecr >>
       name: Confirm aws ecr credentials are available and valid
       steps:
         - run:
             environment:
-              AWS_ECR_IMAGE: << parameters.aws-ecr-image >>
+              AWS_ECR: << parameters.aws-ecr >>
+              REGISTRY: << parameters.registry >>
+              IMAGE: << parameters.image >>
               AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
               AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
               AWS_REGION: << parameters.aws-region >>

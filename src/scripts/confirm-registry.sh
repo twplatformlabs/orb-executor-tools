@@ -4,13 +4,13 @@
 # DOCKER_LOGIN
 # DOCKER_PASSWORD
 # 
-# AWS_ECR_IMAGE   # ecr url, e.g., 123*******.dkr.ecr.us-east-1.amazonaws.com/org/repo:0.1
+# AWS_ECR    # use aws ecr
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
 
 confirm_registry() {
-  if [ ! "${AWS_ECR_IMAGE}" ]; then
+  if [ ! "${AWS_ECR}" ]; then
       if [ ! "${DOCKER_LOGIN}" ]; then
         echo "registry username is not defined."
         exit 1
