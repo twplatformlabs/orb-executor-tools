@@ -82,7 +82,6 @@ jobs:
             docker inspect 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "mylabel"
             docker run -it 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "UTC"
             
-
 workflows:
 
   dev-release:
