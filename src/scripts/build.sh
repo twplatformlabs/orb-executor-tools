@@ -14,7 +14,9 @@ build_image() {
   if [ ! "${AWS_ECR_IMAGE}" ]; then
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${REGISTRY}/${IMAGE}:${TAG}"
-    docker build -f "${DOCKERFILE}" -t "${REGISTRY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
+    CMD="docker build -f ${DOCKERFILE} -t ${REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
+    echo $($CMD)
+    # docker build -f "${DOCKERFILE}" -t "${REGISTRY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
   else
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"
