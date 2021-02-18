@@ -11,6 +11,14 @@
 # TAG               = image tag, e.g., v1.0.0, latest
 
 build_image() {
+  echo "EXTRA_BUILD_ARGS = ${EXTRA_BUILD_ARGS}"
+  echo "AWS_ECR_IMAGE = ${AWS_ECR_IMAGE}"
+  echo "REGISTRY = ${REGISTRY}"
+  echo "IMAGE = ${IMAGE}"
+  echo "TAG = ${TAG}"
+  echo "PATH = ${PATH}"
+  echo "DOCKERFILE = ${DOCKERFILE}"
+
   if [ ! "${AWS_ECR_IMAGE}" ]; then
     docker build "${EXTRA_BUILD_ARGS}" -t "${REGISTRY}/${IMAGE}:${TAG}" -f "${PATH}/${DOCKERFILE}" 
   else
