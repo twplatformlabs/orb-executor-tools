@@ -13,7 +13,7 @@ parameters:
     description: Name of image
     type: string
     default: ""
-    
+
   docker-login:
     description: username for reigstry access
     type: env_var_name
