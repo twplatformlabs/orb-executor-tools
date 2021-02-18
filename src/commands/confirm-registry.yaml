@@ -43,21 +43,21 @@ steps:
   - unless:
       condition: << parameters.aws-ecr-image >>
       name: Confirm Docker registry credentials are available and valid
-      environment:
-        REGISTRY: << parameters.registry >>
-        DOCKER_LOGIN: << parameters.docker-login >>
-        DOCKER_PASSWORD: << parameters.docker-password >>
       steps:
         - run:
+            environment:
+              REGISTRY: << parameters.registry >>
+              DOCKER_LOGIN: << parameters.docker-login >>
+              DOCKER_PASSWORD: << parameters.docker-password >>
             command: << include(scripts/confirm-registry.sh) >>
   - when:
       condition: << parameters.aws-ecr-image >>
       name: Confirm aws ecr credentials are available and valid
-      environment:
-        AWS_ECR_IMAGE: << parameters.aws-ecr-image >>
-        AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
-        AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
-        AWS_REGION: << parameters.aws-region >>
       steps:
         - run:
+            environment:
+              AWS_ECR_IMAGE: << parameters.aws-ecr-image >>
+              AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
+              AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
+              AWS_REGION: << parameters.aws-region >>
             command: << include(scripts/confirm-registry.sh) >>
