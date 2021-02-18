@@ -9,7 +9,7 @@ parameters:
     type: string
     default: Dockerfile
 
-  path:
+  docker-build-path:
     description: Path to the directory containing your Dockerfile and build context
     type: string
     default: .
@@ -22,11 +22,6 @@ parameters:
   image:
     description: Name of image
     type: string
-
-  aws-ecr-repository:
-    description: AWS ecr image repository and name
-    type: string
-    default: ""
 
   tag:
     description: Value for tag
@@ -41,29 +36,13 @@ parameters:
     default: ""
 
 steps:
-  - unless:
-      condition: << parameters.aws-ecr-repository >>
+  - run:
       name: Build executor Docker image
-      steps:
-        - run:
-            environment:
-              DOCKERFILE: << parameters.dockerfile >>
-              DOCKERBUILD_PATH: << parameters.path >>
-              DOCKER_REGISTRY: << parameters.registry >>
-              IMAGE: << parameters.image >>
-              TAG: << parameters.tag >>
-              EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
-            command: << include(scripts/build.sh) >>
-  - when:
-      condition: << parameters.aws-ecr-repository >>
-      name: Build executor Docker image with aws ecr naming scheme
-      steps:
-        - run:
-            environment:
-              DOCKERFILE: << parameters.dockerfile >>
-              DOCKERBUILD_PATH: << parameters.path >>
-              AWS_ECR_REPOSITORY: << parameters.aws-ecr-repository >>
-              IMAGE: << parameters.image >>
-              TAG: << parameters.tag >>
-              EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
-            command: << include(scripts/build.sh) >>
+      environment:
+        DOCKERFILE: << parameters.dockerfile >>
+        DOCKER_BUILD_PATH: << parameters.docker-build-path >>
+        REGISTRY: << parameters.registry >>
+        IMAGE: << parameters.image >>
+        TAG: << parameters.tag >>
+        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
+      command: << include(scripts/build.sh) >>
