@@ -28,7 +28,7 @@ parameters:
     default: "dev:alpha"
 
 jobs:
-  # jobs to perform orb integration testing of the executor-tools commands
+  # jobs to perform orb integration testing of executor-tools commands
   integration-test-lint:
     docker:
       - image: twdps/di-circleci-base-image:stable

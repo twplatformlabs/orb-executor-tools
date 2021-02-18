@@ -15,12 +15,12 @@ build_image() {
     echo "Dockerfile: ${DOCKER_PATH}/${DOCKERFILE}"
     echo "image: ${REGISTRY}/${IMAGE}:${TAG}"
     echo "extra args: ${EXTRA_BUILD_ARGS}"
-    docker build "${EXTRA_BUILD_ARGS}" -t "${REGISTRY}/${IMAGE}:${TAG}" -f "${DOCKER_PATH}/${DOCKERFILE}" 
+    docker build -f "${DOCKER_PATH}/${DOCKERFILE}" -t "${REGISTRY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" .
   else
     echo "Dockerfile: ${DOCKER_PATH}/${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"
     echo "extra args: ${EXTRA_BUILD_ARGS}"
-    docker build "${EXTRA_BUILD_ARGS}" -t "${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}" -f "${DOCKER_PATH}/${DOCKERFILE}"
+    docker build -f "${DOCKER_PATH}/${DOCKERFILE}" -t "${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" .
   fi
 }
 
