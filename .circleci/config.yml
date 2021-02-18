@@ -73,7 +73,7 @@ jobs:
       - executor-tools/build:
           image: "twdps/test"
           tag: "latest"
-          extra-build-args: '--label test="src/commands/build.yaml"'
+          extra-build-args: "--label test='src/commands/build.yaml'"
       - executor-tools/build:
           image: "twdps/test"
           tag: "latest"
