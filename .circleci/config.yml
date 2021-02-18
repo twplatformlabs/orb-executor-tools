@@ -71,9 +71,10 @@ jobs:
               CMD ["date"]
             EOF
       - executor-tools/build:
+          registry: "docker.io"
           image: "twdps/test"
           tag: "latest"
-          extra-build-args: "--label mylabel=buildtest"
+          extra-build-args: "--label mylabel"
       - executor-tools/build:
           image: "twdps/test"
           tag: "latest"
@@ -81,9 +82,8 @@ jobs:
       - run:
           name: validate results
           command: |
-            docker images | grep "docker.io/twdps/test"
-            docker inspect docker.io/twdps/test:latest | grep "src/commands/build.yaml"
-            docker run -it docker.io/twdps/test:latest | grep UTC
+            docker inspect twdps/test:latest | grep mylabel
+            docker run -it twdps/test:latest | grep UTC
             docker images | grep "090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
 
 workflows:
