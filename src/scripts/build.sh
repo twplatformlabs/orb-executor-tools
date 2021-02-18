@@ -4,7 +4,7 @@
 # DOCKERFILE_PATH
 # EXTRA_BUILD_ARGS   = Extra flags to pass to docker build. See https://docs.docker.com/engine/reference/commandline/build
 #
-# REGISTRY           = Registry and image name values for naming the build.
+# DOCKER_REGISTRY    = Registry and image name values for naming the build.
 # IMAGE
 # AWS_ECR_REPOSITORY = support for aws ecr url, e.g., 123*******.dkr.ecr.us-east-1.amazonaws.com/org/repo:0.1
 #
@@ -13,10 +13,10 @@
 build_image() {
   if [ ! "${AWS_ECR_IMAGE}" ]; then
     echo "Dockerfile: ${DOCKERFILE}"
-    echo "image: ${REGISTRY}/${IMAGE}:${TAG}"
-    CMD="docker build -f ${DOCKERFILE} -t ${REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
+    echo "image: ${DOCKER_REGISTRY}/${IMAGE}:${TAG}"
+    CMD="docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
     echo "$CMD"
-    docker build -f "${DOCKERFILE}" -t "${REGISTRY}/${IMAGE}:${TAG}" "${DOCKERBUILD_PATH}"
+    docker build -f "${DOCKERFILE}" -t "${DOCKER_REGISTRY}/${IMAGE}:${TAG}" "${DOCKERBUILD_PATH}"
   else
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"

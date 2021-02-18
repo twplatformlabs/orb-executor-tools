@@ -17,7 +17,7 @@ parameters:
   registry:
     description: Name of registry
     type: string
-    default: docker.io
+    default: "docker.io"
 
   image:
     description: Name of image
@@ -49,7 +49,7 @@ steps:
             environment:
               DOCKERFILE: << parameters.dockerfile >>
               DOCKERBUILD_PATH: << parameters.path >>
-              REGISTRY: << parameters.registry >>
+              DOCKER_REGISTRY: << parameters.registry >>
               IMAGE: << parameters.image >>
               TAG: << parameters.tag >>
               EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
