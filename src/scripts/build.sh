@@ -15,7 +15,8 @@ build_image() {
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${REGISTRY}/${IMAGE}:${TAG}"
     CMD="docker build -f ${DOCKERFILE} -t ${REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
-    echo $($CMD)
+    echo "$CMD"
+    $("$CMD")
     # docker build -f "${DOCKERFILE}" -t "${REGISTRY}/${IMAGE}:${TAG}" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
   else
     echo "Dockerfile: ${DOCKERFILE}"
