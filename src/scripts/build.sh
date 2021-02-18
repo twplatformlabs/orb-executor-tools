@@ -17,14 +17,16 @@ build_image() {
     echo "image: ${DOCKER_REGISTRY}/${IMAGE}:${TAG}"
     CMD="docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
     echo "$CMD"
-    docker build -f "${DOCKERFILE}" -t "${DOCKER_REGISTRY}/${IMAGE}:${TAG}" "${DOCKERBUILD_PATH}"
+    # shellcheck disable=SC2086
+    docker build -f ${DOCKERFILE} -t ${DOCKER_REGISTRY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}
   else
     echo "aws ecr:"
     echo "Dockerfile: ${DOCKERFILE}"
     echo "image: ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}"
     CMD="docker build -f ${DOCKERFILE} -t ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}"
     echo "$CMD"
-    docker build -f "${DOCKERFILE}" -t "\"${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG}\"" "${EXTRA_BUILD_ARGS}" "${DOCKERBUILD_PATH}"
+    # shellcheck disable=SC2086
+    docker build -f ${DOCKERFILE} -t ${AWS_ECR_REPOSITORY}/${IMAGE}:${TAG} ${EXTRA_BUILD_ARGS} ${DOCKERBUILD_PATH}
   fi
 }
 
