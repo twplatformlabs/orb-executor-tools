@@ -43,10 +43,10 @@ parameters:
     type: string
     default: ""
 
-  aws-ecr-image:
-    description: AWS ecr image repository and name
-    type: string
-    default: ""
+  aws-ecr:
+    description: Use aws ecr
+    type: boolean
+    default: false
 
   docker-login:
     description: username for reigstry access
@@ -142,16 +142,17 @@ steps:
       condition: << parameters.after-checkout >>
       steps: << parameters.after-checkout >>
   - lint:
-      lint-using-docker: << parameters.use-docker >>
+      lint-using-docker: << parameters.lint-using-docker >>
       dockerfile: << parameters.dockerfile >>
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag >>
   - confirm-registry:
       registry: << parameters.registry >>
+      image: << parameters.image >>
       docker-login: << parameters.docker-login >>
       docker-password: << parameters.docker-password >>
-      aws-ecr-image: << parameters.aws-ecr-image >>
+      aws-ecr: << parameters.aws-ecr >>
       aws-access-key-id: << parameters.aws-access-key-id >>
       aws-secret-access-key: << parameters.aws-secret-access-key >>
       aws-region: << parameters.aws-region >>
