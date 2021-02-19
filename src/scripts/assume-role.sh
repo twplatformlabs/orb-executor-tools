@@ -2,6 +2,7 @@
 # shellcheck disable=SC2155,SC2086
 # scripts/assume-role.sh
 #
+# expects the folling environment variables
 # AWS_ROLE
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
