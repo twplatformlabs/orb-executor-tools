@@ -135,13 +135,6 @@ workflows:
             - orb-tools/pack
             - bats/run
             - shellcheck/check
-      # - hold-for-dev-publish:
-      #     type: approval
-      #     requires:
-      #       - orb-tools/lint
-      #       - orb-tools/pack
-      #       - bats/run
-      #       - shellcheck/check
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
           context: twdps-orb-authors
