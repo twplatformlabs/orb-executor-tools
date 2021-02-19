@@ -9,7 +9,7 @@
 # AWS_ECR    # use aws ecr
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
-# AWS_REGION
+# AWS_DEFAULT_REGION
 # source ./src/scripts/assume-role.sh
 
 # shellcheck disable=SC1091
@@ -34,7 +34,7 @@ else
       echo "ecr secret access key is not defined."
       exit 1
     fi
-    if [ ! "${AWS_REGION}" ]; then
+    if [ ! "${AWS_DEFAULT_REGION}" ]; then
       echo "aws region is not defined."
       exit 1
     fi

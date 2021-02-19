@@ -24,6 +24,8 @@ region=${AWS_DEFAULT_REGION}
 EOF
 }
 
+echo "$_"
+echo "$0"
 if [[ "$_" == "$0" ]]; then
     Assume
 fi
