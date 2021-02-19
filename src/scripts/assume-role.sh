@@ -8,12 +8,12 @@
 Assume () {
   TMP="$(aws sts assume-role --output json --role-arn "${AWS_ROLE}" --role-session-name "orb-exeecutor-tools pipeline" || { echo 'sts failure!' ; exit 1; })"
 
-  # shellcheck disable=SC2155, SC2086
+  # shellcheck disable=SC2155
   export ACCESS_KEY=$(echo $TMP | jq -r ".Credentials.AccessKeyId")
   export SECRET_KEY=$(echo $TMP | jq -r ".Credentials.SecretAccessKey")
   export SESSION_TOKEN=$(echo $TMP | jq -r ".Credentials.SessionToken")
 
-  # write role session credentials to ephemeral exeecutor
+  # write role session credentials to ephemeral exeecutor , SC2086
   cat <<EOF > ~/.aws/credentials
 [default]
 aws_access_key_id=${ACCESS_KEY}
