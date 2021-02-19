@@ -1,5 +1,6 @@
-# scripts/aws-push.sh
+#!/bin/sh
 # shellcheck disable=SC2155,SC2086
+# scripts/aws-push.sh
 
 # REGISTRY   # registry to confirm credentials against, e.g., docker.io, quay.io
 # IMAGE

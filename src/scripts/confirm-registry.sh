@@ -1,3 +1,4 @@
+#!/bin/sh
 # scripts/confirm-registry.sh
 # 
 # REGISTRY   # registry to confirm credentials against, e.g., docker.io, quay.io
