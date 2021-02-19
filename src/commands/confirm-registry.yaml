@@ -29,6 +29,11 @@ parameters:
     type: boolean
     default: false
 
+  aws-role:
+    description: Assume aws role as part of authentication
+    type: string
+    default: ""
+
   aws-access-key-id:
     description: password for registry access
     type: env_var_name
@@ -62,6 +67,7 @@ steps:
         - run:
             environment:
               AWS_ECR: << parameters.aws-ecr >>
+              AWS_ROLE: << parameters.aws-role >>
               REGISTRY: << parameters.registry >>
               IMAGE: << parameters.image >>
               AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
