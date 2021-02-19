@@ -18,4 +18,5 @@ if [ ! "${AWS_ECR}" ]; then
 else
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"
 fi
-docker push "$REGISTRY/$IMAGE:$TAG"
+# shellcheck disable=SC2059
+docker push ${REGISTRY}/${IMAGE}:${TAG}
