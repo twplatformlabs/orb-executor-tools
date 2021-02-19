@@ -38,7 +38,7 @@ else
       echo "aws region is not defined."
       exit 1
     fi
-    if [ "${AWS_ROLE}" ]; then
+    if [ "${AWS_ROLE}" == 1 ]; then
       Assume
     fi
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"

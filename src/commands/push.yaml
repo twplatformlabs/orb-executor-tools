@@ -59,10 +59,12 @@ steps:
       name: Publish a tagged image to the docker registry
       steps:
         - run:
-            command: echo $<< parameters.docker-password >> | docker login -u $<< parameters.docker-login >> --password-stdin << parameters.registry >>
+            command: |
+              echo $<< parameters.docker-password >> | docker login -u $<< parameters.docker-login >> --password-stdin << parameters.registry >>
+              docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
   - when:
-      condition: << parameters.aws-role >>
-      name: Assume aws role as part of authentication
+      condition: << parameters.aws-ecr >>
+      name: Publish a tagged image to the aws ecr registry
       steps:
         - run:
             environment:
@@ -70,11 +72,7 @@ steps:
               AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
               AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
               AWS_DEFAULT_REGION: << parameters.aws-region >>
-            command: << include(scripts/assume-role.sh) >>
-  - when:
-      condition: << parameters.aws-ecr >>
-      name: Publish a tagged image to the aws ecr registry
-      steps:
-        - run:
-            command: aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin << parameters.registry >>/<< parameters.image >>
-  - run: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+              REGISTRY: << parameters.registry >>
+              IMAGE: << parameters.image >>
+              TAG: << parameters.tag >>
+            command: << include(scripts/aws-push.sh) >>
