@@ -101,6 +101,9 @@ jobs:
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
       - executor-tools/push:
+          image: "twdps/busybox"
+      - executor-tools/push:
+          aws-ecr: true
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
 
