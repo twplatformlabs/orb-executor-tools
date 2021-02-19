@@ -38,11 +38,10 @@ parameters:
 steps:
   - run:
       name: Build executor Docker image
-      environment:
-        DOCKERFILE: << parameters.dockerfile >>
-        DOCKER_BUILD_PATH: << parameters.docker-build-path >>
-        REGISTRY: << parameters.registry >>
-        IMAGE: << parameters.image >>
-        TAG: << parameters.tag >>
-        EXTRA_BUILD_ARGS: <<parameters.extra-build-args>>
-      command: << include(scripts/build.sh) >>
+      command: |
+        echo "Dockerfile: << parameters.dockerfile >>"
+        echo "image: << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>"
+        docker build -f << parameters.dockerfile >> \
+                     -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+                     <<parameters.extra-build-args>> \
+                     << parameters.docker-build-path >>
