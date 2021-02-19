@@ -154,7 +154,8 @@ workflows:
       - integration-test-confirm-registry:
           context: twdps-orb-authors
       - integration-test-build
-      - integration-test-push
+      - integration-test-push:
+          context: twdps-orb-authors
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
