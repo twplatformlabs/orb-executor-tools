@@ -1,0 +1,32 @@
+# src/commands/push.yaml
+
+description: Publish docker image to a registry
+
+parameters:
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image
+    type: string
+
+  tag:
+    description: Value for tag
+    type: string
+
+  aws-ecr:
+    description: Use aws ecr
+    type: boolean
+    default: false
+
+steps:
+  - unless:
+      condition: << parameters.aws-ecr >>
+      name: use aws ecr
+      steps:
+        - run:
+            name: Publish a tagged image to the docker registry
+            command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>

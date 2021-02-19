@@ -30,10 +30,13 @@ parameters:
     default: ""
 
 steps:
-  - run:
-      name: run scripts/lint.sh to perform hadolint inspection of Dockerfile
-      environment:
-        USE_DOCKER: << parameters.lint-using-docker >>
-        DOCKERFILE: << parameters.dockerfile >>
-        IMAGE: << parameters.registry >>/<< parameters.image >><<#parameters.tag>>:<<parameters.tag>><</parameters.tag>>
-      command: << include(scripts/lint.sh) >>
+  - when:
+      condition: << parameters.lint-using-docker >>
+      name: use hadolint docker image to line Dockerfile
+      steps:
+        - run: docker run --rm -i << parameters.registry >>/<< parameters.image >><<#parameters.tag>>:<<parameters.tag>><</parameters.tag>> < << parameters.dockerfile >>
+  - unless:
+      condition: << parameters.lint-using-docker >>
+      name: use hadolint installed on executor
+      steps:
+        - run: hadolint << parameters.dockerfile >>
