@@ -11,9 +11,9 @@
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
 # source ./src/scripts/assume-role.sh
-pwd
+
 # shellcheck disable=SC1091
-source assume-role.sh
+source src/scripts/assume-role.sh
 
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
@@ -39,7 +39,7 @@ else
       exit 1
     fi
     if [ "${AWS_ROLE}" ]; then
-      assume
+      Assume
     fi
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"
 fi
