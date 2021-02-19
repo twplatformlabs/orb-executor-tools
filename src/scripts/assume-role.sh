@@ -5,7 +5,7 @@
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
 
-assume() {
+Assume() {
   TMP="$(aws sts assume-role --output json --role-arn "${AWS_ROLE}" --role-session-name "orb-exeecutor-tools pipeline" || { echo 'sts failure!' ; exit 1; })"
 
   # shellcheck disable=SC2155, SC2086
@@ -22,3 +22,7 @@ aws_session_token=${SESSION_TOKEN}
 region=${AWS_REGION}
 EOF
 }
+
+if [[ "$_" == "$0" ]]; then
+    Assume
+fi

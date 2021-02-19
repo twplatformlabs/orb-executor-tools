@@ -10,7 +10,8 @@
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
-source ./src/scripts/assume-role.sh
+# source ./src/scripts/assume-role.sh
+source assume-role.sh
 
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
