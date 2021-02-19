@@ -98,6 +98,8 @@ jobs:
               CMD ["date"]
             EOF
       - executor-tools/build:
+          image: "twdps/busybox"
+      - executor-tools/build:
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
       - executor-tools/push:
