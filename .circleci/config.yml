@@ -146,7 +146,7 @@ workflows:
       - orb-tools/publish-dev:
           context: twdps-orb-authors
           orb-name: twdps/executor-tools
-          requires: [hold-for-dev-publish]
+          requires: [static-analysis-complete]
       # Trigger an integration workflow to test the
       # dev:${CIRCLE_SHA1:0:7} version of your orb
       # comment
