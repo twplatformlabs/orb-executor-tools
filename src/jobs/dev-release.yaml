@@ -71,7 +71,7 @@ parameters:
   aws-region:
     description: Default AWS region used in .aws/credentials after assume role
     type: string
-    default: AWS_DEFAULT_REGION
+    default: ${AWS_DEFAULT_REGION}
 
   lint-using-docker:
     description: Hadolint not installed on executor build agent, run hadolint docker image to perform test
