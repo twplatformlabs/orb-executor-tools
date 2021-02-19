@@ -56,6 +56,17 @@ steps:
         - run:
             command: echo $<< parameters.docker-password >> | docker login -u $<< parameters.docker-login >> --password-stdin << parameters.registry >>
   - when:
+      condition: << parameters.aws-role >>
+      name: Assume aws role as part of authentication
+      steps:
+        - run:
+            environment:
+              AWS_ROLE: << parameters.aws-role >>
+              AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
+              AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
+              AWS_REGION: << parameters.aws-region >>
+            command: << include(scripts/assume-role.sh) >>
+  - when:
       condition: << parameters.aws-ecr >>
       name: Publish a tagged image to the aws ecr registry
       steps:

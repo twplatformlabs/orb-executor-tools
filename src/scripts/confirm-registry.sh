@@ -10,6 +10,7 @@
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
+source ./src/scripts/assume-role.sh
 
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
@@ -35,11 +36,7 @@ else
       exit 1
     fi
     if [ "${AWS_ROLE}" ]; then
-      TMP="$(aws sts assume-role --output json --role-arn "${AWS_ROLE}" --role-session-name "orb-exeecutor-tools pipeline" || { echo 'sts failure!' ; exit 1; })"
-
-      export AWS_ACCESS_KEY_ID=$(echo $TMP | jq -r ".Credentials.AccessKeyId")
-      export AWS_SECRET_ACCESS_KEY=$(echo $TMP | jq -r ".Credentials.SecretAccessKey")
-      export AWS_SESSION_TOKEN=$(echo $TMP | jq -r ".Credentials.SessionToken")
+      assume
     fi
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"
 fi

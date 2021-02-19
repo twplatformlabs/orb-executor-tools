@@ -61,6 +61,7 @@ jobs:
       - executor-tools/confirm-registry
       - executor-tools/confirm-registry:
           aws-ecr: true
+          aws-role: "arn:aws:iam::090950721693:role/DPSTerraformRole"
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
           aws-region: "us-east-1"
@@ -113,6 +114,7 @@ jobs:
           image: "twdps/busybox"
       - executor-tools/push:
           aws-ecr: true
+          aws-role: "arn:aws:iam::090950721693:role/DPSTerraformRole"
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
 
