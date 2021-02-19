@@ -1,6 +1,8 @@
 # scripts/confirm-registry.sh
 # 
 # REGISTRY   # registry to confirm credentials against, e.g., docker.io, quay.io
+# IMAGE
+#
 # DOCKER_LOGIN
 # DOCKER_PASSWORD
 # 
@@ -33,7 +35,7 @@ confirm_registry() {
         echo "aws region is not defined."
         exit 1
       fi
-    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${AWS_ECR_IMAGE}"
+    aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"
   fi
 }
 
