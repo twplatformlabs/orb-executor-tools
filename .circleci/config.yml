@@ -56,7 +56,7 @@ jobs:
       - executor-tools/confirm-registry:
           aws-ecr: true
           registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
-          image: "twdps/alpine"
+          image: "twdps/busybox"
           aws-region: "us-east-1"
 
   integration-test-build:
@@ -83,6 +83,26 @@ jobs:
             docker images | grep "090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
             docker inspect 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "mylabel"
             docker run -it 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "UTC"
+
+  integration-test-push:
+    docker:
+      - image: twdps/di-circleci-infra-image:stable
+    steps:
+      - checkout
+      - setup_remote_docker
+      - run:
+          name: setup for docker build
+          command: |
+            cat \<<EOF > Dockerfile
+              FROM busybox:latest
+              CMD ["date"]
+            EOF
+      - executor-tools/build:
+          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          image: "twdps/busybox"
+      - executor-tools/push:
+          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          image: "twdps/busybox"
 
 workflows:
 

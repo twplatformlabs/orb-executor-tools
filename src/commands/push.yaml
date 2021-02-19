@@ -16,6 +16,7 @@ parameters:
   tag:
     description: Value for tag
     type: string
+    default: dev.${CIRCLE_SHA1:0:7}
 
   aws-ecr:
     description: Use aws ecr
@@ -25,8 +26,17 @@ parameters:
 steps:
   - unless:
       condition: << parameters.aws-ecr >>
-      name: use aws ecr
+      name: Push Docker image
       steps:
         - run:
             name: Publish a tagged image to the docker registry
             command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+  - when:
+      condition: << parameters.aws-ecr >>
+      name: Push Docker image to ecr
+      steps:
+        - run:
+            name: Publish a tagged image to the aws ecr registry
+            command: |
+              aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin << parameters.registry >>/<< parameters.image >>
+              docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
