@@ -69,7 +69,7 @@ steps:
               AWS_ROLE: << parameters.aws-role >>
               AWS_ACCESS_KEY_ID: << parameters.aws-access-key-id >>
               AWS_SECRET_ACCESS_KEY: << parameters.aws-secret-access-key >>
-              AWS_REGION: << parameters.aws-region >>
+              AWS_DEFAULT_REGION: << parameters.aws-region >>
             command: << include(scripts/assume-role.sh) >>
   - when:
       condition: << parameters.aws-ecr >>
