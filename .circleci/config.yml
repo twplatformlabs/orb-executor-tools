@@ -87,6 +87,7 @@ jobs:
   integration-test-push:
     docker:
       - image: twdps/di-circleci-infra-image:stable
+    shell: secrethub run -- /bin/sh -eo pipefail
     steps:
       - checkout
       - setup_remote_docker

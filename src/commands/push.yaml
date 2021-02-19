@@ -18,10 +18,35 @@ parameters:
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
+  docker-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  docker-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
   aws-ecr:
     description: Use aws ecr
     type: boolean
     default: false
+
+  aws-access-key-id:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_ACCESS_KEY_ID
+
+  aws-secret-access-key:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_SECRET_ACCESS_KEY
+
+  aws-region:
+    description: AWS region used for aws credentials
+    type: string
+    default: AWS_DEFAULT_REGION
 
 steps:
   - unless:
@@ -30,7 +55,9 @@ steps:
       steps:
         - run:
             name: Publish a tagged image to the docker registry
-            command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+            command: |
+              echo << parameters.docker-password >> | docker login -u << parameters.docker-login >> --password-stdin << parameters.registry >>
+              docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
   - when:
       condition: << parameters.aws-ecr >>
       name: Push Docker image to ecr
