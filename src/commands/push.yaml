@@ -37,7 +37,7 @@ parameters:
     description: Assume aws role as part of authentication
     type: string
     default: ""
-    
+
   aws-access-key-id:
     description: password for registry access
     type: env_var_name
