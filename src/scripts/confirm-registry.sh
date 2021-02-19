@@ -11,6 +11,8 @@
 # AWS_SECRET_ACCESS_KEY
 # AWS_REGION
 # source ./src/scripts/assume-role.sh
+pwd
+# shellcheck disable=SC1091
 source assume-role.sh
 
 if [ ! "${AWS_ECR}" ]; then
