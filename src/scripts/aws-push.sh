@@ -14,7 +14,7 @@
 # shellcheck disable=SC1091
 source src/scripts/assume-role.sh
 
-if [ "${AWS_ROLE}" == 1 ]; then
+if [ "${AWS_ROLE}" ]; then
   Assume
 fi
 

@@ -15,8 +15,6 @@
 # shellcheck disable=SC1091
 source src/scripts/assume-role.sh
 
-echo 'here'
-echo "${AWS_ROLE}"
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
       echo "registry username is not defined."
@@ -40,7 +38,7 @@ else
       echo "aws region is not defined."
       exit 1
     fi
-    if [ "${AWS_ROLE}" == 1 ]; then
+    if [ "${AWS_ROLE}" ]; then
       Assume
     fi
     aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"

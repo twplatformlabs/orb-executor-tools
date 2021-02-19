@@ -8,12 +8,11 @@
 # AWS_DEFAULT_REGION
 
 Assume () {
-  echo "${AWS_ROLE}"
   TMP="$(aws sts assume-role --output json --role-arn ${AWS_ROLE} --role-session-name 'orb-exeecutor-tools-pipeline' || { echo 'sts failure!' ; exit 1; })"
 
-  export ACCESS_KEY=$(echo $TMP | jq -r ".Credentials.AccessKeyId")
-  export SECRET_KEY=$(echo $TMP | jq -r ".Credentials.SecretAccessKey")
-  export SESSION_TOKEN=$(echo $TMP | jq -r ".Credentials.SessionToken")
+  ACCESS_KEY=$(echo $TMP | jq -r ".Credentials.AccessKeyId")
+  SECRET_KEY=$(echo $TMP | jq -r ".Credentials.SecretAccessKey")
+  SESSION_TOKEN=$(echo $TMP | jq -r ".Credentials.SessionToken")
 
   # write role session credentials to ephemeral executor
   mkdir +p ~/.aws
