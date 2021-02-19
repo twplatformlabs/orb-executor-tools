@@ -50,8 +50,8 @@ parameters:
 
   aws-region:
     description: AWS region used for aws credentials
-    type: env_var_name
-    default: AWS_DEFAULT_REGION
+    type: string
+    default: ${AWS_DEFAULT_REGION}
 
 steps:
   - unless:

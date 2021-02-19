@@ -47,7 +47,7 @@ parameters:
   aws-region:
     description: AWS region used for aws credentials
     type: string
-    default: AWS_DEFAULT_REGION
+    default: ${AWS_DEFAULT_REGION}
 
 steps:
   - unless:
