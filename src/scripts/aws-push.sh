@@ -1,14 +1,12 @@
 #!/bin/sh
 # shellcheck disable=SC2155,SC2086
 # scripts/aws-push.sh
-
-# REGISTRY   # registry to confirm credentials against, e.g., docker.io, quay.io
-# IMAGE
 #
-# DOCKER_LOGIN
-# DOCKER_PASSWORD
-# 
-# AWS_ECR    # use aws ecr
+# expects circleci 'include' to pass the following environment variables
+# REGISTRY
+# IMAGE
+# TAG
+# AWS_ROLE
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_DEFAULT_REGION

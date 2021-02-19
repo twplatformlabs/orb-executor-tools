@@ -15,6 +15,7 @@
 # shellcheck disable=SC1091
 source src/scripts/assume-role.sh
 
+echo 'here'
 echo "${AWS_ROLE}"
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
