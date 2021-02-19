@@ -1,21 +1,21 @@
 #!/bin/sh
 # scripts/confirm-registry.sh
-# 
-# REGISTRY   # registry to confirm credentials against, e.g., docker.io, quay.io
-# IMAGE
 #
+# expects circleci 'include' to pass the following environment variables
+# REGISTRY
+# IMAGE
 # DOCKER_LOGIN
 # DOCKER_PASSWORD
-# 
-# AWS_ECR    # use aws ecr
+# AWS_ECR
+# AWS_ROLE
 # AWS_ACCESS_KEY_ID
 # AWS_SECRET_ACCESS_KEY
 # AWS_DEFAULT_REGION
-# source ./src/scripts/assume-role.sh
 
 # shellcheck disable=SC1091
 source src/scripts/assume-role.sh
 
+echo "${AWS_ROLE}"
 if [ ! "${AWS_ECR}" ]; then
     if [ ! "${DOCKER_LOGIN}" ]; then
       echo "registry username is not defined."
