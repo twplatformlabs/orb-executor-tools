@@ -28,6 +28,12 @@ parameters:
     default: "dev:alpha"
 
 jobs:
+  static-analysis-complete:
+    docker:
+      - image: twdps/di-circleci-base-image:stable
+    steps:
+      - run: echo "static analysis complete"
+
   # jobs to perform orb integration testing of executor-tools commands
   integration-test-lint:
     docker:
@@ -123,13 +129,19 @@ workflows:
       # optional: Run BATS tests against your scripts
       - bats/run:
           path: ./src/tests
-      - hold-for-dev-publish:
-          type: approval
+      - static-analysis-complete:
           requires:
             - orb-tools/lint
             - orb-tools/pack
             - bats/run
             - shellcheck/check
+      # - hold-for-dev-publish:
+      #     type: approval
+      #     requires:
+      #       - orb-tools/lint
+      #       - orb-tools/pack
+      #       - bats/run
+      #       - shellcheck/check
       # Publish development version(s) of the orb.
       - orb-tools/publish-dev:
           context: twdps-orb-authors
