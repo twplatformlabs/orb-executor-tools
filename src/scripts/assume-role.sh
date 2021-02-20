@@ -9,6 +9,8 @@
 # AWS_DEFAULT_REGION
 
 Assume () {
+  echo 'assume'
+  echo "${AWS_ROLE}"
   TMP="$(aws sts assume-role --output json --role-arn ${AWS_ROLE} --role-session-name 'orb-exeecutor-tools-pipeline' || { echo 'sts failure!' ; exit 1; })"
 
   ACCESS_KEY=$(echo $TMP | jq -r ".Credentials.AccessKeyId")
