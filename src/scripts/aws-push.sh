@@ -19,4 +19,5 @@ if [ "${AWS_ROLE}" ]; then
 fi
 
 aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin "${REGISTRY}/${IMAGE}"
+echo "${REGISTRY}/${IMAGE}:${TAG}"
 docker push ${REGISTRY}/${IMAGE}:${TAG}
