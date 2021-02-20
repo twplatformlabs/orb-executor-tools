@@ -152,18 +152,17 @@ workflows:
           requires:
             - orb-tools/publish-dev
 
-  # triggered by "trigger-integration-tests-workflow"
-  # job, and run tests on <your orb>@dev:${CIRCLE_SHA1:0:7}.
+  # triggered by orb-tools/trigger-integration-tests-workflow
   integration-test-and-deploy:
     when: << pipeline.parameters.run-integration-tests >>
     jobs:
       # Run any integration tests defined within the `jobs` key.
-      # - integration-test-lint
-      # - integration-test-confirm-registry:
-      #     context: twdps-orb-authors
-      # - integration-test-build
-      # - integration-test-push:
-      #     context: twdps-orb-authors
+      - integration-test-lint
+      - integration-test-confirm-registry:
+          context: twdps-orb-authors
+      - integration-test-build
+      - integration-test-push:
+          context: twdps-orb-authors
       # Publish a semver version of the orb. relies on
       # the commit subject containing the text "[semver:patch|minor|major|skip]"
       - orb-tools/dev-promote-prod-from-commit-subject:
@@ -172,11 +171,11 @@ workflows:
           add-pr-comment: false
           fail-if-semver-not-indicated: true
           publish-version-tag: false
-          # requires:
-          #   - integration-test-lint
-          #   - integration-test-confirm-registry
-          #   - integration-test-build
-          #   - integration-test-push
+          requires:
+            - integration-test-lint
+            - integration-test-confirm-registry
+            - integration-test-build
+            - integration-test-push
           filters:
             branches:
               only: master
