@@ -161,7 +161,8 @@ workflows:
       - integration-test-lint
       - integration-test-confirm-registry:
           context: twdps-orb-authors
-      - integration-test-build
+      - integration-test-build:
+          context: twdps-orb-authors
       - integration-test-push:
           context: twdps-orb-authors
       # Publish a semver version of the orb. relies on
