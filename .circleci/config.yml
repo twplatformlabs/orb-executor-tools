@@ -61,14 +61,15 @@ jobs:
       - executor-tools/confirm-registry
       - executor-tools/confirm-registry:
           aws-ecr: true
-          aws-role: "arn:aws:iam::090950721693:role/DPSTerraformRole"
-          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          aws-role: "arn:aws:iam::$AWS_ACCOUNT:role/DPSTerraformRole"
+          registry: "$AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
           aws-region: "us-east-1"
 
   integration-test-build:
     docker:
       - image: twdps/di-circleci-infra-image:stable
+    shell: secrethub run -- /bin/sh -eo pipefail
     steps:
       - checkout
       - setup_remote_docker
@@ -80,16 +81,16 @@ jobs:
               CMD ["date"]
             EOF
       - executor-tools/build:
-          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          registry: "$AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/test"
           tag: "latest"
           extra-build-args: "--label mylabel"
       - run:
           name: validate results
           command: |
-            docker images | grep "090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
-            docker inspect 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "mylabel"
-            docker run -it 090950721693.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "UTC"
+            docker images | grep "$AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/twdps/test"
+            docker inspect $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "mylabel"
+            docker run -it $AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com/twdps/test:latest | grep "UTC"
 
   integration-test-push:
     docker:
@@ -108,14 +109,14 @@ jobs:
       - executor-tools/build:
           image: "twdps/busybox"
       - executor-tools/build:
-          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          registry: "$AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
       - executor-tools/push:
           image: "twdps/busybox"
       - executor-tools/push:
           aws-ecr: true
-          aws-role: "arn:aws:iam::090950721693:role/DPSTerraformRole"
-          registry: "090950721693.dkr.ecr.us-east-1.amazonaws.com"
+          aws-role: "arn:aws:iam::$AWS_ACCOUNT:role/DPSTerraformRole"
+          registry: "$AWS_ACCOUNT.dkr.ecr.us-east-1.amazonaws.com"
           image: "twdps/busybox"
           aws-region: "us-east-1"
 
