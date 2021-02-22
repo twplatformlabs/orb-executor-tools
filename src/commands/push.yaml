@@ -16,7 +16,7 @@ parameters:
   tag:
     description: Value for tag
     type: string
-    default: dev.${CIRCLE_SHA1:0:7}
+    default: $CIRCLE_SHA1
 
   docker-login:
     description: username for reigstry access
