@@ -1,0 +1,222 @@
+# src/jobs/dev-release.yaml
+
+description: Check, build, and optionally deploy a Docker image.
+
+executor: di-circleci-base-image
+shell: << parameters.shell >>
+
+parameters:
+
+  shell:
+    description: default shell invocation. Override to support different shells or tools like secrethub.io
+    type: string
+    default: /bin/sh -eo pipefail
+
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
+
+  docker-build-path:
+    description: Path to the directory containing your Dockerfile and build context
+    type: string
+    default: .
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image
+    type: string
+
+  tag:
+    description: Value for dev build tag
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  extra-build-args:
+    description: >
+      Extra flags to pass to docker build. For examples, see
+      https://docs.docker.com/engine/reference/commandline/build
+    type: string
+    default: ""
+
+  docker-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  docker-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
+  aws-ecr:
+    description: Use aws ecr
+    type: boolean
+    default: false
+
+  aws-role:
+    description: Assume aws role as part of authentication
+    type: string
+    default: ""
+
+  aws-access-key-id:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_ACCESS_KEY_ID
+
+  aws-secret-access-key:
+    description: password for registry access
+    type: env_var_name
+    default: AWS_SECRET_ACCESS_KEY
+
+  aws-region:
+    description: Default AWS region used in .aws/credentials after assume role
+    type: string
+    default: ${AWS_DEFAULT_REGION}
+
+  lint-using-docker:
+    description: Hadolint not installed on executor build agent, run hadolint docker image to perform test
+    type: boolean
+    default: true
+
+  # docker-cve-scan:
+  #   description: perform snyk.io docker cve scan
+  #   type: boolean
+  #   default: false
+
+  # snyk-organization:
+  #   description: Scan results related to repository associated with organization created at snyk.io
+  #   type: string
+  #   default: ""
+
+  # snyk-token:
+  #   description: snyk.io api-token
+  #   type: env_var_name
+  #   default: SNYK_TOKEN
+
+  # # uses example policy from https://github.com/ncheneweth/opa-dockerfile-benchmarks
+  # cis-docker-image-scan:
+  #   description: perform CIS Docker Benchmark section 4 scan
+  #   type: boolean
+  #   default: false
+
+  # bats-test:
+  #   description: Run container configuration check bats test
+  #   type: boolean
+  #   default: false
+
+  # container-name:
+  #   description: name for running container
+  #   type: string
+  #   default: container-test
+
+  # entry-point:
+  #   description: name of shell ( bash | ash | etc)
+  #   type: string
+  #   default: /bin/bash
+
+  # test-path:
+  #   description: Name of folder with bats tests
+  #   type: string
+  #   default: test
+
+  after-checkout:
+    description: Optional steps to run after checking out the code.
+    type: steps
+    default: []
+
+  before-build:
+    description: Optional steps to run before building the docker image.
+    type: steps
+    default: []
+
+  after-build:
+    description: Optional steps to run after building the docker image.
+    type: steps
+    default: []
+
+steps:
+  - checkout
+  - setup_remote_docker
+  - when:
+      name: Run after_checkout lifecycle hook steps.
+      condition: << parameters.after-checkout >>
+      steps: << parameters.after-checkout >>
+  - lint:
+      lint-using-docker: << parameters.lint-using-docker >>
+      dockerfile: << parameters.dockerfile >>
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag >>
+  - confirm-registry:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      docker-login: << parameters.docker-login >>
+      docker-password: << parameters.docker-password >>
+      aws-ecr: << parameters.aws-ecr >>
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
+  - when:
+      name: Run before_build lifecycle hook steps.
+      condition: << parameters.before-build >>
+      steps: << parameters.before-build >>
+  - build:
+      dockerfile: << parameters.dockerfile >>
+      docker-build-path: << parameters.docker-build-path >>
+      image: << parameters.image >>
+      tag: << parameters.tag >>
+      registry: << parameters.registry >>
+      extra-build-args: << parameters.extra-build-args >>
+  - when:
+      name: Run after_build lifecycle hook steps.
+      condition: << parameters.after-build >>
+      steps: << parameters.after-build >>
+  # - when:
+  #     name: perform CIS Docker Benchmark section 4 scan
+  #     condition: << parameters.cis-docker-image-scan >>
+  #     steps:
+  #       - cis-scan
+  # - when:
+  #     name: Perform snyk cve scan
+  #     condition: << parameters.docker-cve-scan >>
+  #     requires:
+  #       - build
+  #     steps:
+  #       - cve-scan:
+  #           registry: << parameters.registry >>
+  #           image: << parameters.image >>
+  #           tag: << parameters.tag >>
+  #           snyk-organization: << parameters.snyk-organization >>
+  #           snyk-token: << parameters.snyk-token >>
+  # - when:
+  #     name: perform bats container configuration test
+  #     condition: << parameters.bats-test >>
+  #     requires:
+  #       - build
+  #     steps:
+  #       - bats:
+  #           registry: << parameters.registry >>
+  #           image: << parameters.image >>
+  #           tag: << parameters.tag >>
+  #           container-name: << parameters.container-name >>
+  #           entry-point: << parameters.entry-point >>
+  #           test-path: << parameters.test-path >>
+  - push:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag >>
+      docker-login: << parameters.docker-login >>
+      docker-password: << parameters.docker-password >>
+      aws-ecr: << parameters.aws-ecr >>
+      aws-role: << parameters.aws-role >>
+      aws-access-key-id: << parameters.aws-access-key-id >>
+      aws-secret-access-key: << parameters.aws-secret-access-key >>
+      aws-region: << parameters.aws-region >>
+
+
+
