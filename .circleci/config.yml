@@ -4,10 +4,9 @@ version: 2.1
 orbs:
   orb-tools: twdps/orb-tools@dev:latest
 
-# yaml anchor filters
 dev-release-filter: &dev-release-filter
   branches:
-    only: /main/
+    only: /master/
   tags:
     ignore: /.*/
 
