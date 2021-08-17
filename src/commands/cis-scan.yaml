@@ -20,7 +20,7 @@ steps:
   - run:
       name: set default executor-oriented policy
       command: |
-        if [[ ! -f ".conftest/cis-benchmark-policy.yaml" ]]; then
+        if [[ ! -f "cis-docker-benchmark.rego" ]]; then
           cat \<<EOF > cis-docker-benchmark.rego
         # conftest policy to test docker image for CIS Docker Benchmark compliance
         package main
