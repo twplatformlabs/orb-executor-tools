@@ -1,4 +1,4 @@
-# src/commands/push.yaml
+# src/commands/pull.yaml
 
 description: Publish docker image to a registry
 
@@ -19,5 +19,5 @@ parameters:
 
 steps:
   - run:
-      name: Publish a tagged image to the docker registry
-      command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+      name: Pull a tagged image from the docker registry
+      command: docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>

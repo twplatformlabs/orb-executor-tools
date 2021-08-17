@@ -1,10 +1,10 @@
 # src/jobs/dev-release.yaml
 
-description: Check, build, and optionally deploy a Docker image.
+description: Validate, build, and push a Docker image.
 
 executor:
-  name: circleci-executor-builder
-  image: << parameters.executor-image >>
+  name: machine-image
+  image-name: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
 shell: << parameters.shell >>
 
@@ -13,33 +13,18 @@ parameters:
   shell:
     description: default shell invocation. Override to support different shells or tools like secrethub.io
     type: string
-    default: /bin/sh -eo pipefail
+    default: /bin/bash -eo pipefail
 
-  executor-image:
+  executor-image-name:
     description: specify machine executor
     type: string
-    default: twdps/di-circleci-base-image:alpine-stable
+    default: ubuntu-2004:202104-01
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
     type: enum
-    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [medium, large, xlarge, 2xlarge]
     default: medium
-
-  registry:
-    description: Name of registry
-    type: string
-    default: docker.io
-
-  registry-login:
-    description: username for reigstry access
-    type: env_var_name
-    default: DOCKER_LOGIN
-
-  registry-password:
-    description: password for registry access
-    type: env_var_name
-    default: DOCKER_PASSWORD
 
   dockerfile:
     description: Name of dockerfile
@@ -65,6 +50,21 @@ parameters:
     type: string
     default: ""
 
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
   docker-cve-scan:
     description: perform snyk.io docker cve scan
     type: boolean
@@ -86,7 +86,7 @@ parameters:
     default: false
 
   cis-docker-image-scan:
-    description: perform CIS Docker Benchmark Section 4 assessment
+    description: perform CIS Docker Benchmark section 4 scan
     type: boolean
     default: false
 
@@ -122,6 +122,18 @@ parameters:
     type: string
     default: ""
 
+  conftest-version:
+    type: string
+    default: "0.27.0"
+
+  snyk-version:
+    type: string
+    default: "1.681.0"
+
+  bats-version:
+    type: string
+    default: "1.3.0"
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -139,7 +151,10 @@ parameters:
 
 steps:
   - checkout
-  - setup_remote_docker
+  - configure-machine:
+      conftest-version: << parameters.conftest-version >>
+      snyk-version: << parameters.snyk-version >>
+      bats-version: << parameters.bats-version >>
   - lint:
       dockerfile: << parameters.dockerfile >>
   - when:

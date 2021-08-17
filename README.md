@@ -1,9 +1,12 @@
 <div align="center">
 	<p>
-		<img alt="CircleCI Logo" src="https://raw.githubusercontent.com/ThoughtWorks-DPS/authoring-orbs/master/dps.png?sanitize=true" width="75" />
+		<img alt="Thoughtworks Logo" src="https://raw.githubusercontent.com/ThoughtWorks-DPS/static/master/thoughtworks_flamingo_wave.png?sanitize=true" width=200 />
+    <br />
+		<img alt="DPS Title" src="https://raw.githubusercontent.com/ThoughtWorks-DPS/static/master/dps_lab_title.png" width=350/>
 	</p>
-  <h1>executor-tools</h1>
+  <h3>orb-executor-tools</h3>
   <h5>a workflow orb for authoring circleci remote-docker images</h5>
+  <a href="https://app.circleci.com/pipelines/github/feedyard/orb-tools"><img src="https://circleci.com/gh/feedyard/orb-tools.svg?style=shield"></a> <a href="https://circleci.com/orbs/registry/orb/feedyard/orb-tools"><img src="https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/feedyard/orb-tools"></a><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 </div>
 <br />
 
@@ -12,13 +15,25 @@
   <!-- <a href="https://app.circleci.com/pipelines/github/feedyard/orb-tools"><img src="https://circleci.com/gh/feedyard/orb-tools.svg?style=shield"></a> <a href="https://circleci.com/orbs/registry/orb/feedyard/orb-tools"><img src="https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/feedyard/orb-tools"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a> -->
 
 
-<div align="center">
-  <p>
-		<img alt="CircleCI Logo" src="https://raw.githubusercontent.com/ThoughtWorks-DPS/authoring-orbs/master/circleci.svg?sanitize=true" width="45" />
-	</p>
-  <h3>Part of the ThoughtWorks-DPS series orbs</h3>
-</div>
+Example workflow: (see [orb registry](https://circleci.com/orbs/registry/orb/feedyard/executor-tools) for detailed usage examples)
 
+Features include:
+
+- hadolint scan of Dockerfile
+- cve scan using Snyk
+- CIS Docker Benchmark, Section 4, assessment using openpolicyagent-based scan
+- support for both bats and inspec based container configuration testing
+- uses a dedicated `executor-builder` image that has all the necessary tools supported by the oeb pre-installed
+- 
+
+Workflows assume:
+
+* Trunk based development (TBD)
+* Versioned released are triggered/managed by tagging
+
+_Incorporates concepts from circleci/docker-publish@0.1.2_
+
+See [this](CIS_BENCHMARK.md) documentation for customizing the cis benchmark assessment.  
 
 
 

@@ -1,0 +1,57 @@
+# src/commands/clean-docker-hub.yaml
+
+description: Steps to clean up development tags from docker.io registry
+
+parameters:
+
+  image:
+    description: Name of image
+    type: string
+
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
+  dev-tag:
+    description: >
+      Value for tag* to clean up. quay.io will automatically remove images with no tag references
+      either directly or indirectly through a parent child relationship
+    type: string
+    default: dev
+
+steps:
+  - run:
+      name: Get bearer token using username and password
+      command: |
+        curl -s -H "Content-Type: application/json" \
+             -X POST -d "{\"username\": \"${<< parameters.registry-login >>}\", \"password\": \"${<< parameters.registry-password >>}\"}" \
+              https://hub.docker.com/v2/users/login/ | jq -r .token > token.jwt
+  - run:
+      name: GET all repository tags
+      command: |
+        export TOKEN=$(cat token.jwt)
+        curl "https://hub.docker.com/v2/repositories/<< parameters.image >>/tags/" \
+             -X GET \
+             -H "Authorization: JWT ${TOKEN}" \
+             > all_images.json
+  - run:
+      name: find development tagged images
+      command: |
+        cat all_images.json | jq -r '.results | .[] | select(.name | contains ("<< parameters.dev-tag >>")) | .name' > dev_tags
+
+        #jq -r '.results[] | select(.name | contains("dev")) | .name'
+  - run:
+      name: delete dev tags
+      command: |
+        export TOKEN=$(cat token.jwt)
+        while read TAG; do
+            curl "https://hub.docker.com/v2/repositories/<< parameters.image >>/tags/${TAG}/" \
+                 -X DELETE \
+                 -H "Authorization: JWT ${TOKEN}"
+        done < dev_tags

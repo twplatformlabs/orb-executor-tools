@@ -1,0 +1,109 @@
+# src/jobs/publish.yaml
+
+description: Tag prior successful build as a release version
+
+executor:
+  name: circleci-executor-builder
+  image: << parameters.executor-image-name >>
+  resource-class: << parameters.executor-resource-class >>
+shell: << parameters.shell >>
+
+parameters:
+
+  shell:
+    description: default shell invocation. Override to support different shells or tools like secrethub.io
+    type: string
+    default: /bin/sh -eo pipefail
+
+  executor-image-name:
+    description: specify machine executor
+    type: string
+    default: twdps/di-circleci-base-image:alpine-stable
+
+  executor-resource-class:
+    description: specify executor resource class. Default is medium.
+    type: enum
+    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    default: medium
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image
+    type: string
+
+  pull-tag:
+    description: Value for tag to pull and make publish release
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  tag-annotation:
+    description: Additional text for semantic version tag
+    type: string
+    default: ""
+
+  release-tag:
+    description: Value for an additional release tag.
+    type: string
+    default: latest
+
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
+  clean-tags:
+    description: steps to perform when cleaning up development tags
+    type: steps
+    default: []
+
+  after-publish:
+    description: Optional steps to run after publishing the docker image.
+    type: steps
+    default: []
+
+steps:
+  - checkout
+  - setup_remote_docker
+  - confirm-registry:
+      registry: << parameters.registry >>
+      registry-login: << parameters.registry-login >>
+      registry-password: << parameters.registry-password >>
+  - pull:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.pull-tag >>
+  - tag:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.pull-tag >>
+      release: << parameters.tag-annotation >>$CIRCLE_TAG
+  - tag:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.pull-tag >>
+      release: << parameters.release-tag >>
+  - push:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag-annotation >>$CIRCLE_TAG
+  - push:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.release-tag >>
+  - when:
+      name: Run after_publish lifecycle hook steps.
+      condition: << parameters.after-publish >>
+      steps: << parameters.after-publish >>
+  - when:
+      name: clean up development (dev.SHA1) tags
+      condition: << parameters.clean-tags >>
+      steps: << parameters.clean-tags >>

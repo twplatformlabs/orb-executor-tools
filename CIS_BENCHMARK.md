@@ -1,4 +1,44 @@
-# conftest policy to test docker image for CIS Docker Benchmark compliance
+<div align="center">
+	<p>
+		<img alt="DPS Title" src="https://raw.githubusercontent.com/ThoughtWorks-DPS/static/master/dps_lab_title.png" width=350/>
+	</p>
+  <h5>open policy agent for CIS Docker banchmark Sec 4 tests</h5>
+</div>
+<br />
+
+Selecting `cis-scan: true` will result in the section 4 docker benchmark policy recommendation being assessed against the exector.  
+
+This scan uses conftest (an open-policy-agent cli) combined with the cis benchmarks and an organizational policy statement to assess the executor. Either or both of the defaults
+can be overridden by placing custom files in the executor repository.
+
+Generally, you will find that the benchmark doesn't need to be changed but rather the specific policy decisions of your organization will need to be customized. e.g,, names of permitted base images, whether a USER or a HEALTHCHECK is required, etc.
+
+To use your own policy requirements, place a file named cis-benchmark-policy.yaml in
+the ./conftest folder.
+
+```yaml
+# organizational requirements for circleci executors
+cispolicyconfig:
+  level_2_benchmark: false                         # set to true for level 2 benchmarks
+  run_as_user_required: true                       # set to false where not required
+  approved_base_image_not_required: true           # set false if approved base images required
+  approved_base_images:
+    -                                              # list base image names here
+  images_not_treated_as_immutable: false
+  only_necessary_packages_allowed: true
+  healthcheck_required: false                      # set to true if running on docker alone
+  dockerfile_scanned_for_secrets: true
+  packages_verified: true
+setuid:
+  setuid_or_setgid_values_allow_escalation: false
+  docker_content_trust: false
+```
+
+To use your own opa benchmark definition, place a file named cis-docker-benchmark.rego in
+the pwd.
+
+```rego
+# conftest policy to evaluate docker image for CIS Docker Benchmark compliance
 package main
 
 import data.cispolicyconfig
@@ -142,3 +182,4 @@ only_verified_packages_installed {
   cispolicyconfig.level_2_benchmark == false
   trace("4.11 Level 1 benchmark - package verfication not required (set in .opacisrc)")
 }
+```

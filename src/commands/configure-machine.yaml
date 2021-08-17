@@ -1,0 +1,49 @@
+# src/commands/configure-machine.yaml
+
+description: |
+  Install additional tools on standard circleci ubuntu machine executor.
+  Note. secrethub and inspec install latest.
+
+parameters:
+
+  conftest-version:
+    description: specify conftest version
+    type: string
+
+  snyk-version:
+    description: specify snyk version
+    type: string
+
+  bats-version:
+    description: specify bats version
+    type: string
+
+steps:
+  - run:
+      name: install secrethub
+      command: |
+        curl -sLJO https://deb.secrethub.io/amd64
+        sudo dpkg -i secrethub-cli-amd64.deb
+        rm secrethub-cli-amd64.deb
+  - run:
+      name: install conftest
+      command: |
+        wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
+        tar xzf conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
+        sudo mv conftest /usr/local/bin
+  - run:
+      name: install snyk
+      command: npm install -g snyk@<< parameters.snyk-version >>
+  - run:
+      name: install bats
+      command: npm install -g bats@<< parameters.bats-version >>
+  - run:
+      name: install inspec
+      command: |
+        curl https://omnitruck.chef.io/install.sh | sudo bash -s -- -P inspec
+        sudo mkdir -p /etc/chef/accepted_licenses
+        sudo bash -c "echo '---' > /etc/chef/accepted_licenses/inspec"
+        sudo bash -c "echo 'id: inspec' >> /etc/chef/accepted_licenses/inspec"
+        sudo bash -c "echo 'name: Chef InSpec' >> /etc/chef/accepted_licenses/inspec"
+        sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
+        sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"

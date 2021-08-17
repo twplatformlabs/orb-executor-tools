@@ -1,6 +1,6 @@
 # src/commands/build.yaml
 
-description: Build executor Docker image
+description: Build executor Docker image.
 
 parameters:
 
@@ -9,15 +9,10 @@ parameters:
     type: string
     default: Dockerfile
 
-  docker-build-path:
+  path:
     description: Path to the directory containing your Dockerfile and build context
     type: string
     default: .
-
-  registry:
-    description: Name of registry
-    type: string
-    default: "docker.io"
 
   image:
     description: Name of image
@@ -26,7 +21,12 @@ parameters:
   tag:
     description: Value for tag
     type: string
-    default: dev.$CIRCLE_SHA1
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
 
   extra-build-args:
     description: >
@@ -39,9 +39,8 @@ steps:
   - run:
       name: Build executor Docker image
       command: |
-        echo "Dockerfile: << parameters.dockerfile >>"
-        echo "image: << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>"
-        docker build -f << parameters.dockerfile >> \
-                     -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                     <<parameters.extra-build-args>> \
-                     << parameters.docker-build-path >>
+        docker build \
+          <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
+          -f << parameters.dockerfile >> -t \
+          << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+          << parameters.path >>
