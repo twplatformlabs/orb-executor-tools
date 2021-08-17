@@ -18,7 +18,7 @@ parameters:
 
 steps:
   - run:
-      name: set default executor-oriented policy
+      name: set executor-oriented section four cis docker benchmark
       command: |
         if [[ ! -f "cis-docker-benchmark.rego" ]]; then
           cat \<<EOF > cis-docker-benchmark.rego
@@ -169,7 +169,7 @@ steps:
         EOF
         fi
   - run:
-      name: set cis level 1 default if .opacisrc is not present
+      name: set default cis policy if .conftest/cis-benchmark-policy.yaml is not present
       command: |
         if [[ ! -f ".conftest/cis-benchmark-policy.yaml" ]]; then
           mkdir -p .conftest
@@ -191,6 +191,6 @@ steps:
         EOF
         fi
   - run:
-      name: evaluate Dockerfile
+      name: perform cis docker benchmark assessent
       command: |
         conftest test << parameters.dockerfile >> --policy . --data .conftest
