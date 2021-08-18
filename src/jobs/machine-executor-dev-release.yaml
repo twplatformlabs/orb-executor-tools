@@ -70,6 +70,11 @@ parameters:
     type: boolean
     default: false
 
+  severity-threshold:
+    description: snyk test reporting threshold
+    type: string
+    default: "low"
+
   snyk-organization:
     description: Trigger Scan results related to repository associated with organization created at snyk.io
     type: string
@@ -193,6 +198,7 @@ steps:
             image: << parameters.image >>
             tag: << parameters.tag-annotation >><< parameters.tag >>
             dockerfile: << parameters.dockerfile >>
+            severity-threshold: << parameters.severity-threshold >>
             snyk-organization: << parameters.snyk-organization >>
             snyk-token: << parameters.snyk-token >>
             skip-base-image: << parameters.skip-base-image >>
