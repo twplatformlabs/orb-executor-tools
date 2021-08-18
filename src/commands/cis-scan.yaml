@@ -32,7 +32,7 @@ steps:
 
         deny[msg] {
           not user_defined
-          msg = "4.1 Ensure a user for the container has been created (Scored) level 1"
+          msg = "4.1 Ensure that a user for the container has been created (Scored) level 1"
         }
 
         user_defined {
@@ -46,7 +46,7 @@ steps:
 
         deny[msg] {
           not approved_base_image_used
-          msg = "4.2 Ensure that containers use trusted base images (Not Scored) level 1"
+          msg = "4.2 Ensure that containers use only trusted base images (Not Scored) level 1"
         }
 
         approved_base_image_used {
@@ -63,7 +63,7 @@ steps:
 
         warn[msg] {
           not only_necessary_packages_installed
-          msg = "4.3 Ensure unnecessary packages are not installed in the container (Not Scored) level 1"
+          msg = "4.3 Ensure that unnecessary packages are not installed in the container (Not Scored) level 1"
         }
 
         only_necessary_packages_installed {
@@ -98,7 +98,7 @@ steps:
 
         deny[msg] {
           not healthcheck_defined
-          msg = "4.6 Ensure HEALTHCHECK instructions have been added to the container image (Scored) level 1"
+          msg = "4.6 Ensure that HEALTHCHECK instructions have been added to container images (Scored) level 1"
         }
 
         healthcheck_defined {
@@ -120,6 +120,11 @@ steps:
           input[i].Cmd == "run"
           val := concat(" ", input[i].Value)
           contains(val, blacklist[_])
+        }
+
+        package_update_or_upgrade_instructions {
+          cispolicyconfig.single_line_upgrade_check == false
+          msg = "4.7 update not part of single-line"
         }
 
         warn[msg] {
@@ -183,6 +188,7 @@ steps:
           images_not_treated_as_immutable: false
           only_necessary_packages_allowed: true
           healthcheck_required: false
+          single_line_upgrade_check: false
           dockerfile_scanned_for_secrets: true
           packages_verified: true
         setuid:
