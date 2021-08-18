@@ -30,7 +30,7 @@ steps:
         blacklist = [" update "," upgrade "]
 
 
-        deny[msg] {
+        deny_no_user[msg] {
           not user_defined
           msg = "4.1 Ensure that a user for the container has been created (Scored) level 1"
         }
@@ -44,7 +44,7 @@ steps:
           trace("4.1 USER not required (set in .opacisrc)")
         }
 
-        deny[msg] {
+        deny_unapproved_base_image[msg] {
           not approved_base_image_used
           msg = "4.2 Ensure that containers use only trusted base images (Not Scored) level 1"
         }
@@ -61,7 +61,7 @@ steps:
           trace("4.2 Use of specific approved base images not required (set in .opacisrc)")
         }
 
-        warn[msg] {
+        warn_necessary_packages[msg] {
           not only_necessary_packages_installed
           msg = "4.3 Ensure that unnecessary packages are not installed in the container (Not Scored) level 1"
         }
@@ -71,7 +71,7 @@ steps:
           trace("4.3 Distroless base or routine evaluation of necessary packages performed (set in .opacisrc)")
         }
 
-        warn[msg] {
+        warn_rebuild_patches[msg] {
           not images_scanned_and_rebuilt_not_patched
           msg = "4.4 Ensure images are scanned and rebuilt to include security patches (Not Scored) level 1"
         }
@@ -81,7 +81,7 @@ steps:
           trace("4.4 Images are immutable and continuously scanned for cve (set in .opacisrc)")
         }
 
-        deny[msg] {
+        deny_no_content_trust[msg] {
           not trust_defined
           msg = "4.5 Ensure Content trust for Docker is Enabled (Scored) level 2"
         }
@@ -96,7 +96,7 @@ steps:
           trace("4.5 Level 1 benchmark - DOCKER_CONTENT_TRUST not required (set in .opacisrc)")
         }
 
-        deny[msg] {
+        deny_no_healthcheck[msg] {
           not healthcheck_defined
           msg = "4.6 Ensure that HEALTHCHECK instructions have been added to container images (Scored) level 1"
         }
@@ -111,7 +111,7 @@ steps:
           trace("4.6 HEALTHCHECK not required, Kubernetes scheduler used for readiness and liveness rather than Docker healthcheck capability (set in .opacisrc)")
         }
 
-        deny[msg] {
+        deny_single_line_update[msg] {
           package_update_or_upgrade_instructions
           msg = "4.7 Ensure update/upgrade instructions are not used in the Dockerfile (Not Scored) level 1"
         }
@@ -122,12 +122,12 @@ steps:
           contains(val, blacklist[_])
         }
 
-        package_update_or_upgrade_instructions {
+        exception[rules] {
           cispolicyconfig.single_line_upgrade_check == false
-          msg = "4.7 update not part of single-line"
+          rules := ["single_line_update"]
         }
 
-        warn[msg] {
+        warn_setuid_permissions[msg] {
           not setuid_or_setgid_permissions_reduced
           msg = "4.8 Ensure setuid and setgid permissions are removed in the images (Not Scored) level 2"
           trace(sprintf("setuid/setgid %s",[setuid.setuid_or_setgid_values_allow_escalation]))
@@ -142,12 +142,12 @@ steps:
           trace("4.8 Level 1 benchmark - setuid/setgid file permission validation not required (set in .opacisrc)")
         }
 
-        deny[msg] {
+        deny_add_instruction[msg] {
           input[i].Cmd == "add"
           msg = "4.9 Ensure COPY is used instead of ADD in Dockerfile (Not Scored) level 1"
         }
 
-        warn[msg] {
+        warn_secrets_permitted[msg] {
           not secrets_not_permitted_in_dockerfile
           msg = "4.10 Ensure secrets are not stored in Dockerfiles (Not Scored) level 1"
         }
@@ -157,7 +157,7 @@ steps:
           trace("4.10 Commit hooks and routine repository scannng prevent secrets in Dockerfile (set in .opacisrc)")
         }
 
-        warn[msg] {
+        warn_verified_packages[msg] {
           not only_verified_packages_installed
           msg = "4.11 Ensure verified packages are only Installed (Not Scored) level 2"
         }
@@ -188,7 +188,7 @@ steps:
           images_not_treated_as_immutable: false
           only_necessary_packages_allowed: true
           healthcheck_required: false
-          single_line_upgrade_check: false
+          single_line_upgrade_check: true
           dockerfile_scanned_for_secrets: true
           packages_verified: true
         setuid:
