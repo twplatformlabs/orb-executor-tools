@@ -6,14 +6,13 @@ description: >
   testing docker images used as circleci executors.
 
   https://hub.docker.com/repository/docker/twdps/circleci-executor-builder
-  https://hub.docker.com/repository/docker/twdps/circleci-remote-docker
 
 parameters:
 
   image:
     description: specify circleci docker executor
     type: string
-    default: docker.io/twdps/circleci-executor-builder:stable
+    default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
   resource-class:
     description: specify the resouce class for the image

@@ -41,6 +41,11 @@ parameters:
     type: env_var_name
     default: DOCKER_PASSWORD
 
+  aws-ecr:
+    description: use aws elastic container registry
+    type: boolean
+    default: false
+
   dockerfile:
     description: Name of dockerfile
     type: string
@@ -155,6 +160,7 @@ steps:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
+      aws-ecr: << parameters.aws-ecr >>
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>

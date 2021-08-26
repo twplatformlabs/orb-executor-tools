@@ -18,7 +18,7 @@ parameters:
   executor-image-name:
     description: specify machine executor
     type: string
-    default: ubuntu-2004:202104-01
+    default: ubuntu-2004:202107-02
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -64,6 +64,11 @@ parameters:
     description: password for registry access
     type: env_var_name
     default: DOCKER_PASSWORD
+
+  aws-ecr:
+    description: use aws elastic container registry
+    type: boolean
+    default: false
 
   docker-cve-scan:
     description: perform snyk.io docker cve scan
@@ -170,6 +175,7 @@ steps:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
+      aws-ecr: << parameters.aws-ecr >>
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>

@@ -60,6 +60,11 @@ parameters:
     type: env_var_name
     default: DOCKER_PASSWORD
 
+  aws-ecr:
+    description: use aws elastic container registry
+    type: boolean
+    default: false
+
   clean-tags:
     description: steps to perform when cleaning up development tags
     type: steps
@@ -77,6 +82,7 @@ steps:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
+      aws-ecr: << parameters.aws-ecr >>
   - pull:
       registry: << parameters.registry >>
       image: << parameters.image >>
