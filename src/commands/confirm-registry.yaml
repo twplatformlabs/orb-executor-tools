@@ -43,6 +43,8 @@ steps:
         - run:
             name: Assume AWS role and obtain ecr get-login-password
             command: |
+              echo $AWS_ASSUME_ROLE
+              echo $AWS_REGION
               if [[ ! -z "$AWS_ASSUME_ROLE" ]]; then
                 aws sts assume-role --output json --role-arn $AWS_ASSUME_ROLE --role-session-name "circleci executor -build pipeline" > .temp_credentials || { echo 'sts failure!' ; exit 1; }
 
@@ -56,7 +58,7 @@ steps:
               aws_access_key_id=${ACCESS_KEY}
               aws_secret_access_key=${SECRET_KEY}
               aws_session_token=${SESSION_TOKEN}
-              region=${AWS_REGION}
+              region=${AWS_DEFAULT_REGION}
               EOF
               fi
         - run:
