@@ -1,23 +1,22 @@
 ---
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v3.4.0
+    rev: v4.0.1
     hooks:
-      - id: check-added-large-files
-      - id: check-case-conflict
-      - id: check-docstring-first
       - id: check-executables-have-shebangs
-      - id: check-json
-      - id: check-merge-conflict
       - id: check-symlinks
-      - id: check-toml
+      - id: check-merge-conflict
+      - id: check-added-large-files
+      - id: check-json
       - id: check-yaml
-        args: ["--allow-multiple-documents"]
-      - id: detect-private-key
+        args: [--allow-multiple-documents]
       - id: forbid-new-submodules
-      - id: mixed-line-ending
-  - repo: https://github.com/awslabs/git-secrets
-    rev: master
+      - id: detect-private-key
+      - id: detect-aws-credentials
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+  - repo: local
     hooks:
       - id: git-secrets
         name: git-secrets
