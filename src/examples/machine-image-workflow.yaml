@@ -1,0 +1,55 @@
+# src/examples/machine-image-workflow.yaml
+
+description: |
+  A standard workflow using a machine executor.
+
+  - Git push on trunk triggers dev-build, git tag for release
+  - executor 'shell' command used to support secrethub-cli for environmental secrets 
+  - builds Dockerfile
+  - release builds include image tagged with 'latest'
+  - docker.io credentials are set with the default ENV variables
+  - conftest used to perform cis docker benchmark section 4 tests
+  - snyk used to perform scan for cve 
+  - bats used to test image configuration
+
+usage:
+  version: 2.1
+
+  orbs:
+    executor-tools: twdps/executor-tools@dev:0.1.0
+
+  on-push-main: &on-push-main
+    branches:
+      only: /main/
+    tags:
+      ignore: /.*/
+
+  on-tag-main: &on-tag-main
+    branches:
+      ignore: /.*/
+    tags:
+      only: /.*/
+
+  workflows:
+    version: 2
+
+    circleci-docker-executor-build-pipeline:
+      jobs:
+        - executor-tools/machine-executor-dev-release:
+            name: dev-build
+            context: team-context
+            image: org/org/image-name
+            docker-cve-scan: true
+            snyk-organization: twdps
+            cis-docker-image-scan: true
+            skip-base-image: false
+            bats-test: true
+            container-name: image-name-edge
+            filters: *on-push-main
+
+        - executor-tools/publish:
+            name: alpine-release
+            context: team-context
+            image: org/base-image
+            release-tag: latest
+            filters: *on-tag-main

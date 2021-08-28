@@ -1,0 +1,47 @@
+# src/examples/private-registry.yaml
+
+description: |
+  A simple circleci docker executor pipeline workflow using private registry.
+
+  - Git push on trunk triggers dev-build, git tag for release
+  - builds Dockerfile
+  - development builds are tagged with dev.${CIRCLE_SHA1:0:7}
+  - uses private AWS elastic container registry
+  - credentials are set with the default AWS ENV variables
+  - no configuration tests are performed
+  - no cve or cis scan is performed
+
+usage:
+  version: 2.1
+
+  orbs:
+    executor-tools: feedyard/executor-tools@0.1.0
+
+  on-push-main: &on-push-main
+    branches:
+      only: /main/
+    tags:
+      ignore: /.*/
+
+  on-tag-main: &on-tag-main
+    branches:
+      ignore: /.*/
+    tags:
+      only: /.*/
+
+  workflows:
+    version: 2
+
+    circleci-docker-executor-build-pipeline:
+      jobs:
+        - executor-tools/dev-release:
+            aws-ecr: true
+            registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
+            image: myorg/my-circleci-executor
+            filters: *on-push-main
+
+        - executor-tools/publish:
+            aws-ecr: true
+            registry: 000000000000.dkr.ecr.us-east-1.amazonaws.com
+            image: myorg/my-circleci-executor
+            filters: *on-tag-main

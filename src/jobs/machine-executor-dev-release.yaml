@@ -136,14 +136,6 @@ parameters:
     type: string
     default: "0.27.0"
 
-  snyk-version:
-    type: string
-    default: "1.692.0"
-
-  bats-version:
-    type: string
-    default: "1.4.1"
-
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -163,8 +155,6 @@ steps:
   - checkout
   - configure-machine:
       conftest-version: << parameters.conftest-version >>
-      snyk-version: << parameters.snyk-version >>
-      bats-version: << parameters.bats-version >>
   - lint:
       dockerfile: << parameters.dockerfile >>
   - when:

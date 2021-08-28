@@ -2,20 +2,12 @@
 
 description: |
   Install additional tools on standard circleci ubuntu machine executor.
-  Note. secrethub and inspec install latest.
+  Note. conftest installs a specific version that can be overridden.
 
 parameters:
 
   conftest-version:
     description: specify conftest version
-    type: string
-
-  snyk-version:
-    description: specify snyk version
-    type: string
-
-  bats-version:
-    description: specify bats version
     type: string
 
 steps:
@@ -33,10 +25,10 @@ steps:
         sudo mv conftest /usr/local/bin
   - run:
       name: install snyk
-      command: npm install -g snyk@<< parameters.snyk-version >>
+      command: npm install -g snyk
   - run:
       name: install bats
-      command: npm install -g bats@<< parameters.bats-version >>
+      command: npm install -g bats
   - run:
       name: install inspec
       command: |

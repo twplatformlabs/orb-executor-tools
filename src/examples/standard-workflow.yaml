@@ -1,0 +1,60 @@
+# src/examples/standard-workflow.yaml
+
+description: |
+  Standard workflow demonstrating use of commonly used features.
+
+  - Git push on trunk triggers dev-build, git tag for release
+  - executor 'shell' command used to support secrethub-cli for environmental secrets 
+  - builds Dockerfile
+  - development builds are tagged with 'edge'
+  - release builds include image tagged with 'latest'
+  - docker.io credentials are set with the default ENV variables
+  - conftest used to perform cis docker benchmark section 4 tests
+  - snyk used to perform scan for cve 
+  - bats used to test image configuration, --entrypoint specified as 'ash' to support alpine
+
+usage:
+  version: 2.1
+
+  orbs:
+    executor-tools: twdps/executor-tools@0.1.0
+
+  on-push-main: &on-push-main
+    branches:
+      only: /main/
+    tags:
+      ignore: /.*/
+
+  on-tag-main: &on-tag-main
+    branches:
+      ignore: /.*/
+    tags:
+      only: /.*/
+
+  workflows:
+    version: 2
+
+    circleci-docker-executor-build-pipeline:
+      jobs:
+        - executor-tools/dev-release:
+            shell: secrethub run -- /bin/sh -eo pipefail
+            name: dev-build
+            context: team-context
+            image: org/image-name
+            tag: edge
+            cis-docker-image-scan: true
+            docker-cve-scan: true
+            snyk-organization: org-name
+            bats-test: true
+            entry-point: /bin/ash
+            container-name: run-docker-alpine-image
+            filters: *on-push-main
+
+        - executor-tools/publish:
+            shell: secrethub run -- /bin/sh -eo pipefail
+            name: release
+            context: team-context
+            pull-tag: edge
+            image: org/image-name
+            release-tag: latest
+            filters: *on-tag-main
