@@ -6,7 +6,7 @@
 	</p>
   <h3>orb-executor-tools</h3>
   <h5>a workflow orb for authoring circleci remote-docker images</h5>
-  <a href="https://app.circleci.com/pipelines/github/ThoughtWorks-DPS/orb-executor-tools"><img src="https://circleci.com/gh/ThoughtWorks-DPS/orb-executor-tools.svg?style=shield"></a> <a href="https://circleci.com/orbs/registry/orb/ThoughtWorks-DPS/orb-executor-tools"><img src="https://img.shields.io/badge/endpoint.svg?url=https://badges.circleci.io/orb/ThoughtWorks-DPS/orb-executor-tools"></a><a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
+  <a href="https://app.circleci.com/pipelines/github/ThoughtWorks-DPS/orb-executor-tools"><img src="https://circleci.com/gh/ThoughtWorks-DPS/orb-executor-tools.svg?style=shield"></a> <a href="https://badges.circleci.com/orbs/twdps/executor-tools.svg"><img src="https://badges.circleci.com/orbs/twdps/executor-tools.svg"></a> <a href="https://opensource.org/licenses/MIT"><img src="https://img.shields.io/badge/license-MIT-blue.svg"></a>
 </div>
 <br />
 
