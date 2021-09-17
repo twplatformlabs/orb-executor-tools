@@ -1,6 +1,6 @@
 # src/jobs/dev-release.yaml
 
-description: Validate, build, and push a Docker image.
+description: Machine executor versin of continuous integration build and dev image release
 
 executor:
   name: machine-image

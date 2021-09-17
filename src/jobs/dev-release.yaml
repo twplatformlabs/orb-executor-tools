@@ -1,6 +1,6 @@
 # src/jobs/dev-release.yaml
 
-description: Check, build, and optionally deploy a Docker image.
+description: Continuous integration build and dev image release
 
 executor:
   name: circleci-executor-builder
@@ -18,7 +18,7 @@ parameters:
   executor-image:
     description: specify machine executor
     type: string
-    default: twdps/di-circleci-base-image:alpine-stable
+    default: twdps/circleci-executor-builder:alpine-stable
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.

@@ -4,5 +4,18 @@ version: 2.1
 description: |
   Standard jobs for building and publishing custom circleci remote docker executor images.
 
+  Available options include:
+
+  - override default shell options
+  - define executor to use for build, default is twdps/circleci-executor-builder
+  - use machine executor, installs latest release versions of build/test tools
+  - support for private dtr compatible registries and AWS ECR
+  - support for customer dockerfile path/name, tags, tag annotations
+  - snyk cve scanning
+  - hadolint of dockerfile
+  - support for conftest CIS Docker benchmarks for section 4 (Docker image)
+  - support for bats and inspec image testing
+  - hooks for extrag build args and lifecycle steps at multiple points
+
 display:
   source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
