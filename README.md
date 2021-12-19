@@ -20,6 +20,7 @@ Features include:
 - support for both bats and inspec based container configuration testing
 - uses a dedicated `executor-builder` image that has all the necessary tools supported by the orb pre-installed
 - machine executor can be specified as build environment
+- supports github release via github-release-notes  
 
 Workflows assume:
 

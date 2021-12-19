@@ -65,6 +65,11 @@ parameters:
     type: boolean
     default: false
 
+  release-notes:
+    description: use github-release-notes to automatically generate release
+    type: boolean
+    default: false
+
   clean-tags:
     description: steps to perform when cleaning up development tags
     type: steps
@@ -113,3 +118,8 @@ steps:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
       steps: << parameters.clean-tags >>
+  - when:
+      name: generate release notes
+      condition: << parameters.release-notes >>
+      steps:
+        - release

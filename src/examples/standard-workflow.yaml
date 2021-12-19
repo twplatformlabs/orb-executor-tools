@@ -57,4 +57,5 @@ usage:
             pull-tag: edge
             image: org/image-name
             release-tag: latest
+            release-notes: true
             filters: *on-tag-main

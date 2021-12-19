@@ -1,0 +1,14 @@
+# src/commands/release.yaml
+
+description: |
+  Generate release notes using github-release-notes.
+
+  Dependencies:
+  - expects GREN_GITHUB_TOKEN
+  - use .grenrc to customize release behavior
+  - changelog behavior not support 
+
+steps:
+  - run:
+      name: generate release notes
+      command: gren release
