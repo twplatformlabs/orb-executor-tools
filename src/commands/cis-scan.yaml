@@ -20,8 +20,9 @@ steps:
   - run:
       name: set executor-oriented section four cis docker benchmark
       command: |
-        if [[ ! -f "cis-docker-benchmark.rego" ]]; then
-          cat \<<EOF > cis-docker-benchmark.rego
+        if [[ ! -f ".conftest/cis-docker-benchmark.rego" ]]; then
+          mkdir -p .conftest
+          cat \<<EOF > .conftest/cis-docker-benchmark.rego
         # conftest policy to test docker image for CIS Docker Benchmark compliance
         package main
 
@@ -199,4 +200,4 @@ steps:
   - run:
       name: perform cis docker benchmark assessent
       command: |
-        conftest test << parameters.dockerfile >> --policy . --data .conftest
+        conftest test << parameters.dockerfile >> --policy .conftest --data .conftest

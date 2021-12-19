@@ -10,7 +10,7 @@
 </div>
 <br />
 
-See [orb registry](https://circleci.com/orbs/registry/orb/ThoughtWorks-DPS/executor-tools) for detailed usage examples
+See [orb registry](https://circleci.com/developer/orbs/orb/twdps/executor-tools) for detailed usage examples
 
 Features include:
 

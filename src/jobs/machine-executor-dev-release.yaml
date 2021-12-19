@@ -18,7 +18,7 @@ parameters:
   executor-image-name:
     description: specify machine executor
     type: string
-    default: ubuntu-2004:202107-02
+    default: ubuntu-2004:202111-01 # last update: 12-19-2021
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -134,7 +134,7 @@ parameters:
 
   conftest-version:
     type: string
-    default: "0.27.0"
+    default: "0.28.3"
 
   after-checkout:
     description: Optional steps to run after checking out the code.
