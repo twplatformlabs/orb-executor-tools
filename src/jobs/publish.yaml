@@ -122,4 +122,4 @@ steps:
       name: generate release notes
       condition: << parameters.release-notes >>
       steps:
-        - release
+        - release-notes

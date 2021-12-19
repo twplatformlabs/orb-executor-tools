@@ -1,0 +1,54 @@
+# src/jobs/release.yaml
+
+description: |
+  Create release via github-release-notes, as stand alone job. This supports workflows that build
+  multiple versions of an executor. E.g., the twdps/circleci-remote-docker pipeline builds both an
+  Alpine and Debian version of of the remote-docker executor. If the publish release-notes parameter were set in
+  both jobs then a duplicate release would be generated with undesired results.   
+
+executor:
+  name: circleci-executor-builder
+  image: << parameters.executor-image-name >>
+  resource-class: << parameters.executor-resource-class >>
+shell: << parameters.shell >>
+
+parameters:
+
+  shell:
+    description: default shell invocation. Override to support different shells or tools like secrethub.io
+    type: string
+    default: /bin/sh -eo pipefail
+
+  executor-image-name:
+    description: specify machine executor
+    type: string
+    default: twdps/circleci-executor-builder:alpine-stable
+
+  executor-resource-class:
+    description: specify executor resource class. Default is medium.
+    type: enum
+    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    default: medium
+
+  before-release:
+    description: Optional steps to run prior to gren release.
+    type: steps
+    default: []
+
+  after-release:
+    description: Optional steps to run after gren release.
+    type: steps
+    default: []
+
+steps:
+  - checkout
+  - setup_remote_docker
+  - when:
+      name: Run before_release lifecycle hook steps.
+      condition: << parameters.before-release >>
+      steps: << parameters.before-release >>
+  - release-notes
+  - when:
+      name: Run after_release lifecycle hook steps.
+      condition: << parameters.after-release >>
+      steps: << parameters.after-release >>
