@@ -63,9 +63,9 @@ steps:
       condition: << parameters.before-release >>
       steps: << parameters.before-release >>
   - release-notes:
-      release: release
-      on-tag: on-tag
-      extra-release-args: extra-release-args
+      release: << parameters.release >>
+      on-tag: << parameters.on-tag >>
+      extra-release-args: << parameters.extra-release-args >>
   - when:
       name: Run after_release lifecycle hook steps.
       condition: << parameters.after-release >>
