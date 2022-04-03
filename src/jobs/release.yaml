@@ -30,6 +30,21 @@ parameters:
     enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
+  release:
+    description: generate release notes
+    type: boolean
+    default: true
+
+  on-tag:
+    description: generate release notes based on changes between last ne previous tag
+    type: boolean
+    default: false
+
+  extra-release-args:
+    description: Extra flags to pass to gren
+    type: string
+    default: ""
+
   before-release:
     description: Optional steps to run prior to gren release.
     type: steps
@@ -47,7 +62,10 @@ steps:
       name: Run before_release lifecycle hook steps.
       condition: << parameters.before-release >>
       steps: << parameters.before-release >>
-  - release-notes
+  - release-notes:
+      release: release
+      on-tag: on-tag
+      extra-release-args: extra-release-args
   - when:
       name: Run after_release lifecycle hook steps.
       condition: << parameters.after-release >>
