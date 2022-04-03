@@ -8,7 +8,38 @@ description: |
   - use .grenrc to customize release behavior
   - changelog behavior not support 
 
+parameters:
+
+  release:
+    description: generate release notes
+    type: boolean
+    default: true
+
+  on-tag:
+    description: generate release notes based on changes between last ne previous tag
+    type: boolean
+    default: false
+
+  extra-release-args:
+    description: Extra flags to pass to gren
+    type: string
+    default: ""
+  
 steps:
   - run:
       name: generate release notes
-      command: gren release
+      command: gren release 
+
+  - unless:
+        condition: << parameters.release >>
+        steps:
+          - run:
+              name: generate change log
+              command: gren changelog <<#parameters.extra-release-args>><<parameters.extra-release-args>><</parameters.extra-release-args>>
+  - when:
+      condition: << parameters.release >>
+      steps:
+        - run:
+            name: generate release github-release-notes
+            command: gren release <<#parameters.on-tag>>-t $CIRCLE_TAG<</parameters.on-tag>> \
+                          <<#parameters.extra-release-args>><<parameters.extra-release-args>><</parameters.extra-release-args>>
