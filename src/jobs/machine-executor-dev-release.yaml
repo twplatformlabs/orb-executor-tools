@@ -136,6 +136,10 @@ parameters:
     type: string
     default: "0.28.3"
 
+  opw-version:
+    type: string
+    default: "0.0.5"
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -155,6 +159,7 @@ steps:
   - checkout
   - configure-machine:
       conftest-version: << parameters.conftest-version >>
+      opw-version: << parameters.opw-version >>
   - lint:
       dockerfile: << parameters.dockerfile >>
   - when:

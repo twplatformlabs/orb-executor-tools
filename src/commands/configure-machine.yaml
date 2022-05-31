@@ -10,6 +10,10 @@ parameters:
     description: specify conftest version
     type: string
 
+  opw-version:
+    description: specify opw version
+    type: string
+
 steps:
   - run:
       name: install secrethub
@@ -31,8 +35,8 @@ steps:
   - run:
       name: install opw - 1password writer
       command: |
-        curl -SLO https://github.com/ThoughtWorks-DPS/opw/releases/download/0.0.5/opw_0.0.5_Linux_x86_64.tar.gz
-        tar -xzf opw_0.0.5_Linux_x86_64.tar.gz
+        curl -SLO https://github.com/ThoughtWorks-DPS/opw/releases/download/<< parameters.opw-version >>/opw_<< parameters.opw-version >>_Linux_x86_64.tar.gz
+        tar -xzf opw_<< parameters.opw-version >>_Linux_x86_64.tar.gz
         sudo mv opw /usr/local/bin/opw
   - run:
       name: install conftest
