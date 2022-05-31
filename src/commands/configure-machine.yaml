@@ -29,6 +29,11 @@ steps:
         sudo apt update && sudo apt install 1password-cli
         op --version
   - run:
+      name: install opw - 1password writer
+      command: |
+        curl -SLO https://github.com/ThoughtWorks-DPS/opw/releases/download/0.0.3-rc.1/opw_0.0.3-rc.1_Linux_x86_64.tar.gz
+        sudo mv opw_0.0.3-rc.1_Linux_x86_64/opw /usr/local/bin/opw
+  - run:
       name: install conftest
       command: |
         wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
