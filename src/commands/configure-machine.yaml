@@ -32,6 +32,7 @@ steps:
       name: install opw - 1password writer
       command: |
         curl -SLO https://github.com/ThoughtWorks-DPS/opw/releases/download/0.0.5/opw_0.0.5_Linux_x86_64.tar.gz
+        tar -xzf opw_0.0.5_Linux_x86_64.tar.gz
         sudo mv opw /usr/local/bin/opw
   - run:
       name: install conftest
