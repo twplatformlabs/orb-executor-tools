@@ -138,7 +138,7 @@ parameters:
 
   opw-version:
     type: string
-    default: "0.0.6"
+    default: "0.0.7"
 
   after-checkout:
     description: Optional steps to run after checking out the code.
