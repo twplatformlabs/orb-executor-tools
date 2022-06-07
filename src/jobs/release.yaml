@@ -58,14 +58,12 @@ parameters:
 steps:
   - checkout
   - setup_remote_docker
-  - when:
-      name: Run before_release lifecycle hook steps.
-      condition: << parameters.before-release >>
-      steps: << parameters.before-release >>
+
   - release-notes:
       release: << parameters.release >>
       on-tag: << parameters.on-tag >>
       extra-release-args: << parameters.extra-release-args >>
+      before-release: << parameters.before-release >>
   - when:
       name: Run after_release lifecycle hook steps.
       condition: << parameters.after-release >>

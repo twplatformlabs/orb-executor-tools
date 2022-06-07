@@ -25,22 +25,27 @@ parameters:
     description: Extra flags to pass to gren
     type: string
     default: ""
-  
-steps:
-  - run:
-      name: generate release notes
-      command: gren release 
 
+  before-release:
+    description: Optional steps to run prior to gren release.
+    type: steps
+    default: []
+
+steps:
+  - when:
+      name: Run before-release lifecycle hook steps.
+      condition: << parameters.before-release >>
+      steps: << parameters.before-release >>
+  - when:
+      condition: << parameters.release >>
+      steps:
+        - run:
+            name: generate release github-release-notes
+            command: gren release <<#parameters.on-tag>>-t $CIRCLE_TAG<</parameters.on-tag>> <<#parameters.extra-release-args>><<parameters.extra-release-args>><</parameters.extra-release-args>>
   - unless:
         condition: << parameters.release >>
         steps:
           - run:
               name: generate change log
               command: gren changelog <<#parameters.extra-release-args>><<parameters.extra-release-args>><</parameters.extra-release-args>>
-  - when:
-      condition: << parameters.release >>
-      steps:
-        - run:
-            name: generate release github-release-notes
-            command: gren release <<#parameters.on-tag>>-t $CIRCLE_TAG<</parameters.on-tag>> \
-                          <<#parameters.extra-release-args>><<parameters.extra-release-args>><</parameters.extra-release-args>>
+
