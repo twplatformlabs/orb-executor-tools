@@ -11,7 +11,7 @@ shell: << parameters.shell >>
 parameters:
 
   shell:
-    description: default shell invocation. Override to support different shells or tools like secrethub.io
+    description: default shell invocation. Override to support different shells or tools like 1password
     type: string
     default: /bin/bash -eo pipefail
 

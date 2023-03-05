@@ -12,12 +12,6 @@ parameters:
 
 steps:
   - run:
-      name: install secrethub
-      command: |
-        curl -sLJO https://deb.secrethub.io/amd64
-        sudo dpkg -i secrethub-cli-amd64.deb
-        rm secrethub-cli-amd64.deb
-  - run:
       name: install 1password
       command: |
         curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
