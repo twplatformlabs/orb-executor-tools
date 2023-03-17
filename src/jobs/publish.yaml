@@ -80,6 +80,26 @@ parameters:
     type: steps
     default: []
 
+  sign-image:
+    description: Sign OCI image using cosign
+    type: boolean
+    default: false
+
+  attestations:
+    description: attestations to include in signature
+    type: string
+    default: ""
+
+  sign-key:
+    description: path to private key used to sign image
+    type: string
+    default: cosign.key
+
+  verify-key:
+    description: path to public key used to verify signature
+    type: string
+    default: cosign.pub
+
 steps:
   - checkout
   - setup_remote_docker
@@ -114,6 +134,18 @@ steps:
       name: Run after_publish lifecycle hook steps.
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
+  - when:
+      name: Sign image using cosign
+      condition: << parameters.sign-image >>
+      steps:
+        - sign:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+        - sign:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.tag-annotation >>$CIRCLE_TAG
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
