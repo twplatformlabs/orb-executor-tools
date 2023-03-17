@@ -100,6 +100,11 @@ parameters:
     type: string
     default: cosign.pub
 
+  cosign-password:
+    description: signing key passphrase
+    type: env_var_name
+    default: COSIGN_PASSWORD
+
 steps:
   - checkout
   - setup_remote_docker
@@ -142,10 +147,18 @@ steps:
             registry: << parameters.registry >>
             image: << parameters.image >>
             tag: << parameters.release-tag >>
+            attestations: << parameters.attestations >>
+            sign-key: << parameters.sign-key >>
+            verify-key: << parameters.verify-key >>
+            cosign-password: << parameters.cosign-password >>
         - sign:
             registry: << parameters.registry >>
             image: << parameters.image >>
             tag: << parameters.tag-annotation >>$CIRCLE_TAG
+            attestations: << parameters.attestations >>
+            sign-key: << parameters.sign-key >>
+            verify-key: << parameters.verify-key >>
+            cosign-password: << parameters.cosign-password >>
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
