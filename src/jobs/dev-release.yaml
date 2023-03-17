@@ -18,7 +18,7 @@ parameters:
   executor-image:
     description: specify machine executor
     type: string
-    default: twdps/circleci-executor-builder:alpine-stable
+    default: ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder:alpine-stable
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -74,7 +74,7 @@ parameters:
     description: perform snyk.io docker cve scan
     type: boolean
     default: false
-  
+
   severity-threshold:
     description: snyk test reporting threshold
     type: string

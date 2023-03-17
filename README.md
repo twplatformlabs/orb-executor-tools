@@ -21,6 +21,14 @@ Features include:
 - uses a dedicated `executor-builder` image that has all the necessary tools supported by the orb pre-installed
 - machine executor can be specified as build environment
 - automated github release via github-release-notes  
+- override default shell options
+- define executor to use for build, default is ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder
+- use machine executor, installs latest release versions of build/test tools
+- support for private dtr compatible registries and AWS ECR
+- support for customer dockerfile path/name, tags, tag annotations
+- hooks for extrag build args and lifecycle steps at multiple points
+- support for cosign image signing
+
 
 Workflows assume:
 

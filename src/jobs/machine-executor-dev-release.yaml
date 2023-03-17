@@ -18,7 +18,7 @@ parameters:
   executor-image-name:
     description: specify machine executor
     type: string
-    default: ubuntu-2004:202111-01 # last update: 12-19-2021
+    default: ubuntu-2004:2023.02.1 # last update: 3-15-2023
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.

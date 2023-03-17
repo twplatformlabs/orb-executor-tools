@@ -7,7 +7,7 @@ description: |
   Available options include:
 
   - override default shell options
-  - define executor to use for build, default is twdps/circleci-executor-builder
+  - define executor to use for build, default is ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder
   - use machine executor, installs latest release versions of build/test tools
   - support for private dtr compatible registries and AWS ECR
   - support for customer dockerfile path/name, tags, tag annotations
@@ -16,6 +16,7 @@ description: |
   - support for conftest CIS Docker benchmarks for section 4 (Docker image)
   - support for bats and inspec image testing
   - hooks for extrag build args and lifecycle steps at multiple points
+  - support for cosign image signing
 
 display:
   source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
