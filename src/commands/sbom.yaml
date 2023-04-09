@@ -28,4 +28,4 @@ steps:
   - run:
       name: push sbom to container registry
       command: |
-        ora push --artifact-type 'sbom' docker.io/$(cat manifestid | cut -d '@' -f 2 | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json
+        oras push --artifact-type 'sbom' docker.io/$(cat manifestid | cut -d '@' -f 2 | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json
