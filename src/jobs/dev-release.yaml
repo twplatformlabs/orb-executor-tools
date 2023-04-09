@@ -18,7 +18,7 @@ parameters:
   executor-image:
     description: specify machine executor
     type: string
-    default: docker.io/twdps/circleci-executor-builder:alpine-stable # default set in circleci-executor-builder.ymal
+    default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.

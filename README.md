@@ -29,7 +29,6 @@ Features include:
 - hooks for extrag build args and lifecycle steps at multiple points
 - support for cosign image signing
 
-
 Workflows assume:
 
 * Trunk based development (TBD)
