@@ -37,3 +37,5 @@ Workflows assume:
 _Incorporates concepts from circleci/docker-publish@0.1.2_
 
 See [this](CIS_BENCHMARK.md) documentation for customizing the cis benchmark assessment.  
+
+cosign sign --key cosign.key --annotations sbom="$(cat sbom.b64)" $(cat manifestid) -y

@@ -90,11 +90,10 @@ parameters:
     type: boolean
     default: false
 
-  sbom-format:
-    description: sbom format
-    type: enum
-    enum: [syft-json, cyclonedx-xml, cyclonedx-json, github-json, spdx-tag-value, spdx-json, syft-table, syft-text, template]
-    default: cyclonedx-json
+  sbom-filename:
+    description: name of generate sbom file
+    type: string
+    default: sbom.spdx
 
   attestations:
     description: attestations to include in signature
@@ -159,11 +158,18 @@ steps:
             image: << parameters.image >>
             tag: << parameters.release-tag >>
             attestations: << parameters.attestations >>
-            sbom: << parameters.sbom >>
-            sbom-format: << parameters.sbom-format >>
             sign-key: << parameters.sign-key >>
             verify-key: << parameters.verify-key >>
             cosign-password: << parameters.cosign-password >>
+  - when:
+      name: generate sbom using syft
+      condition: << parameters.sbom >>
+      steps:
+        - sbom:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+            sbom-filename: << parameters.sbom-filename >>
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>

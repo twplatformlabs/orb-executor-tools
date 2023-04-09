@@ -1,0 +1,31 @@
+# src/commands/sbom.yaml
+
+description: generate sbom for the image and write to OCI compatible registry
+
+parameters:
+
+  registry:
+    description: full registry path for writing signature
+    type: string
+
+  image:
+    description: Name of image
+    type: string
+
+  tag:
+    description: Value for tag
+    type: string
+
+  sbom-filename:
+    description: name of generate sbom file
+    type: string
+    default: sbom.spdx
+
+steps:
+  - run:
+      name: generate sbom using syft
+      command: syft packages --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
+  - run:
+      name: push sbom to container registry
+      command: |
+        ora push --artifact-type 'sbom' docker.io/$(cat manifestid | cut -d '@' -f 2 | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json

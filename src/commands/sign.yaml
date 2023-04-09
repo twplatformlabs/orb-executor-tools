@@ -21,17 +21,6 @@ parameters:
     type: string
     default: ""
 
-  sbom:
-    description: include a software bill of materials with the signature
-    type: boolean
-    default: false
-
-  sbom-format:
-    description: sbom format
-    type: enum
-    enum: [syft-json, cyclonedx-xml, cyclonedx-json, github-json, spdx-tag-value, spdx-json, syft-table, syft-text, template]
-    default: cyclonedx-json
-
   sign-key:
     description: path to private key used to sign image
     type: string
@@ -65,21 +54,6 @@ steps:
           echo "signing key passphrase is not available; not able to sign image."
           exit 1
         fi
-  - run:
-      name: get image manifest id
-      command: docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid
-  - when:
-      condition: << parameters.sbom >>
-      steps:
-        - run:
-            name: generate sbom using syft
-            command: syft packages --output cyclonedx-json $(cat manifestid) > sbom.json
-        - run:
-            name: Sign oci image, including sbom in the signature annotations, and store signature to registry
-            command: |
-              cosign sign --key cosign.key \
-                          --annotations sbom="$(cat sbom.json)" \
-                          $(cat manifestid) -y
   - run:
       name: Sign oci image and store signature to registry
       command: |
