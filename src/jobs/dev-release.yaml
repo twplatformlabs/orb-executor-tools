@@ -18,7 +18,7 @@ parameters:
   executor-image:
     description: specify machine executor
     type: string
-    default: ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder:alpine-stable
+    default: twdps/circleci-executor-builder:alpine-stable
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
