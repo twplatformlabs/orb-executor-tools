@@ -32,4 +32,4 @@ steps:
       name: push sbom to container registry
       command: |
         oras login << parameters.registry >> -u ${<< parameters.registry-login >>} -p ${<< parameters.registry-password >>}
-        oras push --artifact-type 'sbom' docker.io/$(cat manifestid | cut -d '@' -f 2 | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json
+        oras push --artifact-type 'sbom' docker.io/$(cat manifestid | sed 's/@/:/g' | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json
