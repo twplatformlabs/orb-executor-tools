@@ -167,8 +167,6 @@ steps:
       steps:
         - sbom:
             registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.release-tag >>
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
