@@ -169,6 +169,8 @@ steps:
             registry: << parameters.registry >>
             image: << parameters.image >>
             tag: << parameters.release-tag >>
+            registry-login: << parameters.registry-login >>
+            registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
   - when:
       name: clean up development (dev.SHA1) tags
