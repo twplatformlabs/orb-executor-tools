@@ -161,6 +161,7 @@ steps:
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
       aws-ecr: << parameters.aws-ecr >>
+      sbom: << parameters.sbom>>
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>

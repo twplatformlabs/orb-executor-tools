@@ -16,6 +16,16 @@ parameters:
     description: Value for tag
     type: string
 
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
   sbom-filename:
     description: name of generate sbom file
     type: string
@@ -28,4 +38,5 @@ steps:
   - run:
       name: push sbom to container registry
       command: |
+        oras login -u ${<< parameters.registry-login >>} -p ${<< parameters.registry-password >>}
         oras push --artifact-type 'sbom' docker.io/$(cat manifestid | cut -d '@' -f 2 | sed 's/:/-/g').spdx << parameters.sbom-filename >>:application/json
