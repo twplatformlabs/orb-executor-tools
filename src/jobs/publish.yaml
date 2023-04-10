@@ -1,6 +1,6 @@
 # src/jobs/publish.yaml
 
-description: Tag and publish successful build as a release version
+description: Tag and publish a release version
 
 executor:
   name: circleci-executor-builder
