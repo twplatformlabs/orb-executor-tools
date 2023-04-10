@@ -1,6 +1,6 @@
 # src/jobs/dev-release.yaml
 
-description: Machine executor versin of continuous integration build and dev image release
+description: Machine executor version of continuous integration build and dev image release
 
 executor:
   name: machine-image
