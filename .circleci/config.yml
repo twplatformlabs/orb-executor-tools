@@ -60,6 +60,8 @@ workflows:
           context: twdps-orb-authors
           ssh-fingerprints: $SVC_FINGERPRINT
           filters: *dev-release-filter
+          use-git-diff: false
+          static-release-type: minor
           requires:
             - approve-release
 
