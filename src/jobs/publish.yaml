@@ -75,11 +75,6 @@ parameters:
     type: steps
     default: []
 
-  after-publish:
-    description: Optional steps to run after publishing the docker image.
-    type: steps
-    default: []
-
   sign-image:
     description: Sign OCI image using cosign
     type: boolean
@@ -115,9 +110,23 @@ parameters:
     type: env_var_name
     default: COSIGN_PASSWORD
 
+  after-checkout:
+    description: Optional steps to run after checking out the code.
+    type: steps
+    default: []
+
+  after-publish:
+    description: Optional steps to run after publishing the docker image.
+    type: steps
+    default: []
+
 steps:
   - checkout
   - setup_remote_docker
+  - when:
+      name: Run after_checkout lifecycle hook steps.
+      condition: << parameters.after-checkout >>
+      steps: << parameters.after-checkout >>
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
