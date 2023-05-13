@@ -33,7 +33,7 @@ steps:
       command: |
         curl -L https://github.com/tellerops/teller/releases/download/v1.5.6/teller_1.5.6_Linux_x86_64.tar.gz --output teller_1.5.6_Linux_x86_64.tar.gz
         tar -xzf teller_1.5.6_Linux_x86_64.tar.gz
-        sudo mv teller /usr/local/bin/teller  https://github.com/tellerops/teller/releases/latest
+        sudo mv teller /usr/local/bin/teller
   - run:  
       name: install vault
       command: |
