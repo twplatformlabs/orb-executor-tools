@@ -29,6 +29,19 @@ steps:
         tar -xzf opw_Linux_x86_64.tar.gz
         sudo mv opw /usr/local/bin/opw
   - run:
+      name: install teller 
+      command: |
+        curl -L https://github.com/tellerops/teller/releases/download/v1.5.6/teller_1.5.6_Linux_x86_64.tar.gz --output teller_1.5.6_Linux_x86_64.tar.gz
+        tar -xzf teller_1.5.6_Linux_x86_64.tar.gz
+        sudo mv teller /usr/local/bin/teller  https://github.com/tellerops/teller/releases/latest
+  - run:  
+      name: install vault
+      command: |
+        wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+        echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+        sudo apt update
+        sudo apt install vault
+  - run:
       name: install conftest
       command: |
         wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
