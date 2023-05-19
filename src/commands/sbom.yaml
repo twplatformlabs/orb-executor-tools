@@ -27,7 +27,7 @@ parameters:
 steps:
   - run:
       name: generate sbom using syft
-      command: syft packages --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
+      command: syft packages --verbose --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
   - run:
       name: push sbom to container registry
       command: |
