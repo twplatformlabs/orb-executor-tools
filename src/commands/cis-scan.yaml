@@ -16,7 +16,18 @@ parameters:
     type: string
     default: Dockerfile
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      name: start cis scan span
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
+        - run: echo "STEP_SPAN_ID=$(echo cis-scan  | sum | cut -f 1 -d \ )" >> $BASH_ENV
   - run:
       name: set executor-oriented section four cis docker benchmark
       command: |
@@ -201,3 +212,11 @@ steps:
       name: perform cis docker benchmark assessent
       command: |
         conftest test << parameters.dockerfile >> --policy .conftest --data .conftest
+  - when:
+      name: stop cis scan span
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run:
+            name: finishing span for cis scan
+            command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START cis-scan
+            when: always 

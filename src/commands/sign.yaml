@@ -36,7 +36,18 @@ parameters:
     type: env_var_name
     default: COSIGN_PASSWORD
 
+  honeycomb-trace:
+    description: send honeycomb buildevent trace metrics
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      name: start image sign span
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
+        - run: echo "STEP_SPAN_ID=$(echo sign | sum | cut -f 1 -d \ )" >> $BASH_ENV
   - run:
       name: Confirm signing parameters are set; key path, COSIGN_PASSWORD
       command: |
@@ -60,3 +71,11 @@ steps:
         cosign sign --key << parameters.sign-key >> \
             <<#parameters.attestations>> << parameters.attestations >> <</parameters.attestations>> \
              $(cat manifestid) -y
+  - when:
+      name: stop image sign span
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run:
+            name: finishing span for image sign
+            command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START sign
+            when: always 
