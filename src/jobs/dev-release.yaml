@@ -153,13 +153,13 @@ parameters:
     default: []
 
 steps:
+  - checkout
   - when:
       name: send honeycomb buildevent span metrics
       condition: << parameters.honeycomb-trace >>
       steps:
         - run: mkdir -p buildevents-workspace
         - run: date +%s > buildevents-workspace/build_start
-  - checkout
   - setup_remote_docker
   - lint:
       dockerfile: << parameters.dockerfile >>
