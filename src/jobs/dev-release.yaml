@@ -154,18 +154,13 @@ parameters:
 
 steps:
   - checkout
-  - when:
-      name: send honeycomb buildevent span metrics
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - run: mkdir -p buildevents-workspace
-        - run: date +%s > buildevents-workspace/build_start
+  - trace-build-start
   - setup_remote_docker
   - lint:
       dockerfile: << parameters.dockerfile >>
       honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
-      name: start after-checkout span
+      name: start after-checkout span if pipeline tracing enabled
       condition:
         and:
           - << parameters.honeycomb-trace >>

@@ -1,0 +1,16 @@
+# src/commands/trace-step-start.yaml
+
+description: record trace step id and start time to BASH_ENV
+
+parameters:
+
+  id: 
+    description: generate a trace id from the provided string
+    type: string
+
+steps:
+  - run:
+      name: set << parameters.id >> start_time for trace metrics
+      command: |
+        echo "STEP_START=$(date +%s)" >> $BASH_ENV
+        echo "STEP_SPAN_ID=$(echo << parameters.id >> | sum | cut -f 1 -d \ )" >> $BASH_ENV

@@ -1,0 +1,15 @@
+# src/commands/trace-step-stop.yaml
+
+description: send step completion time to honeycomb
+
+parameters:
+
+  id: 
+    description: generate a trace id from the provided string
+    type: string
+
+steps:
+  - run:
+      name: send << parameters.id >> step completion time to honeycomb
+      command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START << parameters.id >>
+      when: always 

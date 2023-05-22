@@ -1,0 +1,10 @@
+# src/commands/build-start.yaml
+
+description: write job start time to workspace for honeycomb tracing metrics
+
+steps:
+  - run:
+      name: Record build_start time for trace metrics
+      command: |
+        mkdir -p buildevents-workspace
+        date +%s > buildevents-workspace/build_start
