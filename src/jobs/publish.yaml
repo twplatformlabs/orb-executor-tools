@@ -244,7 +244,7 @@ steps:
       condition:
         and:
           - << parameters.honeycomb-trace >>
-          - << parameters.slean-tags >>
+          - << parameters.clean-tags >>
       steps:
         - trace-step-start:
             id: clean-tags
