@@ -160,14 +160,13 @@ steps:
       dockerfile: << parameters.dockerfile >>
       honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
-      name: start after-checkout span if pipeline tracing enabled
       condition:
         and:
           - << parameters.honeycomb-trace >>
           - << parameters.after-checkout >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo after-checkout | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: after-checkout
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
@@ -179,7 +178,8 @@ steps:
           - << parameters.honeycomb-trace >>
           - << parameters.after-checkout >>
       steps:
-        - run: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START after-checkout
+        - trace-step-stop:
+            id: after-checkout
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
@@ -193,8 +193,8 @@ steps:
           - << parameters.honeycomb-trace >>
           - << parameters.before-build >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo before-build | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: before-build
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>
@@ -206,7 +206,8 @@ steps:
           - << parameters.honeycomb-trace >>
           - << parameters.before-build >>
       steps:
-        - run: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START before-build
+        - trace-step-start:
+            id: before-build
   - build:
       dockerfile: << parameters.dockerfile >>
       path: << parameters.path >>
@@ -273,8 +274,8 @@ steps:
           - << parameters.honeycomb-trace >>
           - << parameters.after-build >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo after-build | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: after-build
   - when:
       name: Run after_build lifecycle hook steps.
       condition: << parameters.after-build >>
@@ -286,14 +287,14 @@ steps:
           - << parameters.honeycomb-trace >>
           - << parameters.after-build >>
       steps:
-        - run: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START after-build
+        - trace-step-stop:
+            id: after-build
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
       honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
-      name: send honeycomb buildevent span metrics
       condition: << parameters.honeycomb-trace >>
       steps:
         - run: buildevents build $CIRCLE_BUILD_NUM $(cat buildevents-workspace/build_start) success

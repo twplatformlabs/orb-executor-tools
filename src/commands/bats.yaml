@@ -43,11 +43,10 @@ parameters:
 
 steps:
   - when:
-      name: start bats test span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo bats | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: bats-test
   - run:
       name: run image to be tested
       command: docker run -it -d --name << parameters.container-name >> --entrypoint << parameters.entry-point >> << parameters.registry >>/<< parameters.image>>:<< parameters.tag >>
@@ -58,7 +57,5 @@ steps:
       name: stop bats test span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run:
-            name: finishing span for bats test
-            command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START bats
-            when: always 
+        - trace-step-stop:
+            id: bats-test

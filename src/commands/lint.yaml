@@ -21,8 +21,6 @@ steps:
       steps:
         - trace-step-start:
             id: lint
-        # - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        # - run: echo "STEP_SPAN_ID=$(echo lint | sum | cut -f 1 -d \ )" >> $BASH_ENV
   - unless:
       condition: << parameters.honeycomb-trace >>
       steps:  
@@ -40,7 +38,3 @@ steps:
       steps:
         - trace-step-stop:
             id: lint
-        # - run:
-        #     name: finishing span for lint
-        #     command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START lint
-        #     when: always 

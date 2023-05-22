@@ -24,11 +24,10 @@ parameters:
 
 steps:
   - when:
-      name: start docker push span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo docker-push | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: docker-push
   - run:
       name: Publish a tagged image to the docker registry
       command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
@@ -36,7 +35,5 @@ steps:
       name: stop docker push span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run:
-            name: finishing span for docker push
-            command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START docker-push
-            when: always 
+        - trace-step-stop:
+            id: docker-push
