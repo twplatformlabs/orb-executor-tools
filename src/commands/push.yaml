@@ -32,7 +32,6 @@ steps:
       name: Publish a tagged image to the docker registry
       command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
   - when:
-      name: stop docker push span
       condition: << parameters.honeycomb-trace >>
       steps:
         - trace-step-stop:

@@ -70,6 +70,21 @@ parameters:
     type: boolean
     default: false
 
+  on-tag:
+    description: generate release notes based on changes between last ne previous tag
+    type: boolean
+    default: false
+
+  extra-release-args:
+    description: Extra flags to pass to gren
+    type: string
+    default: ""
+
+  before-release:
+    description: Optional steps to run prior to gren release.
+    type: steps
+    default: []
+
   clean-tags:
     description: steps to perform when cleaning up development tags
     type: steps
@@ -110,6 +125,11 @@ parameters:
     type: env_var_name
     default: COSIGN_PASSWORD
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -122,42 +142,81 @@ parameters:
 
 steps:
   - checkout
+  - trace-build-start
   - setup_remote_docker
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-checkout >>
+      steps:
+        - trace-step-start:
+            id: after-checkout
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
       steps: << parameters.after-checkout >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-checkout >>
+      steps:
+        - trace-step-stop:
+            id: after-checkout
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
       aws-ecr: << parameters.aws-ecr >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - pull:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - tag:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
       release: << parameters.tag-annotation >>$CIRCLE_TAG
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - tag:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
       release: << parameters.release-tag >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >>$CIRCLE_TAG
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.release-tag >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-publish >>
+      steps:
+        - trace-step-start:
+            id: after-publish
   - when:
       name: Run after_publish lifecycle hook steps.
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-publish >>
+      steps:
+        - trace-step-stop:
+            id: after-publish
   - when:
       name: Sign image using cosign
       condition: << parameters.sign-image >>
@@ -170,6 +229,7 @@ steps:
             sign-key: << parameters.sign-key >>
             verify-key: << parameters.verify-key >>
             cosign-password: << parameters.cosign-password >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
       name: generate sbom using syft
       condition: << parameters.sbom >>
@@ -179,12 +239,38 @@ steps:
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.slean-tags >>
+      steps:
+        - trace-step-start:
+            id: clean-tags
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
       steps: << parameters.clean-tags >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.clean-tags >>
+      steps:
+        - trace-step-stop:
+            id: clean-tags
   - when:
       name: generate release notes
       condition: << parameters.release-notes >>
       steps:
-        - release-notes
+        - release-notes:
+            on-tag: << parameters.on-tag >>
+            extra-release-args: << parameters.extra-release-args >>
+            before-release: << parameters.before-release >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run: buildevents build $CIRCLE_BUILD_NUM $(cat buildevents-workspace/build_start) success

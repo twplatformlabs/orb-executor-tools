@@ -58,7 +58,6 @@ parameters:
 steps:
   - checkout
   - setup_remote_docker
-
   - release-notes:
       release: << parameters.release >>
       on-tag: << parameters.on-tag >>

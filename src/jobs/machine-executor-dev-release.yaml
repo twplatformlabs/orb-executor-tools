@@ -136,6 +136,11 @@ parameters:
     type: string
     default: "0.32.0"
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -155,21 +160,59 @@ steps:
   - checkout
   - configure-machine:
       conftest-version: << parameters.conftest-version >>
+  - trace-build-start
   - lint:
       dockerfile: << parameters.dockerfile >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-checkout >>
+      steps:
+        - trace-step-start:
+            id: after-checkout
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
       steps: << parameters.after-checkout >>
+  - when:
+      name: stop after-checkout span
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-checkout >>
+      steps:
+        - trace-step-stop:
+            id: after-checkout
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
       aws-ecr: << parameters.aws-ecr >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      name: start before-build span
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.before-build >>
+      steps:
+        - trace-step-start:
+            id: before-build
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>
       steps: << parameters.before-build >>
+  - when:
+      name: stop before-build span
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.before-build >>
+      steps:
+        - trace-step-start:
+            id: before-build
   - build:
       dockerfile: << parameters.dockerfile >>
       path: << parameters.path >>
@@ -177,12 +220,14 @@ steps:
       tag: << parameters.tag-annotation >><< parameters.tag >>
       registry: << parameters.registry >>
       extra-build-args: << parameters.extra-build-args >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
       name: perform CIS Docker Benchmark section 4 scan
       condition: << parameters.cis-docker-image-scan >>
       steps:
         - cis-scan:
             dockerfile: << parameters.dockerfile >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
       name: Perform snyk cve scan
       condition: << parameters.docker-cve-scan >>
@@ -198,6 +243,7 @@ steps:
             snyk-organization: << parameters.snyk-organization >>
             snyk-token: << parameters.snyk-token >>
             skip-base-image: << parameters.skip-base-image >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
       name: perform bats container configuration test
       condition: << parameters.bats-test >>
@@ -211,6 +257,7 @@ steps:
             container-name: << parameters.container-name >>
             entry-point: << parameters.entry-point >>
             test-path: << parameters.test-path >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
   - when:
       name: perform inspec container configuration test
       condition: << parameters.inspec-test >>
@@ -224,11 +271,35 @@ steps:
             container-name: << parameters.container-name >>
             entry-point: << parameters.entry-point >>
             test-path: << parameters.test-path >>
+            honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      name: start after-build span
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-build >>
+      steps:
+        - trace-step-start:
+            id: after-build
   - when:
       name: Run after_build lifecycle hook steps.
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
+  - when:
+      name: stop after-build span
+      condition:
+        and:
+          - << parameters.honeycomb-trace >>
+          - << parameters.after-build >>
+      steps:
+        - trace-step-stop:
+            id: after-build
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
+      honeycomb-trace: << parameters.honeycomb-trace >>
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run: buildevents build $CIRCLE_BUILD_NUM $(cat buildevents-workspace/build_start) success

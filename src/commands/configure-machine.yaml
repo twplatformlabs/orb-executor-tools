@@ -63,3 +63,9 @@ steps:
         sudo bash -c "echo 'name: Chef InSpec' >> /etc/chef/accepted_licenses/inspec"
         sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
         sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"
+  - run:
+      name: install buildevents
+      command: |
+        curl -L -o buildevents https://github.com/honeycombio/buildevents/releases/latest/download/buildevents-linux-amd64
+        chmod +x buildevents
+        sudo mv buildevents /usr/local/bin/buildevents

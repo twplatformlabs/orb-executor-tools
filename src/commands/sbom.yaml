@@ -31,11 +31,10 @@ parameters:
 
 steps:
   - when:
-      name: start sbom span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run: echo "STEP_START=$(date +%s)" >> $BASH_ENV
-        - run: echo "STEP_SPAN_ID=$(echo sbom | sum | cut -f 1 -d \ )" >> $BASH_ENV
+        - trace-step-start:
+            id: sbom
   - run:
       name: generate sbom using syft
       command: syft packages --verbose --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
@@ -45,10 +44,7 @@ steps:
         echo ${<< parameters.registry-password >>} | oras login << parameters.registry >> -u ${<< parameters.registry-login >>} --password-stdin
         oras push --artifact-type 'sbom' docker.io/$(cat manifestid | sed 's/:/-/g' | sed 's/@/:/g').spdx << parameters.sbom-filename >>:application/json
   - when:
-      name: stop sbom span
       condition: << parameters.honeycomb-trace >>
       steps:
-        - run:
-            name: finishing span for sbom
-            command: buildevents step $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID $STEP_START sbom
-            when: always 
+        - trace-step-stop:
+            id: release-notes
