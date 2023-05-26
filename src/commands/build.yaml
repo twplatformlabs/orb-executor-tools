@@ -46,6 +46,16 @@ steps:
       steps:
         - trace-step-start:
             id: docker-build
+        - run:
+            name: Build executor image
+            command: |
+              buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID docker -- docker build \
+                     <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
+                     -f << parameters.dockerfile >> -t \
+                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+                     << parameters.path >>
+        - trace-step-stop:
+            id: docker-build
   - unless:
       condition: << parameters.honeycomb-trace >>
       steps:
@@ -57,19 +67,3 @@ steps:
                      -f << parameters.dockerfile >> -t \
                      << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
                      << parameters.path >>
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - run:
-            name: Build executor image
-            command: |
-              buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID docker -- docker build \
-                     <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
-                     -f << parameters.dockerfile >> -t \
-                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                     << parameters.path >>
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - trace-step-stop:
-            id: docker-build

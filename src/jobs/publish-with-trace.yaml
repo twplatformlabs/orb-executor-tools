@@ -1,4 +1,4 @@
-# src/jobs/publish.yaml
+# src/jobs/publish-with-trace.yaml
 
 description: Tag and publish a release version
 
@@ -132,43 +132,59 @@ parameters:
 
 steps:
   - checkout
-
+  - trace-build-start
   - setup_remote_docker
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
-      steps: << parameters.after-checkout >>
+      steps: 
+        - trace-step-start:
+            id: after-checkout
+        - steps: << parameters.after-checkout >>
+        - trace-step-stop:
+            id: after-checkout
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
       aws-ecr: << parameters.aws-ecr >>
+      honeycomb-trace: true
   - pull:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
+      honeycomb-trace: true
   - tag:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
       release: << parameters.tag-annotation >>$CIRCLE_TAG
+      honeycomb-trace: true
   - tag:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.pull-tag >>
       release: << parameters.release-tag >>
+      honeycomb-trace: true
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >>$CIRCLE_TAG
+      honeycomb-trace: true
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.release-tag >>
+      honeycomb-trace: true
   - when:
       name: Run after_publish lifecycle hook steps.
       condition: << parameters.after-publish >>
-      steps: << parameters.after-publish >>
+      steps: 
+        - trace-step-start:
+            id: after-publish
+        - steps: << parameters.after-publish >>
+        - trace-step-stop:
+            id: after-publish
   - when:
       name: Sign image using cosign
       condition: << parameters.sign-image >>
@@ -181,6 +197,7 @@ steps:
             sign-key: << parameters.sign-key >>
             verify-key: << parameters.verify-key >>
             cosign-password: << parameters.cosign-password >>
+            honeycomb-trace: true
   - when:
       name: generate sbom using syft
       condition: << parameters.sbom >>
@@ -190,7 +207,15 @@ steps:
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
+            honeycomb-trace: true
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
-      steps: << parameters.clean-tags >>
+      steps: 
+        - trace-step-start:
+            id: clean-tags
+        - steps: << parameters.clean-tags >>
+        - trace-step-stop:
+            id: clean-tags
+      honeycomb-trace: true
+  - run: buildevents build $CIRCLE_BUILD_NUM $(cat buildevents-workspace/build_start) success

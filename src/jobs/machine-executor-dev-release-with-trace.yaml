@@ -1,117 +1,117 @@
 # src/jobs/dev-release.yaml
 
-description: Continuous integration and development build of circleci remote-docker executor.
+description: Machine executor version of continuoud integration and development build of circleci remote-docker executor.
 
 executor:
-  name: circleci-executor-builder
-  image: << parameters.executor-image >>
+  name: machine-image
+  image-name: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
 shell: << parameters.shell >>
 
 parameters:
 
   shell:
-    description: Default shell invocation. Override to support different shells or tools like 1password.
+    description: default shell invocation. Override to support different shells or tools like 1password
     type: string
     default: /bin/bash -eo pipefail
 
-  executor-image:
-    description: Executor used for orb jobs.
+  executor-image-name:
+    description: specify machine executor
     type: string
-    default: docker.io/twdps/circleci-executor-builder:alpine-stable
+    default: ubuntu-2004:2023.02.1 # last update: 3-15-2023
 
   executor-resource-class:
-    description: Executor resource class.
+    description: specify executor resource class. Default is medium.
     type: enum
-    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [medium, large, xlarge, 2xlarge]
     default: medium
 
-  registry:
-    description: Container registry.
-    type: string
-    default: docker.io
-
-  registry-login:
-    description: Environment variable to reference as username for registry login.
-    type: env_var_name
-    default: DOCKER_LOGIN
-
-  registry-password:
-    description: Environment variable to reference as password for registry login.
-    type: env_var_name
-    default: DOCKER_PASSWORD
-
-  aws-ecr:
-    description: Use aws elastic container registry?
-    type: boolean
-    default: false
-
   dockerfile:
-    description: Name of dockerfile.
+    description: Name of dockerfile
     type: string
     default: Dockerfile
 
   path:
-    description: Path to the directory containing your Dockerfile and build context.
+    description: Path to the directory containing your Dockerfile and build context
     type: string
     default: .
 
   image:
-    description: Name of image.
+    description: Name of image
     type: string
 
   tag:
-    description: Image tag for dev-build.
+    description: Value for dev build tag
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
   tag-annotation:
-    description: Additional text prepended to semantic version tag.
+    description: Additional text prepended to semantic version tag
     type: string
     default: ""
 
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
+  aws-ecr:
+    description: use aws elastic container registry
+    type: boolean
+    default: false
+
   docker-cve-scan:
-    description: Perform snyk.io docker image cve scan.
+    description: perform snyk.io docker cve scan
     type: boolean
     default: false
 
   severity-threshold:
-    description: cve test reporting threshold.
+    description: snyk test reporting threshold
     type: string
     default: "low"
 
   snyk-organization:
-    description: Associated snyk.io organization.
+    description: Trigger Scan results related to repository associated with organization created at snyk.io
     type: string
     default: ""
 
   snyk-token:
-    description: snyk.io api-token.
+    description: snyk.io api-token
     type: env_var_name
     default: SNYK_TOKEN
 
   skip-base-image:
-    description: Skip performing cve scan of base image.
+    description: optionally, skip performing cve scan of base image
     type: boolean
     default: false
 
   cis-docker-image-scan:
-    description: Perform CIS Dockerfile Benchmark Section 4 assessment
+    description: perform CIS Docker Benchmark section 4 scan
     type: boolean
     default: false
 
   bats-test:
-    description: Run container configuration check using bats.
+    description: Run container configuration check bats test
     type: boolean
     default: false
 
   inspec-test:
-    description: Run container configuration check using inspec.
+    description: Run container configuration check inspec test
     type: boolean
     default: false
 
   container-name:
-    description: Name for running container during bats/inspec test.
+    description: name for running container
     type: string
     default: container-test
 
@@ -132,6 +132,10 @@ parameters:
     type: string
     default: ""
 
+  conftest-version:
+    type: string
+    default: "0.32.0"
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -149,22 +153,36 @@ parameters:
 
 steps:
   - checkout
-  - setup_remote_docker
+  - configure-machine:
+      conftest-version: << parameters.conftest-version >>
+  - trace-build-start
   - lint:
       dockerfile: << parameters.dockerfile >>
+      honeycomb-trace: true
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
-      steps: << parameters.after-checkout >>
+      steps:
+        - trace-step-start:
+            id: after-checkout
+        - steps: << parameters.after-checkout >>
+        - trace-step-stop:
+            id: after-checkout
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
       aws-ecr: << parameters.aws-ecr >>
+      honeycomb-trace: true
   - when:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>
-      steps: << parameters.before-build >>
+      steps:
+        - trace-step-start:
+            id: before-build
+        - steps: << parameters.before-build >>
+        - trace-step-start:
+            id: before-build
   - build:
       dockerfile: << parameters.dockerfile >>
       path: << parameters.path >>
@@ -172,12 +190,14 @@ steps:
       tag: << parameters.tag-annotation >><< parameters.tag >>
       registry: << parameters.registry >>
       extra-build-args: << parameters.extra-build-args >>
+      honeycomb-trace: true
   - when:
       name: perform CIS Docker Benchmark section 4 scan
       condition: << parameters.cis-docker-image-scan >>
       steps:
         - cis-scan:
             dockerfile: << parameters.dockerfile >>
+            honeycomb-trace: true
   - when:
       name: Perform snyk cve scan
       condition: << parameters.docker-cve-scan >>
@@ -193,6 +213,7 @@ steps:
             snyk-organization: << parameters.snyk-organization >>
             snyk-token: << parameters.snyk-token >>
             skip-base-image: << parameters.skip-base-image >>
+            honeycomb-trace: true
   - when:
       name: perform bats container configuration test
       condition: << parameters.bats-test >>
@@ -206,6 +227,7 @@ steps:
             container-name: << parameters.container-name >>
             entry-point: << parameters.entry-point >>
             test-path: << parameters.test-path >>
+            honeycomb-trace: true
   - when:
       name: perform inspec container configuration test
       condition: << parameters.inspec-test >>
@@ -219,11 +241,19 @@ steps:
             container-name: << parameters.container-name >>
             entry-point: << parameters.entry-point >>
             test-path: << parameters.test-path >>
+            honeycomb-trace: true
   - when:
       name: Run after_build lifecycle hook steps.
       condition: << parameters.after-build >>
-      steps: << parameters.after-build >>
+      steps: 
+        - trace-step-start:
+            id: after-build
+        - steps: << parameters.after-build >>
+        - trace-step-stop:
+            id: after-build
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
+      honeycomb-trace: true
+  - run: buildevents build $CIRCLE_BUILD_NUM $(cat buildevents-workspace/build_start) success
