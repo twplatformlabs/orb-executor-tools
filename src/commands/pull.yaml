@@ -33,7 +33,7 @@ steps:
             command: buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID docker-pull -- docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
         - run:
             name: get image manifest id
-            command: buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID docker-manifest -- docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid
+            command: docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid
         - trace-step-stop:
             id: docker-pull
   - unless:
