@@ -6,6 +6,9 @@ executor:
   name: circleci-executor-builder
   image: << parameters.executor-image >>
   resource-class: << parameters.executor-resource-class >>
+  username: << parameters.executor-registry-username >>
+  password: << parameters.executor-registry-password >>
+
 shell: << parameters.shell >>
 
 parameters:
@@ -20,6 +23,16 @@ parameters:
     type: string
     default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
+  executor-registry-username:
+    description: Environment variable to reference as username for the registry specified by executor-image parameter
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  executor-registry-password:
+    description: Environment variable to reference as password for the registry specified by executor-image parameter
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
   executor-resource-class:
     description: Executor resource class.
     type: enum
@@ -32,12 +45,12 @@ parameters:
     default: docker.io
 
   registry-login:
-    description: Environment variable to reference as username for registry login.
+    description: Environment variable to reference as username for publishing images to registry defined by the registry parameter
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: Environment variable to reference as password for registry login.
+    description: Environment variable to reference as password for publishing images to registry specified by the registry parameter
     type: env_var_name
     default: DOCKER_PASSWORD
 
