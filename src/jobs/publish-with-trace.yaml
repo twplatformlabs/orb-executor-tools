@@ -6,6 +6,9 @@ executor:
   name: circleci-executor-builder
   image: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
+  username: << parameters.executor-registry-username >>
+  password: << parameters.executor-registry-password >>
+
 shell: << parameters.shell >>
 
 parameters:
@@ -19,6 +22,16 @@ parameters:
     description: specify machine executor
     type: string
     default: docker.io/twdps/circleci-executor-builder:alpine-stable
+
+  executor-registry-username:
+    description: Environment variable to reference as username for the registry specified by executor-image-name parameter
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  executor-registry-password:
+    description: Environment variable to reference as password for the registry specified by executor-image parameter
+    type: env_var_name
+    default: DOCKER_PASSWORD
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -51,12 +64,12 @@ parameters:
     default: latest
 
   registry-login:
-    description: username for reigstry access
+    description: Environment variable to reference as username for publishing images to registry defined by the registry parameter
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: password for registry access
+    description: Environment variable to reference as password for publishing images to registry specified by the registry parameter
     type: env_var_name
     default: DOCKER_PASSWORD
 
@@ -137,7 +150,7 @@ steps:
   - when:
       name: Run after_checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
-      steps: 
+      steps:
         - trace-step-start:
             id: after-checkout
         - steps: << parameters.after-checkout >>
@@ -179,7 +192,7 @@ steps:
   - when:
       name: Run after_publish lifecycle hook steps.
       condition: << parameters.after-publish >>
-      steps: 
+      steps:
         - trace-step-start:
             id: after-publish
         - steps: << parameters.after-publish >>
@@ -211,7 +224,7 @@ steps:
   - when:
       name: clean up development (dev.SHA1) tags
       condition: << parameters.clean-tags >>
-      steps: 
+      steps:
         - trace-step-start:
             id: clean-tags
         - steps: << parameters.clean-tags >>
