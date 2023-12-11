@@ -16,7 +16,17 @@ parameters:
     type: string
     default: Dockerfile
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: cis-scan
   - run:
       name: set executor-oriented section four cis docker benchmark
       command: |
@@ -201,3 +211,8 @@ steps:
       name: perform cis docker benchmark assessent
       command: |
         conftest test << parameters.dockerfile >> --policy .conftest --data .conftest
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-stop:
+            id: cis-scan

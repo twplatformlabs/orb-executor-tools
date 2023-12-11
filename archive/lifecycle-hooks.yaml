@@ -3,7 +3,7 @@
 description: |
     A standard workflow using a machine executor.
 
-    - Git push on trunk triggers dev-build, git tag for release 
+    - Git push on trunk triggers dev-build, git tag for release
     - builds Dockerfile
     - docker.io credentials are set with the default ENV variables
     - no configuration tests are performed

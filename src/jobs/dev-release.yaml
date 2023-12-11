@@ -1,117 +1,130 @@
 # src/jobs/dev-release.yaml
 
-description: Continuous integration build and dev image release
+description: Continuous integration and development build of circleci remote-docker executor.
 
 executor:
   name: circleci-executor-builder
   image: << parameters.executor-image >>
   resource-class: << parameters.executor-resource-class >>
+  username: << parameters.executor-registry-username >>
+  password: << parameters.executor-registry-password >>
+
 shell: << parameters.shell >>
 
 parameters:
 
   shell:
-    description: default shell invocation. Override to support different shells or tools like 1password
+    description: Default shell invocation. Override to support different shells or tools like 1password.
     type: string
-    default: /bin/sh -eo pipefail
+    default: /bin/bash -eo pipefail
 
   executor-image:
-    description: specify machine executor
+    description: Executor used for orb jobs.
     type: string
     default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
+  executor-registry-username:
+    description: Environment variable to reference as username for the registry specified by executor-image parameter
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  executor-registry-password:
+    description: Environment variable to reference as password for the registry specified by executor-image parameter
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
   executor-resource-class:
-    description: specify executor resource class. Default is medium.
+    description: Executor resource class.
     type: enum
     enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   registry:
-    description: Name of registry
+    description: Container registry.
     type: string
     default: docker.io
 
   registry-login:
-    description: username for reigstry access
+    description: Environment variable to reference as username for publishing images to registry defined by the registry parameter
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: password for registry access
+    description: Environment variable to reference as password for publishing images to registry specified by the registry parameter
     type: env_var_name
     default: DOCKER_PASSWORD
 
   aws-ecr:
-    description: use aws elastic container registry
+    description: Use aws elastic container registry?
     type: boolean
     default: false
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile.
     type: string
     default: Dockerfile
 
   path:
-    description: Path to the directory containing your Dockerfile and build context
+    description: Path to the directory containing your Dockerfile and build context.
     type: string
     default: .
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for dev build tag
+    description: Image tag for dev-build.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
   tag-annotation:
-    description: Additional text prepended to semantic version tag
+    description: Additional text prepended to semantic version tag.
     type: string
     default: ""
 
   docker-cve-scan:
-    description: perform snyk.io docker cve scan
+    description: Perform snyk.io docker image cve scan.
     type: boolean
     default: false
 
   severity-threshold:
-    description: snyk test reporting threshold
+    description: cve test reporting threshold.
     type: string
     default: "low"
 
   snyk-organization:
-    description: Trigger Scan results related to repository associated with organization created at snyk.io
+    description: Associated snyk.io organization.
     type: string
     default: ""
 
   snyk-token:
-    description: snyk.io api-token
+    description: snyk.io api-token.
     type: env_var_name
     default: SNYK_TOKEN
 
   skip-base-image:
-    description: optionally, skip performing cve scan of base image
+    description: Skip performing cve scan of base image.
     type: boolean
     default: false
 
   cis-docker-image-scan:
-    description: perform CIS Docker Benchmark Section 4 assessment
+    description: Perform CIS Dockerfile Benchmark Section 4 assessment
     type: boolean
     default: false
 
   bats-test:
-    description: Run container configuration check bats test
+    description: Run container configuration check using bats.
     type: boolean
     default: false
 
   inspec-test:
-    description: Run container configuration check inspec test
+    description: Run container configuration check using inspec.
     type: boolean
     default: false
 
   container-name:
-    description: name for running container
+    description: Name for running container during bats/inspec test.
     type: string
     default: container-test
 

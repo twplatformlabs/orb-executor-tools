@@ -2,7 +2,7 @@
 
 description: |
   Add annotation to tags during a multi-image build.
-  
+
   - Git push on trunk triggers dev-build, git tag for release
   - builds Dockerfile.alpine and Dockerfile.slim
   - development builds are tagged with 'alpine-edge' and 'slim-edge'

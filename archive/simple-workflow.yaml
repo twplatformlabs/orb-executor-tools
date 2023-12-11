@@ -1,8 +1,8 @@
 # src/examples/simple-workflow.yaml
 
 description: |
-  A simple circleci docker executor pipeline workflow, using orb defaults. 
-  
+  A simple circleci docker executor pipeline workflow, using orb defaults.
+
   - Git push on trunk triggers dev-build, git tag for release
   - builds Dockerfile
   - development builds are tagged with dev.${CIRCLE_SHA1:0:7}

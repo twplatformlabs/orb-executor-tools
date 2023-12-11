@@ -36,7 +36,17 @@ parameters:
     type: env_var_name
     default: COSIGN_PASSWORD
 
+  honeycomb-trace:
+    description: send honeycomb buildevent trace metrics
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: sign-image
   - run:
       name: Confirm signing parameters are set; key path, COSIGN_PASSWORD
       command: |
@@ -60,3 +70,8 @@ steps:
         cosign sign --key << parameters.sign-key >> \
             <<#parameters.attestations>> << parameters.attestations >> <</parameters.attestations>> \
              $(cat manifestid) -y
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-stop:
+            id: sign-image

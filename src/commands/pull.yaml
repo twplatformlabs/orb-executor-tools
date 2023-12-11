@@ -17,10 +17,31 @@ parameters:
     description: Value for tag
     type: string
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
 steps:
-  - run:
-      name: Pull a tagged image from the docker registry
-      command: docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
-  - run:
-      name: get image manifest id
-      command: docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: docker-pull
+        - run:
+            name: Pull a tagged image from the docker registry
+            command: buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID docker-pull -- docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+        - run:
+            name: get image manifest id
+            command: docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid
+        - trace-step-stop:
+            id: docker-pull
+  - unless:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - run:
+            name: Pull a tagged image from the docker registry
+            command: docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+        - run:
+            name: get image manifest id
+            command: docker image inspect --format='{{index .RepoDigests 0}}' << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> > manifestid

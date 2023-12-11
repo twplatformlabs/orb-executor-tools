@@ -1,6 +1,6 @@
-# src/jobs/dev-release.yaml
+# src/jobs/machine-executor-dev-release.yaml
 
-description: Machine executor version of continuous integration build and dev image release
+description: Machine executor version of continuoud integration and development build of circleci remote-docker executor.
 
 executor:
   name: machine-image

@@ -17,7 +17,22 @@ parameters:
     description: Value for tag
     type: string
 
+  honeycomb-trace:
+    description: send honeycomb buildevent trace metrics
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: docker-push
   - run:
       name: Publish a tagged image to the docker registry
       command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-stop:
+            id: docker-push

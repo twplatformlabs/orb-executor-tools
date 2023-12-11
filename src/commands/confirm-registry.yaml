@@ -35,7 +35,17 @@ parameters:
     type: boolean
     default: false
 
+  honeycomb-trace:
+    description: send honeycomb buildevent trace metrics
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: confirm-registry
   - when:
       name: Using AWS Elastic Container Registry
       condition: << parameters.aws-ecr >>
@@ -90,4 +100,8 @@ steps:
             command: |
               echo 'write to .docker/config.json is secure in ephemeral runtime environment'
               echo ${<< parameters.registry-password >>} | docker login -u ${<< parameters.registry-login >>} --password-stdin << parameters.registry >>
-  
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-stop:
+            id: confirm-registry

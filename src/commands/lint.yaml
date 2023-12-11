@@ -10,7 +10,25 @@ parameters:
     type: string
     default: Dockerfile
 
+  honeycomb-trace:
+    description: send honeycomb buildevent trace metrics
+    type: boolean
+    default: false
+
 steps:
-  - run:
-      name: hadolint Dockerfile
-      command: docker run --rm -i hadolint/hadolint < << parameters.dockerfile >>
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: lint
+        - run: 
+            name: hadolint Dockerfile with traces
+            command: buildevents cmd $CIRCLE_WORKFLOW_ID $STEP_SPAN_ID lint -- docker run --rm -i hadolint/hadolint < << parameters.dockerfile >>
+        - trace-step-stop:
+            id: lint
+  - unless:
+      condition: << parameters.honeycomb-trace >>
+      steps:  
+        - run:
+            name: hadolint Dockerfile
+            command: docker run --rm -i hadolint/hadolint < << parameters.dockerfile >>

@@ -36,10 +36,26 @@ parameters:
     type: string
     default: test
 
+  honeycomb-trace:
+    description: send buildevent trace events to honeycomb
+    type: boolean
+    default: false
+
 steps:
+  - when:
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-start:
+            id: bats-test
   - run:
       name: run image to be tested
       command: docker run -it -d --name << parameters.container-name >> --entrypoint << parameters.entry-point >> << parameters.registry >>/<< parameters.image>>:<< parameters.tag >>
   - run:
       name: run bats test
       command: bats << parameters.test-path >>
+  - when:
+      name: stop bats test span
+      condition: << parameters.honeycomb-trace >>
+      steps:
+        - trace-step-stop:
+            id: bats-test
