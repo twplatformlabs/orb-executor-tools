@@ -2,42 +2,58 @@
 # yamllint disable rule:line-length
 ---
 description: |
-  Packages command will manage directly installing any of the
-  dependent packages needed when using the machine-executor build.
+  The executor-tools orb expects a number of packages beyond those
+  that are already available on cimg:base or twdps/circleci-base-iamge.
 
-  These are packages normally managed in:
-    twdps/circleci-base-image
-    twdps/circleci-executor-builder
+  The recommended practice is to create a custom executor that already
+  has the required packages so that pipelines using the orb do not
+  need to repeatedly install the same packages over and over again.
+
+  This orb will use the twdps/circleci-executor-builder by default
+  and you can review the executor repo for an example of how to
+  manage such a custom image. You may also override the default with
+  your own custom image.
+
+  There may be situations in which you need to override the particular
+  version of the tool used by the executor-tools orb or, in the case
+  of using the optional machine-executor-dev-release or specifying
+  a generic base image such as cimg:base, a means of installing
+  all the required tools.
+
+  This command will install the specified version of a package if
+  a version is provided or do nothing if not. The executor-tools
+  jobs use the command to provide a means of overriding the
+  default action.
 
 parameters:
 
   op-version:
+    description: 1password-cli version
     type: string
-    default: 2.24.0-1
 
   teller-version:
+    description: Teller version
     type: string
-    default: 2.24.0
 
   vault-version:
+    description: Hashi Vault version
     type: string
-    default: 2.24.0
 
   conftest-version:
+    description: open-policy-agent/conftest version
     type: string
-    default: 2.24.0
 
   snyk-version:
+    description: snyk npm module version
     type: string
-    default: 2.24.0
 
   bats-version:
+    description: bats npm module version
     type: string
-    default: 2.24.0
 
   inspec-version:
+    description: Chef Inspec ruby gem version
     type: string
-    default: 2.24.0
 
 steps:
   - when:
@@ -53,3 +69,62 @@ steps:
               sudo mkdir -p /usr/share/debsig/keyrings/AC2D62742012EA22
               curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/debsig/keyrings/AC2D62742012EA22/debsig.gpg
               sudo apt update && sudo apt install 1password-cli=<< parameters.op-version >>
+              op --version
+  - when:
+      condition: << parameters.teller-version >>
+      steps:
+        - run:
+            name: install teller version  << parameters.teller-version >>
+            command: |
+              curl -L https://github.com/tellerops/teller/releases/download/v<< parameters.teller-version >>/teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz --output teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz
+              tar -xzf teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz
+              sudo mv teller /usr/local/bin/teller
+              teller version
+  - when:
+      condition: << parameters.vault-version >>
+      steps:
+        - run:
+            name: install vault version  << parameters.vault-version >>
+            command: |
+              wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
+              echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+              sudo apt update && sudo apt install vault=<< parameters.vault-version >>
+              vault version
+  - when:
+      condition: << parameters.conftest-version >>
+      steps:
+        - run:
+            name: install conftest version  << parameters.conftest-version >>
+            command: |
+              wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
+              tar xzf conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
+              sudo mv conftest /usr/local/bin
+  - when:
+      condition: << parameters.snyk-version >>
+      steps:
+        - run:
+            name: install snyk version  << parameters.snyk-version >>
+            command: |
+              npm install -g snyk@<< parameters.snyk-version >>
+              snyk version
+  - when:
+      condition: << parameters.bats-version >>
+      steps:
+        - run:
+            name: install bats version  << parameters.bats-version >>
+            command: |
+              npm install -g bats@<< parameters.bats-version >>
+              bats version
+  - when:
+      condition: << parameters.inspec-version >>
+      steps:
+        - run:
+            name: install inspec version  << parameters.inspec-version >>
+            command: |
+              sudo gem install --no-document inspec-bin:<< parameters.inspec-version >>
+              sudo mkdir -p /etc/chef/accepted_licenses
+              sudo bash -c "echo '---' > /etc/chef/accepted_licenses/inspec"
+              sudo bash -c "echo 'id: inspec' >> /etc/chef/accepted_licenses/inspec"
+              sudo bash -c "echo 'name: Chef InSpec' >> /etc/chef/accepted_licenses/inspec"
+              sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
+              sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"

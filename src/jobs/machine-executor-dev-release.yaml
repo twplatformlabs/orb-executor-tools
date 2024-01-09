@@ -28,31 +28,31 @@ parameters:
 
   op-version:
     type: string
-    #default: 2.24.0
+    default: 2.24.0-1
 
-  # teller-version:
-  #   type: string
-  #   default: 2.24.0
+  teller-version:
+    type: string
+    default: 1.5.6
 
-  # vault-version:
-  #   type: string
-  #   default: 2.24.0
+  vault-version:
+    type: string
+    default: 1.15.4
 
-  # conftest-version:
-  #   type: string
-  #   default: 2.24.0
+  conftest-version:
+    type: string
+    default: 0.48.0
 
-  # snyk-version:
-  #   type: string
-  #   default: 2.24.0
+  snyk-version:
+    type: string
+    default: 1.1268.0
 
-  # bats-version:
-  #   type: string
-  #   default: 2.24.0
+  bats-version:
+    type: string
+    default: 1.10.0
 
-  # inspec-version:
-  #   type: string
-  #   default: 2.24.0
+  inspec-version:
+    type: string
+    default: 6.6.0
 
 
   # dockerfile:
@@ -173,7 +173,14 @@ parameters:
 
 steps:
   - checkout
-  - packages
+  - packages:
+      op-version: << parameters.op-version >>
+      teller-version: << parameters.teller-version >>
+      vault-version: << parameters.vault-version >>
+      conftest-version: << parameters.conftest-version >>
+      snyk-version: << parameters.snyk-version >>
+      bats-version: << parameters.bats-version >>
+      inspec-version: << parameters.inspec-version >>
   # - lint:
   #     dockerfile: << parameters.dockerfile >>
   # - when:
