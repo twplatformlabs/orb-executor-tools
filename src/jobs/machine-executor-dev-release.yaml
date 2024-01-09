@@ -54,6 +54,9 @@ parameters:
     type: string
     default: 6.6.0
 
+  hadolint-version:
+    type: string
+    default: 2.12.0
 
   # dockerfile:
   #   description: Name of dockerfile
@@ -181,6 +184,7 @@ steps:
       snyk-version: << parameters.snyk-version >>
       bats-version: << parameters.bats-version >>
       inspec-version: << parameters.inspec-version >>
+      hadolint-version: << parameters.hadolint-version >>
   # - lint:
   #     dockerfile: << parameters.dockerfile >>
   # - when:

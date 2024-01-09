@@ -44,6 +44,7 @@ jobs:
           snyk-version: 1.1268.0
           bats-version: 1.9.0
           inspec-version: 6.6.0
+          hadolint-version: 2.12.0
       - run:
           name: confirm installed version for available packages
           command: |
@@ -55,6 +56,7 @@ jobs:
             snyk --version | grep "1.1268.0"
             bats --version | grep "1.9.0"
             inspec --version | grep "6.6.0"
+            hadolint --version | grep "2.12.0"
 
 workflows:
 

@@ -32,7 +32,7 @@ parameters:
     type: string
 
   teller-version:
-    description: Teller version
+    description: teller version
     type: string
 
   vault-version:
@@ -55,12 +55,16 @@ parameters:
     description: Chef Inspec ruby gem version
     type: string
 
+  hadolint-version:
+    description: hadolint version
+    type: string
+
 steps:
   - when:
       condition: << parameters.op-version >>
       steps:
         - run:
-            name: install 1password version  << parameters.op-version >>
+            name: install 1password version << parameters.op-version >>
             command: |
               curl -sS https://downloads.1password.com/linux/keys/1password.asc | sudo gpg --dearmor --output /usr/share/keyrings/1password-archive-keyring.gpg
               echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/1password-archive-keyring.gpg] https://downloads.1password.com/linux/debian/$(dpkg --print-architecture) stable main" | sudo tee /etc/apt/sources.list.d/1password.list
@@ -74,7 +78,7 @@ steps:
       condition: << parameters.teller-version >>
       steps:
         - run:
-            name: install teller version  << parameters.teller-version >>
+            name: install teller version << parameters.teller-version >>
             command: |
               curl -L https://github.com/tellerops/teller/releases/download/v<< parameters.teller-version >>/teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz --output teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz
               tar -xzf teller_<< parameters.teller-version >>_Linux_x86_64.tar.gz
@@ -84,7 +88,7 @@ steps:
       condition: << parameters.vault-version >>
       steps:
         - run:
-            name: install vault version  << parameters.vault-version >>
+            name: install vault version << parameters.vault-version >>
             command: |
               wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
               echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
@@ -94,7 +98,7 @@ steps:
       condition: << parameters.conftest-version >>
       steps:
         - run:
-            name: install conftest version  << parameters.conftest-version >>
+            name: install conftest version << parameters.conftest-version >>
             command: |
               wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
               tar xzf conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
@@ -104,7 +108,7 @@ steps:
       condition: << parameters.snyk-version >>
       steps:
         - run:
-            name: install snyk version  << parameters.snyk-version >>
+            name: install snyk version << parameters.snyk-version >>
             command: |
               npm install -g snyk@<< parameters.snyk-version >>
               snyk --version
@@ -112,7 +116,7 @@ steps:
       condition: << parameters.bats-version >>
       steps:
         - run:
-            name: install bats version  << parameters.bats-version >>
+            name: install bats version << parameters.bats-version >>
             command: |
               npm install -g bats@<< parameters.bats-version >>
               bats --version
@@ -120,7 +124,7 @@ steps:
       condition: << parameters.inspec-version >>
       steps:
         - run:
-            name: install inspec version  << parameters.inspec-version >>
+            name: install inspec version << parameters.inspec-version >>
             command: |
               sudo gem install --no-document inspec-bin:<< parameters.inspec-version >>
               sudo mkdir -p /etc/chef/accepted_licenses
@@ -130,3 +134,12 @@ steps:
               sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
               sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"
               inspec --version
+  - when:
+      condition: << parameters.hadolint-version >>
+      steps:
+        - run:
+            name: install hadolint version << parameters.hadolint-version >>
+            command: |
+              wget https://github.com/hadolint/hadolint/releases/download/v<< parameters.hadolint-version >>/hadolint-Linux-x86_64
+              sudo mv hadolint-Linux-x86_64 /usr/local/bin/hadolint
+              hadolint --version
