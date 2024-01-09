@@ -1,0 +1,45 @@
+---
+version: 2.1
+
+orbs:
+  executor-tools: twdps/executor-tools@dev:<<pipeline.git.revision>>
+
+globals:
+  - &context orb-publishing
+  - &orb-name twdps/executor-tools
+
+#commands:
+
+  # before-job-message:
+  #   parameters:
+  #     msg:
+  #       type: string
+  #   steps:
+  #     - run:
+  #         name: echo before-msg
+  #         command: echo "before - << parameters.msg >>"
+
+  # after-job-message:
+  #   parameters:
+  #     msg:
+  #       type: string
+  #   steps:
+  #     - run:
+  #         name: echo after-msg param
+  #         command: echo "after - << parameters.msg >>"
+
+jobs:
+
+  test packages:
+    machine:
+      image: ubuntu-2204:current
+    resource_class: large
+    steps:
+      - checkout
+      - executor-tools/packages
+
+workflows:
+
+  integration tests:
+    jobs:
+      - test packages
