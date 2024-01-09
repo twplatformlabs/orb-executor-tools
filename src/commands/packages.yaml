@@ -99,6 +99,7 @@ steps:
               wget https://github.com/open-policy-agent/conftest/releases/download/v<< parameters.conftest-version >>/conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
               tar xzf conftest_<< parameters.conftest-version >>_Linux_x86_64.tar.gz
               sudo mv conftest /usr/local/bin
+              conftest --version
   - when:
       condition: << parameters.snyk-version >>
       steps:
@@ -106,7 +107,7 @@ steps:
             name: install snyk version  << parameters.snyk-version >>
             command: |
               npm install -g snyk@<< parameters.snyk-version >>
-              snyk version
+              snyk --version
   - when:
       condition: << parameters.bats-version >>
       steps:
@@ -114,7 +115,7 @@ steps:
             name: install bats version  << parameters.bats-version >>
             command: |
               npm install -g bats@<< parameters.bats-version >>
-              bats version
+              bats --version
   - when:
       condition: << parameters.inspec-version >>
       steps:
@@ -128,3 +129,4 @@ steps:
               sudo bash -c "echo 'name: Chef InSpec' >> /etc/chef/accepted_licenses/inspec"
               sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
               sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"
+              inspec --version
