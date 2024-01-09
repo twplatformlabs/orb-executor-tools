@@ -29,12 +29,12 @@ steps:
         tar -xzf opw_Linux_x86_64.tar.gz
         sudo mv opw /usr/local/bin/opw
   - run:
-      name: install teller 
+      name: install teller
       command: |
         curl -L https://github.com/tellerops/teller/releases/download/v1.5.6/teller_1.5.6_Linux_x86_64.tar.gz --output teller_1.5.6_Linux_x86_64.tar.gz
         tar -xzf teller_1.5.6_Linux_x86_64.tar.gz
         sudo mv teller /usr/local/bin/teller
-  - run:  
+  - run:
       name: install vault
       command: |
         wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg

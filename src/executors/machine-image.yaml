@@ -1,5 +1,5 @@
 # src/executors/machine-image.yaml
-
+---
 description: Define the circleci machine vm image for a build job.
 
 parameters:
@@ -11,7 +11,7 @@ parameters:
   resource-class:
     description: specify the resouce class for the image
     type: enum
-    enum: [medium, large, xlarge, 2xlarge]
+    enum: [medium, large, xlarge, 2xlarge, 2xlarge+]
 
 machine:
     image: << parameters.image-name >>

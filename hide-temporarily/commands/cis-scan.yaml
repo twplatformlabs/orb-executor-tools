@@ -100,7 +100,7 @@ steps:
         trust_defined {
           setuid.docker_content_trust == 1
           trace("4.5 DOCKER_CONTENT_TRUST is defined")
-        } 
+        }
 
         trust_defined {
           cispolicyconfig.level_2_benchmark == false

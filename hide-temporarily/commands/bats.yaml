@@ -1,5 +1,6 @@
 # src/commands/bats.yaml
-
+# yamllint disable rule:line-length
+---
 description: |
   A common method of testing docker image configuration for infrastructure-as-code oriented containers.
   This test will first run the docker image and then execute the bats test.

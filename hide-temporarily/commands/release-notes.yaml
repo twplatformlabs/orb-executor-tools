@@ -7,7 +7,7 @@ description: |
   - expects GREN_GITHUB_TOKEN
   - use extra-release-args tp customize default behavior
   - use .grenrc to customize release behavior
-  - changelog behavior not supported 
+  - changelog behavior not supported
 
 parameters:
 

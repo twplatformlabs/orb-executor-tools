@@ -2,13 +2,14 @@
 version: 2.1
 
 description: |
-  Standard jobs for building and publishing custom circleci remote docker executor images.
+  Standard jobs for building and publishing custom circleci
+  remote docker executor images.
 
   Available options include:
 
   - override default shell options
-  - define executor to use for build, default is ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder
-  - use machine executor, installs latest release versions of build/test tools
+  - define executor to use for build, default is twdps/circleci-executor-builder
+  - available machine executor option for build
   - support for private dtr compatible registries and AWS ECR
   - support for customer dockerfile path/name, tags, tag annotations
   - snyk cve scanning
