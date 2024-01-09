@@ -13,7 +13,7 @@ parameters:
 
   op-version:
     type: string
-    default: 2.24.0
+    default: 2.24.0-1
 
   teller-version:
     type: string
