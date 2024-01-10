@@ -8,10 +8,12 @@ parameters:
     description: Name of dockerfile
     type: string
     default: Dockerfile
-  # path:
-  #   description: Path to the directory containing your Dockerfile and build context
-  #   type: string
-  #   default: .
+
+  path:
+    description: Path to the directory containing your Dockerfile
+    type: string
+    default: .
+
   additional-commands:
     description: hadolint flags
     type: string
@@ -20,4 +22,4 @@ parameters:
 steps:
   - run:
       name: hadolint Dockerfile
-      command: hadolint << parameters.additional-commands >> << parameters.dockerfile >>
+      command: hadolint << parameters.additional-commands >> << parameters.path >>/<< parameters.dockerfile >>

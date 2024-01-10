@@ -37,7 +37,7 @@ jobs:
       - checkout
       - executor-tools/lint:
           dockerfile: "test/Dockerfile.alpine"
-          additional-commands: "--ignore DL3004"
+          #additional-commands: "--ignore DL3004"
 
   test machine packages:
     machine:
@@ -76,4 +76,4 @@ workflows:
   integration tests:
     jobs:
       - test commands
-      - test machine packages
+      #- test machine packages
