@@ -11,8 +11,8 @@ parameters:
 
   additional-commands:
     description: hadolint flags
-    type: boolean
-    default: false
+    type: string
+    default: ""
 
 steps:
   - run:
