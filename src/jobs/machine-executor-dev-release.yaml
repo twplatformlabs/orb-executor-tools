@@ -95,20 +95,20 @@ parameters:
   #   type: string
   #   default: ""
 
-  # registry:
-  #   description: Name of registry
-  #   type: string
-  #   default: docker.io
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
 
-  # registry-login:
-  #   description: username for reigstry access
-  #   type: env_var_name
-  #   default: DOCKER_LOGIN
+  registry-login:
+    description: username for reigstry access
+    type: env_var_name
+    default: DOCKER_LOGIN
 
-  # registry-password:
-  #   description: password for registry access
-  #   type: env_var_name
-  #   default: DOCKER_PASSWORD
+  registry-password:
+    description: password for registry access
+    type: env_var_name
+    default: DOCKER_PASSWORD
 
   # cve-scan:
   #   description: perform snyk.io docker cve scan
@@ -172,15 +172,15 @@ parameters:
   #   type: string
   #   default: ""
 
-  # after-checkout:
-  #   description: Optional steps to run after checking out the code.
-  #   type: steps
-  #   default: []
+  after-checkout:
+    description: Optional steps to run after checking out the code.
+    type: steps
+    default: []
 
-  # before-build:
-  #   description: Optional steps to run before building the docker image.
-  #   type: steps
-  #   default: []
+  before-build:
+    description: Optional steps to run before building the docker image.
+    type: steps
+    default: []
 
   # after-build:
   #   description: Optional steps to run after building the docker image.
@@ -200,23 +200,23 @@ steps:
       hadolint-version: << parameters.hadolint-version >>
       trivy-version: << parameters.trivy-version >>
       grype-version: << parameters.grype-version >>
+  - when:
+      name: Run after-checkout lifecycle hook steps.
+      condition: << parameters.after-checkout >>
+      steps: << parameters.after-checkout >>
   - lint:
       dockerfile: << parameters.dockerfile >>
       path: << parameters.path >>
       additional-commands: << parameters.additional-commands >>
-  # - when:
-  #     name: Run after_checkout lifecycle hook steps.
-  #     condition: << parameters.after-checkout >>
-  #     steps: << parameters.after-checkout >>
-  # - confirm-registry:
-  #     registry: << parameters.registry >>
-  #     registry-login: << parameters.registry-login >>
-  #     registry-password: << parameters.registry-password >>
-  #     aws-ecr: << parameters.aws-ecr >>
-  # - when:
-  #     name: Run before_build lifecycle hook steps.
-  #     condition: << parameters.before-build >>
-  #     steps: << parameters.before-build >>
+  - confirm-registry:
+      registry: << parameters.registry >>
+      registry-login: << parameters.registry-login >>
+      registry-password: << parameters.registry-password >>
+  - when:
+      name: Run before_build lifecycle hook steps.
+      condition: << parameters.before-build >>
+      steps: << parameters.before-build >>
+
   # - build:
   #     dockerfile: << parameters.dockerfile >>
   #     path: << parameters.path >>

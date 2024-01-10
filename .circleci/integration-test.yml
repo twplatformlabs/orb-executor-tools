@@ -3,12 +3,17 @@ version: 2.1
 
 orbs:
   executor-tools: twdps/executor-tools@dev:<<pipeline.git.revision>>
+  op: twdps/onepassword@1.2.0
 
 globals:
   - &context orb-publishing
-  - &orb-name twdps/executor-tools
 
-#commands:
+commands:
+
+  set-environment:
+    steps:
+      - op/env:
+          env-file: op.env
 
   # before-job-message:
   #   parameters:
@@ -35,9 +40,11 @@ jobs:
       - image: twdps/circleci-executor-builder:alpine-stable
     steps:
       - checkout
+      - set-environment
       - executor-tools/lint:
           dockerfile: "test/Dockerfile.alpine"
-          #additional-commands: "--ignore DL3004"
+          additional-commands: "--ignore DL3004"
+      - executor-tools/confirm-registry
 
   test machine packages:
     machine:
@@ -75,5 +82,6 @@ workflows:
 
   integration tests:
     jobs:
-      - test commands
+      - test commands:
+          context: *context
       #- test machine packages
