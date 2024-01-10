@@ -240,6 +240,13 @@ steps:
             snyk-token: << parameters.snyk-token >>
             skip-base-image: << parameters.skip-base-image >>
 
+  # - when:
+  #     name: Perform trivy docker image scan
+  #     condition: << parameters.snyk-scan >>
+  #     requires:
+  #       - build
+  #     steps:
+  #       - trivy-scan:
 
   # - when:
   #     name: perform bats container configuration test

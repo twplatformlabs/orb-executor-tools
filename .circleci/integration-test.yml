@@ -46,7 +46,8 @@ jobs:
       - executor-tools/lint:
           dockerfile: test/Dockerfile.alpine
           additional-commands: "--ignore DL3004"
-      - executor-tools/confirm-registry
+      - executor-tools/confirm-registry:
+          registry: *registry
       - executor-tools/cis-scan:
           dockerfile: test/Dockerfile.alpine
       - executor-tools/build:
