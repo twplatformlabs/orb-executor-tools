@@ -101,22 +101,26 @@ parameters:
     type: boolean
     default: false
 
+  image:
+    description: Name of image
+    type: string
 
+  tag:
+    description: Value for dev build tag
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
 
+  tag-annotation:
+    description: Additional text prepended to semantic version tag
+    type: string
+    default: ""
 
-  # image:
-  #   description: Name of image
-  #   type: string
-
-  # tag:
-  #   description: Value for dev build tag
-  #   type: string
-  #   default: dev.${CIRCLE_SHA1:0:7}
-
-  # tag-annotation:
-  #   description: Additional text prepended to semantic version tag
-  #   type: string
-  #   default: ""
+  extra-build-args:
+    description: >
+      Extra flags to pass to docker build. For examples, see
+      https://docs.docker.com/engine/reference/commandline/build
+    type: string
+    default: ""
 
   # cve-scan:
   #   description: perform snyk.io docker cve scan
@@ -148,10 +152,6 @@ parameters:
   #   type: boolean
   #   default: false
 
-  # inspec-test:
-  #   description: Run container configuration check inspec test
-  #   type: boolean
-  #   default: false
 
   # container-name:
   #   description: name for running container
@@ -168,12 +168,7 @@ parameters:
   #   type: string
   #   default: test
 
-  # extra-build-args:
-  #   description: >
-  #     Extra flags to pass to docker build. For examples, see
-  #     https://docs.docker.com/engine/reference/commandline/build
-  #   type: string
-  #   default: ""
+
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -225,18 +220,13 @@ steps:
       steps:
         - cis-scan:
             dockerfile: << parameters.dockerfile >>
-
-
-
-
-
-  # - build:
-  #     dockerfile: << parameters.dockerfile >>
-  #     path: << parameters.path >>
-  #     image: << parameters.image >>
-  #     tag: << parameters.tag-annotation >><< parameters.tag >>
-  #     registry: << parameters.registry >>
-  #     extra-build-args: << parameters.extra-build-args >>
+  - build:
+      dockerfile: << parameters.dockerfile >>
+      path: << parameters.path >>
+      image: << parameters.image >>
+      tag: << parameters.tag-annotation >><< parameters.tag >>
+      registry: << parameters.registry >>
+      extra-build-args: << parameters.extra-build-args >>
 
 
   # - when:
@@ -267,19 +257,7 @@ steps:
   #           container-name: << parameters.container-name >>
   #           entry-point: << parameters.entry-point >>
   #           test-path: << parameters.test-path >>
-  # - when:
-  #     name: perform inspec container configuration test
-  #     condition: << parameters.inspec-test >>
-  #     requires:
-  #       - build
-  #     steps:
-  #       - inspec:
-  #           registry: << parameters.registry >>
-  #           image: << parameters.image >>
-  #           tag: << parameters.tag-annotation >><< parameters.tag >>
-  #           container-name: << parameters.container-name >>
-  #           entry-point: << parameters.entry-point >>
-  #           test-path: << parameters.test-path >>
+
   # - when:
   #     name: Run after_build lifecycle hook steps.
   #     condition: << parameters.after-build >>

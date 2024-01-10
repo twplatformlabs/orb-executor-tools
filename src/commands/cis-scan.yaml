@@ -204,6 +204,6 @@ steps:
         EOF
         fi
   - run:
-      name: perform cis docker benchmark assessent
+      name: perform cis docker benchmark assessment
       command: |
         conftest test << parameters.path >>/<< parameters.dockerfile >> --policy .conftest --data .conftest

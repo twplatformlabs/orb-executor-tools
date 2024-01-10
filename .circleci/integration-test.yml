@@ -49,6 +49,9 @@ jobs:
       - executor-tools/cis-scan:
           dockerfile: Dockerfile.alpine
           path: test
+      - executor-tools/build:
+          dockerfile: Dockerfile.build
+          path: test
 
   test machine packages:
     machine:
@@ -89,3 +92,4 @@ workflows:
       - test commands:
           context: *context
       #- test machine packages
+      #- executor-tools/machine-executor-dev-release.yaml
