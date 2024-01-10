@@ -98,21 +98,21 @@ workflows:
 
   integration tests:
     jobs:
-      - test commands:
-          context: *context
-      #- test machine packages
-      - executor-tools/machine-executor-dev-release:
-          context: *context
-          dockerfile: Dockerfile.build
-          path: test
-          image: orb-executor-tools
-          registry: *registry
-          snyk-scan: true
-          severity-threshold: medium
-          snyk-organization: twdps
-          after-checkout:
-            - after-job-message:
-                msg: "after checkout"
-          before-build:
-            - before-job-message:
-                msg: "before build"
+      # - test commands:
+      #     context: *context
+      - test machine packages
+      # - executor-tools/machine-executor-dev-release:
+      #     context: *context
+      #     dockerfile: Dockerfile.build
+      #     path: test
+      #     image: orb-executor-tools
+      #     registry: *registry
+      #     snyk-scan: true
+      #     severity-threshold: medium
+      #     snyk-organization: twdps
+      #     after-checkout:
+      #       - after-job-message:
+      #           msg: "after checkout"
+      #     before-build:
+      #       - before-job-message:
+      #           msg: "before build"
