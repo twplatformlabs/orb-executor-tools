@@ -103,8 +103,7 @@ workflows:
       # - test machine packages
       - executor-tools/machine-executor-dev-release:
           context: *context
-          dockerfile: Dockerfile.build
-          path: test
+          dockerfile: test/Dockerfile.build
           image: orb-executor-tools
           registry: *registry
           snyk-scan: true
