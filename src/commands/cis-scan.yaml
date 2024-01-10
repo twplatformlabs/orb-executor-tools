@@ -17,11 +17,6 @@ parameters:
     type: string
     default: Dockerfile
 
-  path:
-    description: Path to the directory containing your Dockerfile
-    type: string
-    default: .
-
 steps:
   - run:
       name: set executor-oriented section four cis docker benchmark
@@ -206,4 +201,4 @@ steps:
   - run:
       name: perform cis docker benchmark assessment
       command: |
-        conftest test << parameters.path >>/<< parameters.dockerfile >> --policy .conftest --data .conftest
+        conftest test << parameters.dockerfile >> --policy .conftest --data .conftest
