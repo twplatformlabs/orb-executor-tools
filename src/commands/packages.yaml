@@ -129,20 +129,6 @@ steps:
               npm install -g bats@<< parameters.bats-version >>
               bats --version
   - when:
-      condition: << parameters.inspec-version >>
-      steps:
-        - run:
-            name: install inspec version << parameters.inspec-version >>
-            command: |
-              sudo gem install --no-document inspec-bin:<< parameters.inspec-version >>
-              sudo mkdir -p /etc/chef/accepted_licenses
-              sudo bash -c "echo '---' > /etc/chef/accepted_licenses/inspec"
-              sudo bash -c "echo 'id: inspec' >> /etc/chef/accepted_licenses/inspec"
-              sudo bash -c "echo 'name: Chef InSpec' >> /etc/chef/accepted_licenses/inspec"
-              sudo bash -c "echo 'accepting_product: inspec' >> /etc/chef/accepted_licenses/inspec"
-              sudo bash -c "echo 'file_format: 1' >> /etc/chef/accepted_licenses/inspec"
-              inspec --version
-  - when:
       condition: << parameters.hadolint-version >>
       steps:
         - run:

@@ -75,7 +75,6 @@ jobs:
           conftest-version: 0.48.0
           snyk-version: 1.1268.0
           bats-version: 1.9.0
-          inspec-version: 6.6.0
           hadolint-version: 2.12.0
           trivy-version: 0.48.2
           grype-version: 0.74.0
@@ -89,7 +88,6 @@ jobs:
             conftest --version | grep "0.48.0"
             snyk --version | grep "1.1268.0"
             bats --version | grep "1.9.0"
-            inspec --version | grep "6.6.0"
             hadolint --version | grep "2.12.0"
             trivy --version | grep "0.48.2"
             grype --version | grep "0.74.0"
@@ -110,6 +108,7 @@ workflows:
           severity-threshold: medium
           snyk-organization: twdps
           after-checkout:
+            - set-environment
             - after-job-message:
                 msg: "after checkout"
           before-build:
