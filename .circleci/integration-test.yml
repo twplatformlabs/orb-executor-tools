@@ -34,6 +34,7 @@ jobs:
     docker:
       - image: twdps/circleci-executor-builder:alpine-stable
     steps:
+      - checkout
       - executor-tools/lint:
           dockerfile: "test/Dockerfile.alpine"
           additional-commands: "--ignore DL3004"

@@ -8,7 +8,10 @@ parameters:
     description: Name of dockerfile
     type: string
     default: Dockerfile
-
+  # path:
+  #   description: Path to the directory containing your Dockerfile and build context
+  #   type: string
+  #   default: .
   additional-commands:
     description: hadolint flags
     type: string

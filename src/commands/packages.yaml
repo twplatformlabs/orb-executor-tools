@@ -150,6 +150,7 @@ steps:
             command: |
               wget https://github.com/hadolint/hadolint/releases/download/v<< parameters.hadolint-version >>/hadolint-Linux-x86_64
               sudo mv hadolint-Linux-x86_64 /usr/local/bin/hadolint
+              chmod +x /usr/local/bin/hadolint
               hadolint --version
   - when:
       condition: << parameters.trivy-version >>
