@@ -202,7 +202,6 @@ steps:
       steps: << parameters.after-checkout >>
   - lint:
       dockerfile: << parameters.dockerfile >>
-      path: << parameters.path >>
       additional-commands: << parameters.additional-commands >>
   - confirm-registry:
       registry: << parameters.registry >>
