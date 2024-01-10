@@ -40,6 +40,7 @@ jobs:
       - image: twdps/circleci-executor-builder:alpine-stable
     steps:
       - checkout
+      - setup_remote_docker
       - set-environment
       - executor-tools/lint:
           dockerfile: Dockerfile.alpine
@@ -93,4 +94,8 @@ workflows:
       - test commands:
           context: *context
       #- test machine packages
-      #- executor-tools/machine-executor-dev-release.yaml
+      #- executor-tools/machine-executor-dev-release:
+          #  context: *context
+          #  dockerfile: Dockerfile.build
+          #  path: test
+          #  image:
