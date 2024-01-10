@@ -57,6 +57,7 @@ jobs:
       - executor-tools/snyk-scan:
             registry: *registry
             image: orb-executor-tools
+            tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
             severity-threshold: medium
             snyk-organization: twdps
