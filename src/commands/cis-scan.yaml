@@ -1,5 +1,6 @@
 # src/commands/cis-scan.yaml
-
+# yamllint disable rule:line-length
+---
 description: |
   CIS Docker Benchmarks v1.2.0, Section 4 Container Images and Build File Configuration.
 
@@ -16,17 +17,12 @@ parameters:
     type: string
     default: Dockerfile
 
-  honeycomb-trace:
-    description: send buildevent trace events to honeycomb
-    type: boolean
-    default: false
+  path:
+    description: Path to the directory containing your Dockerfile
+    type: string
+    default: .
 
 steps:
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - trace-step-start:
-            id: cis-scan
   - run:
       name: set executor-oriented section four cis docker benchmark
       command: |
@@ -210,9 +206,4 @@ steps:
   - run:
       name: perform cis docker benchmark assessent
       command: |
-        conftest test << parameters.dockerfile >> --policy .conftest --data .conftest
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - trace-step-stop:
-            id: cis-scan
+        conftest test << parameters.path >>/<< parameters.dockerfile >> --policy .conftest --data .conftest

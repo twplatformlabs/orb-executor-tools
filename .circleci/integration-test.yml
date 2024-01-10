@@ -42,9 +42,13 @@ jobs:
       - checkout
       - set-environment
       - executor-tools/lint:
-          dockerfile: "test/Dockerfile.alpine"
+          dockerfile: Dockerfile.alpine
+          path: test
           additional-commands: "--ignore DL3004"
       - executor-tools/confirm-registry
+      - executor-tools/cis-scan:
+          dockerfile: Dockerfile.alpine
+          path: test
 
   test machine packages:
     machine:

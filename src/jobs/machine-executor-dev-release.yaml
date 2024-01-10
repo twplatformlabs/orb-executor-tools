@@ -81,20 +81,6 @@ parameters:
     type: string
     default: .
 
-  # image:
-  #   description: Name of image
-  #   type: string
-
-  # tag:
-  #   description: Value for dev build tag
-  #   type: string
-  #   default: dev.${CIRCLE_SHA1:0:7}
-
-  # tag-annotation:
-  #   description: Additional text prepended to semantic version tag
-  #   type: string
-  #   default: ""
-
   registry:
     description: Name of registry
     type: string
@@ -109,6 +95,28 @@ parameters:
     description: password for registry access
     type: env_var_name
     default: DOCKER_PASSWORD
+
+  cis-docker-image-scan:
+    description: perform CIS Docker Benchmark section 4 scan
+    type: boolean
+    default: false
+
+
+
+
+  # image:
+  #   description: Name of image
+  #   type: string
+
+  # tag:
+  #   description: Value for dev build tag
+  #   type: string
+  #   default: dev.${CIRCLE_SHA1:0:7}
+
+  # tag-annotation:
+  #   description: Additional text prepended to semantic version tag
+  #   type: string
+  #   default: ""
 
   # cve-scan:
   #   description: perform snyk.io docker cve scan
@@ -132,11 +140,6 @@ parameters:
 
   # skip-base-image:
   #   description: optionally, skip performing cve scan of base image
-  #   type: boolean
-  #   default: false
-
-  # cis-docker-image-scan:
-  #   description: perform CIS Docker Benchmark section 4 scan
   #   type: boolean
   #   default: false
 
@@ -216,6 +219,16 @@ steps:
       name: Run before_build lifecycle hook steps.
       condition: << parameters.before-build >>
       steps: << parameters.before-build >>
+  - when:
+      name: perform CIS Docker Benchmark section 4 scan
+      condition: << parameters.cis-docker-image-scan >>
+      steps:
+        - cis-scan:
+            dockerfile: << parameters.dockerfile >>
+
+
+
+
 
   # - build:
   #     dockerfile: << parameters.dockerfile >>
@@ -224,12 +237,8 @@ steps:
   #     tag: << parameters.tag-annotation >><< parameters.tag >>
   #     registry: << parameters.registry >>
   #     extra-build-args: << parameters.extra-build-args >>
-  # - when:
-  #     name: perform CIS Docker Benchmark section 4 scan
-  #     condition: << parameters.cis-docker-image-scan >>
-  #     steps:
-  #       - cis-scan:
-  #           dockerfile: << parameters.dockerfile >>
+
+
   # - when:
   #     name: Perform snyk cve scan
   #     condition: << parameters.docker-cve-scan >>
