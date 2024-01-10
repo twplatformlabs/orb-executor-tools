@@ -59,6 +59,14 @@ parameters:
     description: hadolint version
     type: string
 
+  trivy-version:
+    description: trivy version
+    type: string
+
+  grype-version:
+    description: grype version
+    type: string
+
 steps:
   - when:
       condition: << parameters.op-version >>
@@ -143,3 +151,21 @@ steps:
               wget https://github.com/hadolint/hadolint/releases/download/v<< parameters.hadolint-version >>/hadolint-Linux-x86_64
               sudo mv hadolint-Linux-x86_64 /usr/local/bin/hadolint
               hadolint --version
+  - when:
+      condition: << parameters.trivy-version >>
+      steps:
+        - run:
+            name: install trivy version << parameters.trivy-version >>
+            command: |
+              curl -LO https://github.com/aquasecurity/trivy/releases/download/v<< parameters.trivy-version >>/trivy_<< parameters.trivy-version >>_Linux-64bit.tar.gz
+              tar xzf trivy_<< parameters.trivy-version >>_Linux-64bit.tar.gz trivy
+              sudo mv trivy /usr/local/bin && rm trivy_<< parameters.trivy-version >>_Linux-64bit.tar.gz
+  - when:
+      condition: << parameters.grype-version >>
+      steps:
+        - run:
+            name: install grype version << parameters.grype-version >>
+            command: |
+              curl -LO https://github.com/anchore/grype/releases/download/v<< parameters.grype-version >>/grype_<< parameters.grype-version >>_linux_amd64.tar.gz && \
+              tar xzf grype_<< parameters.grype-version >>_linux_amd64.tar.gz grype && \
+              sudo mv grype /usr/local/bin && rm grype_<< parameters.grype-version >>_linux_amd64.tar.gz

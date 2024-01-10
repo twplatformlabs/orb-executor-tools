@@ -1,0 +1,20 @@
+# src/commands/lint.yaml
+---
+description: Run Hadolint against Dockerfile.
+
+parameters:
+
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
+
+  additional-commands:
+    description: hadolint flags
+    type: boolean
+    default: false
+
+steps:
+  - run:
+      name: hadolint Dockerfile
+      command: hadolint << parameters.additional-commands >> << parameters.dockerfile >>
