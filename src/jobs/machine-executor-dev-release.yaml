@@ -73,8 +73,8 @@ parameters:
 
   additional-commands:
     description: hadolint flags
-    type: boolean
-    default: false
+    type: string
+    default: ""
 
   # path:
   #   description: Path to the directory containing your Dockerfile and build context
