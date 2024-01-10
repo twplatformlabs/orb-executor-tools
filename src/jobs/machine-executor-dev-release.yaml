@@ -36,7 +36,7 @@ parameters:
 
   vault-version:
     type: string
-    default: 1.15.4
+    default: 1.15.4-1
 
   conftest-version:
     type: string
