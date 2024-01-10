@@ -16,23 +16,23 @@ commands:
       - op/env:
           env-file: op.env
 
-  # before-job-message:
-  #   parameters:
-  #     msg:
-  #       type: string
-  #   steps:
-  #     - run:
-  #         name: echo before-msg
-  #         command: echo "before - << parameters.msg >>"
+  before-job-message:
+    parameters:
+      msg:
+        type: string
+    steps:
+      - run:
+          name: echo before-msg
+          command: echo "before - << parameters.msg >>"
 
-  # after-job-message:
-  #   parameters:
-  #     msg:
-  #       type: string
-  #   steps:
-  #     - run:
-  #         name: echo after-msg param
-  #         command: echo "after - << parameters.msg >>"
+  after-job-message:
+    parameters:
+      msg:
+        type: string
+    steps:
+      - run:
+          name: echo after-msg param
+          command: echo "after - << parameters.msg >>"
 
 jobs:
 
@@ -101,12 +101,18 @@ workflows:
       - test commands:
           context: *context
       #- test machine packages
-      #- executor-tools/machine-executor-dev-release:
-          #  context: *context
-          #  dockerfile: Dockerfile.build
-          #  path: test
-          #  image: orb-executor-tools
-          #  registry: *registry
-          #  snyk-scan: true
-          #  severity-threshold: medium
-          #  snyk-organization: twdps
+      - executor-tools/machine-executor-dev-release:
+          context: *context
+          dockerfile: Dockerfile.build
+          path: test
+          image: orb-executor-tools
+          registry: *registry
+          snyk-scan: true
+          severity-threshold: medium
+          snyk-organization: twdps
+          after-checkout:
+            - after-job-message:
+                msg: "after checkout"
+          before-build:
+            - before-job-message:
+                msg: "before build"
