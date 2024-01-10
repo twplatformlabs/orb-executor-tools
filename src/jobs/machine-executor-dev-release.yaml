@@ -122,30 +122,30 @@ parameters:
     type: string
     default: ""
 
-  # cve-scan:
-  #   description: perform snyk.io docker cve scan
-  #   type: boolean
-  #   default: false
+  snyk-scan:
+    description: perform snyk.io docker cve scan
+    type: boolean
+    default: false
 
-  # severity-threshold:
-  #   description: snyk test reporting threshold
-  #   type: string
-  #   default: "low"
+  severity-threshold:
+    description: snyk test reporting threshold
+    type: string
+    default: "low"
 
-  # snyk-organization:
-  #   description: Trigger Scan results related to repository associated with organization created at snyk.io
-  #   type: string
-  #   default: ""
+  snyk-organization:
+    description: organization registered with snyk.io
+    type: string
+    default: ""
 
-  # snyk-token:
-  #   description: snyk.io api-token
-  #   type: env_var_name
-  #   default: SNYK_TOKEN
+  snyk-token:
+    description: snyk.io api-token
+    type: env_var_name
+    default: SNYK_TOKEN
 
-  # skip-base-image:
-  #   description: optionally, skip performing cve scan of base image
-  #   type: boolean
-  #   default: false
+  skip-base-image:
+    description: optionally, skip performing cve scan of base image
+    type: boolean
+    default: false
 
   # bats-test:
   #   description: Run container configuration check bats test
@@ -224,23 +224,23 @@ steps:
       tag: << parameters.tag-annotation >><< parameters.tag >>
       registry: << parameters.registry >>
       extra-build-args: << parameters.extra-build-args >>
+  - when:
+      name: Perform snyk cve scan
+      condition: << parameters.snyk-scan >>
+      requires:
+        - build
+      steps:
+        - snyk-scan:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.tag-annotation >><< parameters.tag >>
+            dockerfile: << parameters.dockerfile >>
+            severity-threshold: << parameters.severity-threshold >>
+            snyk-organization: << parameters.snyk-organization >>
+            snyk-token: << parameters.snyk-token >>
+            skip-base-image: << parameters.skip-base-image >>
 
 
-  # - when:
-  #     name: Perform snyk cve scan
-  #     condition: << parameters.docker-cve-scan >>
-  #     requires:
-  #       - build
-  #     steps:
-  #       - cve-scan:
-  #           registry: << parameters.registry >>
-  #           image: << parameters.image >>
-  #           tag: << parameters.tag-annotation >><< parameters.tag >>
-  #           dockerfile: << parameters.dockerfile >>
-  #           severity-threshold: << parameters.severity-threshold >>
-  #           snyk-organization: << parameters.snyk-organization >>
-  #           snyk-token: << parameters.snyk-token >>
-  #           skip-base-image: << parameters.skip-base-image >>
   # - when:
   #     name: perform bats container configuration test
   #     condition: << parameters.bats-test >>

@@ -1,6 +1,7 @@
 # src/commands/cve-scan.yaml
-
-description: run snyk-cli:docker tests
+# yamllint disable rule:line-length
+---
+description: run snyk-cli:docker scan
 
 parameters:
 
@@ -42,17 +43,7 @@ parameters:
     type: boolean
     default: false
 
-  honeycomb-trace:
-    description: send buildevent trace events to honeycomb
-    type: boolean
-    default: false
-
 steps:
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - trace-step-start:
-            id: cve-scan
   - run:
       name: configure snyk
       command: |
@@ -74,8 +65,3 @@ steps:
             command: |
               snyk test --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
                         --file=<< parameters.dockerfile >> --exclude-base-image-vulns --policy-path=./.snyk --severity-threshold=<< parameters.severity-threshold >>
-  - when:
-      condition: << parameters.honeycomb-trace >>
-      steps:
-        - trace-step-stop:
-            id: cve-scan

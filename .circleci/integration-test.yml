@@ -53,6 +53,12 @@ jobs:
           dockerfile: test/Dockerfile.build
           registry: *registry
           image: orb-executor-tools
+      - executor-tools/snyk-scan:
+            registry: *registry
+            image: orb-executor-tools
+            dockerfile: test/Dockerfile.build
+            severity-threshold: medium
+            snyk-organization: twdps
 
   test machine packages:
     machine:
@@ -97,4 +103,8 @@ workflows:
           #  context: *context
           #  dockerfile: Dockerfile.build
           #  path: test
-          #  image:
+          #  image: orb-executor-tools
+          #  registry: *registry
+          #  snyk-scan: true
+          #  severity-threshold: medium
+          #  snyk-organization: twdps
