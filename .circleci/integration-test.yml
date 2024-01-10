@@ -52,6 +52,7 @@ jobs:
       - executor-tools/build:
           dockerfile: Dockerfile.build
           path: test
+          image: twdps/orb-executor-tools-test-fixture
 
   test machine packages:
     machine:
