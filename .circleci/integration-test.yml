@@ -189,6 +189,13 @@ workflows:
           release-tag: stable
           # sign-image: true
           # sbom: true
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-publish:
+            - echo-message:
+                msg: "before publish"
           after-publish:
             - echo-message:
                 msg: "after publish"
