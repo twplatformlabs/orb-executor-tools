@@ -223,6 +223,7 @@ parameters:
 
 steps:
   - checkout
+  - setup_remote_docker
   - packages:
       op-version: << parameters.op-version >>
       teller-version: << parameters.teller-version >>
