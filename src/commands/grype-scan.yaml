@@ -38,6 +38,6 @@ steps:
   - run:
       name: grype image scan
       command: |
-        grype image --fail-on << parameters.grype-severity >> \
-                    <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
-                    << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+        grype --fail-on << parameters.grype-severity >> \
+              <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
+              << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
