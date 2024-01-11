@@ -34,11 +34,11 @@ parameters:
   cosign-passphrase:
     description: signing key passphrase
     type: env_var_name
-    default: COSIGN_PASSWORD
+    default: COSIGN_PASSPHRASE
 
 steps:
   - run:
-      name: Confirm signing parameters are set; key path, COSIGN_PASSWORD
+      name: Confirm signing parameters are set; key path, COSIGN_PASSPHRASE
       command: |
         if [ ! -f << parameters.cosign-sign-key >> ]; then
           echo "signing key not available; not able to sign image."
