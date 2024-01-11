@@ -213,6 +213,11 @@ parameters:
     type: steps
     default: []
 
+  after-push:
+    description: Optional steps to run after pushing the dev release docker image.
+    type: steps
+    default: []
+
 steps:
   - checkout
   - packages:
@@ -316,3 +321,7 @@ steps:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
+  - when:
+      name: Run after-build lifecycle hook steps.
+      condition: << parameters.after-build >>
+      steps: << parameters.after-build >>
