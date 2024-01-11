@@ -322,6 +322,6 @@ steps:
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
   - when:
-      name: Run after-build lifecycle hook steps.
-      condition: << parameters.after-build >>
-      steps: << parameters.after-build >>
+      name: Run after-push lifecycle hook steps.
+      condition: << parameters.after-push >>
+      steps: << parameters.after-push >>
