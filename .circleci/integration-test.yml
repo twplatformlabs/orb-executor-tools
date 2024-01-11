@@ -67,7 +67,7 @@ jobs:
             image: orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             bats-run-container-name: orb-executor-tools-test
-            ebats-ntry-point: /bin/ash
+            bats-entry-point: /bin/ash
             bats-test-path: test/circleci_remote_docker_alpine.bats
 
   test machine packages:
