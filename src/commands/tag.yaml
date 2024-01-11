@@ -24,5 +24,4 @@ parameters:
 steps:
   - run:
       name: tag an existing local image with additional release tag to publish
-      command: docker tag << parameters.registry >>/<< parameters.image >>:<< parameters.current-tag >> \
-                          << parameters.registry >>/<< parameters.image >>:<< parameters.release-tag >>
+      command: docker tag << parameters.registry >>/<< parameters.image >>:<< parameters.current-tag >> << parameters.registry >>/<< parameters.image >>:<< parameters.release-tag >>
