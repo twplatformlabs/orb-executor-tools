@@ -188,7 +188,7 @@ workflows:
           version-tag: "0.0.0"
           tag-annotation: alpine-
           release-tag: stable
-          # sign-image: true
+          sign-image: true
           # sbom: true
           after-checkout:
             - set-environment
@@ -197,13 +197,13 @@ workflows:
           before-publish:
             - echo-message:
                 msg: "before publish"
+            - run:
+                name: setup cosign keys
+                command: |
+                  op inject -i cosign.key.env -o cosign.key
+                  op inject -i cosign.pub.env -o cosign.pub
           after-publish:
             - echo-message:
                 msg: "after publish"
-            # - run:
-            #     name: setup cosign keys
-            #     command: |
-            #       op inject -i cosign.key.env -o cosign.key
-            #       op inject -i cosign.pub.env -o cosign.pub
           requires:
             - test dev release

@@ -2,3 +2,9 @@
 .idea
 .python-version
 .venv
+policy.rego
+cosign.asc
+cosign.key
+*.asc
+*.pem
+Pipfile.lock

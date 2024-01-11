@@ -93,6 +93,26 @@ parameters:
     type: boolean
     default: false
 
+  cosign-attestations:
+    description: attestations to include in signature
+    type: string
+    default: ""
+
+  cosign-sign-key:
+    description: path to private key used to sign image
+    type: string
+    default: cosign.key
+
+  cosign-verify-key:
+    description: path to public key used to verify signature
+    type: string
+    default: cosign.pub
+
+  cosign-passphrase:
+    description: signing key passphrase
+    type: env_var_name
+    default: COSIGN_PASSWORD
+
   sbom:
     description: include a software bill of materials with the signature
     type: boolean
@@ -102,26 +122,6 @@ parameters:
     description: name of generate sbom file
     type: string
     default: sbom.spdx
-
-  attestations:
-    description: attestations to include in signature
-    type: string
-    default: ""
-
-  sign-key:
-    description: path to private key used to sign image
-    type: string
-    default: cosign.key
-
-  verify-key:
-    description: path to public key used to verify signature
-    type: string
-    default: cosign.pub
-
-  cosign-password:
-    description: signing key passphrase
-    type: env_var_name
-    default: COSIGN_PASSWORD
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -183,8 +183,6 @@ steps:
       name: Run after-publish lifecycle hook steps.
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
-
-
   # - when:
   #     name: Sign image using cosign
   #     condition: << parameters.sign-image >>
@@ -197,6 +195,9 @@ steps:
   #           sign-key: << parameters.sign-key >>
   #           verify-key: << parameters.verify-key >>
   #           cosign-password: << parameters.cosign-password >>
+
+
+
   # - when:
   #     name: generate sbom using syft
   #     condition: << parameters.sbom >>
