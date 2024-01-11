@@ -183,20 +183,18 @@ steps:
       name: Run after-publish lifecycle hook steps.
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
-  # - when:
-  #     name: Sign image using cosign
-  #     condition: << parameters.sign-image >>
-  #     steps:
-  #       - sign:
-  #           registry: << parameters.registry >>
-  #           image: << parameters.image >>
-  #           tag: << parameters.release-tag >>
-  #           attestations: << parameters.attestations >>
-  #           sign-key: << parameters.sign-key >>
-  #           verify-key: << parameters.verify-key >>
-  #           cosign-password: << parameters.cosign-password >>
-
-
+  - when:
+      name: Sign image using cosign
+      condition: << parameters.sign-image >>
+      steps:
+        - sign:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+            cosign-attestations: << parameters.cosign-attestations >>
+            cosign-sign-key: << parameters.cosign-sign-key >>
+            cosign-verify-key: << parameters.cosign-verify-key >>
+            cosign-passphrase: << parameters.cosign-passphrase >>
 
   # - when:
   #     name: generate sbom using syft
