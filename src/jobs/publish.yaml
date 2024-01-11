@@ -1,13 +1,13 @@
 # src/jobs/publish.yaml
-
+---
 description: Tag and publish a release version
 
 executor:
   name: circleci-executor-builder
   image: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
-  username: << parameters.executor-registry-username >>
-  password: << parameters.executor-registry-password >>
+  registry-login: << parameters.registry-login >>
+  registry-password: << parameters.registry-password >>
 
 shell: << parameters.shell >>
 
@@ -23,12 +23,12 @@ parameters:
     type: string
     default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
-  executor-registry-username:
+  registry-login:
     description: Environment variable to reference as username for the registry specified by executor-image-name parameter
     type: env_var_name
     default: DOCKER_LOGIN
 
-  executor-registry-password:
+  registry-password:
     description: Environment variable to reference as password for the registry specified by executor-image parameter
     type: env_var_name
     default: DOCKER_PASSWORD
@@ -36,7 +36,7 @@ parameters:
   executor-resource-class:
     description: specify executor resource class. Default is medium.
     type: enum
-    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   registry:
@@ -61,22 +61,7 @@ parameters:
   release-tag:
     description: Value for an additional release tag.
     type: string
-    default: latest
-
-  registry-login:
-    description: Environment variable to reference as username for publishing images to registry defined by the registry parameter
-    type: env_var_name
-    default: DOCKER_LOGIN
-
-  registry-password:
-    description: Environment variable to reference as password for publishing images to registry specified by the registry parameter
-    type: env_var_name
-    default: DOCKER_PASSWORD
-
-  aws-ecr:
-    description: use aws elastic container registry
-    type: boolean
-    default: false
+    default: ""
 
   on-tag:
     description: generate release notes based on changes between last ne previous tag
@@ -138,6 +123,11 @@ parameters:
     type: steps
     default: []
 
+  before-publish:
+    description: Optional steps to run before publishing the docker image.
+    type: steps
+    default: []
+
   after-publish:
     description: Optional steps to run after publishing the docker image.
     type: steps
@@ -145,17 +135,15 @@ parameters:
 
 steps:
   - checkout
-
   - setup_remote_docker
   - when:
-      name: Run after_checkout lifecycle hook steps.
+      name: Run after-checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>
       steps: << parameters.after-checkout >>
   - confirm-registry:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
-      aws-ecr: << parameters.aws-ecr >>
   - pull:
       registry: << parameters.registry >>
       image: << parameters.image >>
@@ -163,47 +151,57 @@ steps:
   - tag:
       registry: << parameters.registry >>
       image: << parameters.image >>
-      tag: << parameters.pull-tag >>
-      release: << parameters.tag-annotation >>$CIRCLE_TAG
-  - tag:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      tag: << parameters.pull-tag >>
-      release: << parameters.release-tag >>
+      current-tag: << parameters.pull-tag >>
+      release-tag: << parameters.tag-annotation >>$CIRCLE_TAG
+  - when:
+      name: tag additional release tag
+      condition: << parameters.release-tag >>
+      steps:
+        - tag:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            current-tag: << parameters.pull-tag >>
+            release-tag: << parameters.release-tag >>
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >>$CIRCLE_TAG
-  - push:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      tag: << parameters.release-tag >>
   - when:
-      name: Run after_publish lifecycle hook steps.
-      condition: << parameters.after-publish >>
-      steps: << parameters.after-publish >>
-  - when:
-      name: Sign image using cosign
-      condition: << parameters.sign-image >>
+      name: push additional release tag
+      condition: << parameters.release-tag >>
       steps:
-        - sign:
+        - push:
             registry: << parameters.registry >>
             image: << parameters.image >>
             tag: << parameters.release-tag >>
-            attestations: << parameters.attestations >>
-            sign-key: << parameters.sign-key >>
-            verify-key: << parameters.verify-key >>
-            cosign-password: << parameters.cosign-password >>
   - when:
-      name: generate sbom using syft
-      condition: << parameters.sbom >>
-      steps:
-        - sbom:
-            registry: << parameters.registry >>
-            registry-login: << parameters.registry-login >>
-            registry-password: << parameters.registry-password >>
-            sbom-filename: << parameters.sbom-filename >>
-  - when:
-      name: clean up development (dev.SHA1) tags
-      condition: << parameters.clean-tags >>
-      steps: << parameters.clean-tags >>
+      name: Run after-publish lifecycle hook steps.
+      condition: << parameters.after-publish >>
+      steps: << parameters.after-publish >>
+
+
+  # - when:
+  #     name: Sign image using cosign
+  #     condition: << parameters.sign-image >>
+  #     steps:
+  #       - sign:
+  #           registry: << parameters.registry >>
+  #           image: << parameters.image >>
+  #           tag: << parameters.release-tag >>
+  #           attestations: << parameters.attestations >>
+  #           sign-key: << parameters.sign-key >>
+  #           verify-key: << parameters.verify-key >>
+  #           cosign-password: << parameters.cosign-password >>
+  # - when:
+  #     name: generate sbom using syft
+  #     condition: << parameters.sbom >>
+  #     steps:
+  #       - sbom:
+  #           registry: << parameters.registry >>
+  #           registry-login: << parameters.registry-login >>
+  #           registry-password: << parameters.registry-password >>
+  #           sbom-filename: << parameters.sbom-filename >>
+  # - when:
+  #     name: clean up development (dev.SHA1) tags
+  #     condition: << parameters.clean-tags >>
+  #     steps: << parameters.clean-tags >>
