@@ -45,7 +45,7 @@ jobs:
       - set-environment
       - executor-tools/lint:
           dockerfile: test/Dockerfile.alpine
-          additional-commands: "--ignore DL3004"
+          hadolint-additional-args: "--ignore DL3004"
       - executor-tools/confirm-registry:
           registry: *registry
       - executor-tools/cis-scan:
