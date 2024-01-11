@@ -312,8 +312,7 @@ steps:
       name: Run after-build lifecycle hook steps.
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
-
-  # - push:
-  #     registry: << parameters.registry >>
-  #     image: << parameters.image >>
-  #     tag: << parameters.tag-annotation >><< parameters.tag >>
+  - push:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag-annotation >><< parameters.tag >>

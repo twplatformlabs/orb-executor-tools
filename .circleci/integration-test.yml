@@ -108,6 +108,7 @@ workflows:
           context: *context
       - test machine packages
       - executor-tools/machine-executor-dev-release:
+          name: test machine executor dev release
           context: *context
           dockerfile: test/Dockerfile.build
           image: orb-executor-tools
