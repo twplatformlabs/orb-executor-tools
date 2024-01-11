@@ -50,13 +50,10 @@ parameters:
 
 steps:
   - run:
-      name: configure snyk
+      name: snyk cli image scan
       command: |
         snyk config set api=${<< parameters.snyk-token >>}
         snyk config set org=<< parameters.snyk-organization >>
-  - run:
-      name: snyk cli image scan
-      command: |
         snyk test <<#parameters.snyk-additional-args>><<parameters.snyk-additional-args>><</parameters.snyk-additional-args>> \
                   --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
                   -file=<< parameters.dockerfile >> \

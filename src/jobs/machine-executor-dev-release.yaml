@@ -178,28 +178,25 @@ parameters:
     type: string
     default: ""
 
+  bats-test:
+    description: Run container configuration check bats test
+    type: boolean
+    default: false
 
+  container-name:
+    description: name for running container
+    type: string
+    default: container-test
 
-  # bats-test:
-  #   description: Run container configuration check bats test
-  #   type: boolean
-  #   default: false
+  entry-point:
+    description: name of shell ( bash | ash | etc)
+    type: string
+    default: /bin/bash
 
-
-  # container-name:
-  #   description: name for running container
-  #   type: string
-  #   default: container-test
-
-  # entry-point:
-  #   description: name of shell ( bash | ash | etc)
-  #   type: string
-  #   default: /bin/bash
-
-  # test-path:
-  #   description: Name of folder with tests
-  #   type: string
-  #   default: test
+  test-path:
+    description: Name of folder with tests
+    type: string
+    default: test
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -211,10 +208,10 @@ parameters:
     type: steps
     default: []
 
-  # after-build:
-  #   description: Optional steps to run after building the docker image.
-  #   type: steps
-  #   default: []
+  after-build:
+    description: Optional steps to run after building the docker image.
+    type: steps
+    default: []
 
 steps:
   - checkout
@@ -240,7 +237,7 @@ steps:
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
   - when:
-      name: Run before_build lifecycle hook steps.
+      name: Run before-build lifecycle hook steps.
       condition: << parameters.before-build >>
       steps: << parameters.before-build >>
   - when:
@@ -298,25 +295,24 @@ steps:
             dockerfile: << parameters.dockerfile >>
             grype-severity: << parameters.grype-severity >>
             grype-additional-args: << parameters.grype-additional-args >>
+  - when:
+      name: perform bats container configuration test
+      condition: << parameters.bats-test >>
+      requires:
+        - build
+      steps:
+        - bats:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.tag-annotation >><< parameters.tag >>
+            container-name: << parameters.container-name >>
+            entry-point: << parameters.entry-point >>
+            test-path: << parameters.test-path >>
+  - when:
+      name: Run after-build lifecycle hook steps.
+      condition: << parameters.after-build >>
+      steps: << parameters.after-build >>
 
-  # - when:
-  #     name: perform bats container configuration test
-  #     condition: << parameters.bats-test >>
-  #     requires:
-  #       - build
-  #     steps:
-  #       - bats:
-  #           registry: << parameters.registry >>
-  #           image: << parameters.image >>
-  #           tag: << parameters.tag-annotation >><< parameters.tag >>
-  #           container-name: << parameters.container-name >>
-  #           entry-point: << parameters.entry-point >>
-  #           test-path: << parameters.test-path >>
-
-  # - when:
-  #     name: Run after_build lifecycle hook steps.
-  #     condition: << parameters.after-build >>
-  #     steps: << parameters.after-build >>
   # - push:
   #     registry: << parameters.registry >>
   #     image: << parameters.image >>
