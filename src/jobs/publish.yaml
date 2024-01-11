@@ -108,10 +108,10 @@ parameters:
     type: string
     default: cosign.pub
 
-  cosign-passphrase:
+  cosign-password:
     description: signing key passphrase
     type: env_var_name
-    default: COSIGN_PASSPHRASE
+    default: COSIGN_PASSWORD
 
   sbom:
     description: include a software bill of materials with the signature
@@ -194,7 +194,7 @@ steps:
             cosign-attestations: << parameters.cosign-attestations >>
             cosign-sign-key: << parameters.cosign-sign-key >>
             cosign-verify-key: << parameters.cosign-verify-key >>
-            cosign-passphrase: << parameters.cosign-passphrase >>
+            cosign-password: << parameters.cosign-password >>
 
   # - when:
   #     name: generate sbom using syft

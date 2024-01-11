@@ -31,14 +31,14 @@ parameters:
     type: string
     default: cosign.pub
 
-  cosign-passphrase:
+  cosign-password:
     description: signing key passphrase
     type: env_var_name
-    default: COSIGN_PASSPHRASE
+    default: COSIGN_PASSWORD
 
 steps:
   - run:
-      name: Confirm signing parameters are set; key path, COSIGN_PASSPHRASE
+      name: Confirm signing parameters are set; key path, COSIGN_PASSWORD
       command: |
         if [ ! -f << parameters.cosign-sign-key >> ]; then
           echo "signing key not available; not able to sign image."
@@ -50,7 +50,7 @@ steps:
           exit 1
         fi
 
-        if [ ! ${<< parameters.cosign-passphrase >>-} ]; then
+        if [ ! ${<< parameters.cosign-password >>-} ]; then
           echo "signing key passphrase is not available; not able to sign image."
           exit 1
         fi
