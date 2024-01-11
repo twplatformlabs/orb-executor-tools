@@ -33,8 +33,8 @@ parameters:
 
   cosign-passphrase:
     description: signing key passphrase
-    type: string
-    default: ${COSIGN_PASSPHRASE}
+    type: env_var_name
+    default: COSIGN_PASSPHRASE
 
 steps:
   - run:
