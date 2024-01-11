@@ -1,7 +1,7 @@
-# src/commands/trivy-scan.yaml
+# src/commands/grype-scan.yaml
 # yamllint disable rule:line-length
 ---
-description: run trivy image scan
+description: run grype image scan
 
 parameters:
 
@@ -24,21 +24,20 @@ parameters:
     type: string
     default: Dockerfile
 
-  trivy-severity:
-    description: trivy scan reporting threshold
+  grype-severity:
+    description: grype scan reporting threshold
     type: string
-    default: "LOW,MEDIUM,HIGH,CRITICAL"
+    default: "medium"
 
-  trivy-additional-args:
+  grype-additional-args:
     description: additional custom command line flags
     type: string
     default: ""
 
 steps:
   - run:
-      name: trivy image scan
+      name: grype image scan
       command: |
-        trivy image --severity << parameters.trivy-severity >> \
-                    --exit-code 1 \
-                    <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
+        grype image --fail-on << parameters.grype-severity >> \
+                    <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>

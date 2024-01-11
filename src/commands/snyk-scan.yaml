@@ -1,4 +1,4 @@
-# src/commands/cve-scan.yaml
+# src/commands/snyk-scan.yaml
 # yamllint disable rule:line-length
 ---
 description: run snyk-cli:docker scan

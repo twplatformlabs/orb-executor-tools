@@ -66,6 +66,11 @@ jobs:
             image: orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
+      - executor-tools/grype-scan:
+            registry: *registry
+            image: orb-executor-tools
+            tag: dev.${CIRCLE_SHA1:0:7}
+            dockerfile: test/Dockerfile.build
 
   test machine packages:
     machine:
@@ -101,22 +106,22 @@ workflows:
 
   integration tests:
     jobs:
-      # - test commands:
-      #     context: *context
-      # - test machine packages
-      - executor-tools/machine-executor-dev-release:
+      - test commands:
           context: *context
-          dockerfile: test/Dockerfile.build
-          image: orb-executor-tools
-          registry: *registry
-          snyk-scan: true
-          snyk-severity-threshold: medium
-          snyk-organization: twdps
-          trivy-scan: true
-          after-checkout:
-            - set-environment
-            - after-job-message:
-                msg: "after checkout"
-          before-build:
-            - before-job-message:
-                msg: "before build"
+      # - test machine packages
+      # - executor-tools/machine-executor-dev-release:
+      #     context: *context
+      #     dockerfile: test/Dockerfile.build
+      #     image: orb-executor-tools
+      #     registry: *registry
+      #     snyk-scan: true
+      #     snyk-severity-threshold: medium
+      #     snyk-organization: twdps
+      #     trivy-scan: true
+      #     after-checkout:
+      #       - set-environment
+      #       - after-job-message:
+      #           msg: "after checkout"
+      #     before-build:
+      #       - before-job-message:
+      #           msg: "before build"

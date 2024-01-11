@@ -1,4 +1,4 @@
-# src/commands/sign.yaml
+# src/commands/packages.yaml
 # yamllint disable rule:line-length
 ---
 description: |
@@ -49,10 +49,6 @@ parameters:
 
   bats-version:
     description: bats npm module version
-    type: string
-
-  inspec-version:
-    description: Chef Inspec ruby gem version
     type: string
 
   hadolint-version:
