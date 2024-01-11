@@ -6,7 +6,7 @@ executor:
   name: circleci-executor-builder
   image: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
-  registry-username: << parameters.registry-username >>
+  registry-login: << parameters.registry-login >>
   registry-password: << parameters.registry-password >>
 
 shell: << parameters.shell >>
