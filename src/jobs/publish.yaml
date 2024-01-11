@@ -58,6 +58,11 @@ parameters:
     type: string
     default: ""
 
+  version-tag:
+    description: default version release tag
+    type: string
+    default: ${CIRCLE_TAG}
+
   release-tag:
     description: Value for an additional release tag.
     type: string
@@ -152,7 +157,7 @@ steps:
       registry: << parameters.registry >>
       image: << parameters.image >>
       current-tag: << parameters.pull-tag >>
-      release-tag: << parameters.tag-annotation >>$CIRCLE_TAG
+      release-tag: << parameters.tag-annotation >><< parameters.version-tag >>
   - when:
       name: tag additional release tag
       condition: << parameters.release-tag >>
@@ -165,7 +170,7 @@ steps:
   - push:
       registry: << parameters.registry >>
       image: << parameters.image >>
-      tag: << parameters.tag-annotation >>$CIRCLE_TAG
+      tag: << parameters.tag-annotation >><< parameters.version-tag >>
   - when:
       name: push additional release tag
       condition: << parameters.release-tag >>

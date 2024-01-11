@@ -183,9 +183,10 @@ workflows:
           name: test publish
           context: *context
           registry: *registry
-          pull-tag: edge
-          tag-annotation: alpine-
           image: orb-executor-tools
+          pull-tag: edge
+          version-tag: "0.0.0"
+          tag-annotation: alpine-
           release-tag: stable
           # sign-image: true
           # sbom: true
