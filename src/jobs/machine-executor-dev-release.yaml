@@ -127,6 +127,11 @@ parameters:
     type: string
     default: "medium"
 
+  grype-additional-args:
+    description: additional custom command line flags
+    type: string
+    default: ""
+
   dockerfile:
     description: Name of dockerfile
     type: string
@@ -267,7 +272,6 @@ steps:
             snyk-token: << parameters.snyk-token >>
             snyk-skip-base-image: << parameters.snyk-skip-base-image >>
             snyk-additional-args: << parameters.snyk-additional-args >>
-
   - when:
       name: Perform trivy image scan
       condition: << parameters.trivy-scan >>
@@ -281,7 +285,19 @@ steps:
             dockerfile: << parameters.dockerfile >>
             trivy-severity: << parameters.trivy-severity >>
             trivy-additional-args: << parameters.trivy-additional-args >>
-
+  - when:
+      name: Perform grype image scan
+      condition: << parameters.grype-scan >>
+      requires:
+        - build
+      steps:
+        - grype-scan:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.tag-annotation >><< parameters.tag >>
+            dockerfile: << parameters.dockerfile >>
+            grype-severity: << parameters.grype-severity >>
+            grype-additional-args: << parameters.grype-additional-args >>
 
   # - when:
   #     name: perform bats container configuration test
