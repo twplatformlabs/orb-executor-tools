@@ -39,5 +39,6 @@ steps:
       name: trivy image scan
       command: |
         trivy image --severity << parameters.trivy-severity >> \
+                    --exit-code 1 \
                     <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
