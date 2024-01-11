@@ -24,15 +24,15 @@ parameters:
     type: string
     default: Dockerfile
 
-  # severity:
-  #   description: trivy scan reporting threshold
-  #   type: string
-  #   default: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+  trivy-severity:
+    description: trivy scan reporting threshold
+    type: string
+    default: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
 
-  # skip-base-image:
-  #   description: optionally, skip performing cve scan of base image
-  #   type: boolean
-  #   default: false
+  trivy-additional-args:
+    description: additional custom command line flags
+    type: string
+    default: ""
 
 steps:
   - run:

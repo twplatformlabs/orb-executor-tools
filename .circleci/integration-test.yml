@@ -105,7 +105,7 @@ workflows:
           image: orb-executor-tools
           registry: *registry
           snyk-scan: true
-          severity-threshold: medium
+          snyk-severity-threshold: medium
           snyk-organization: twdps
           after-checkout:
             - set-environment
