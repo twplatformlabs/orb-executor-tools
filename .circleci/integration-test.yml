@@ -16,23 +16,14 @@ commands:
       - op/env:
           env-file: op.env
 
-  before-job-message:
+  echo-message:
     parameters:
       msg:
         type: string
     steps:
       - run:
-          name: echo before-msg
-          command: echo "before - << parameters.msg >>"
-
-  after-job-message:
-    parameters:
-      msg:
-        type: string
-    steps:
-      - run:
-          name: echo after-msg param
-          command: echo "after - << parameters.msg >>"
+          name: echo msg
+          command: echo "<< parameters.msg >>"
 
 jobs:
 
@@ -75,9 +66,9 @@ jobs:
             registry: *registry
             image: orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
-            container-name: orb-executor-tools-test
-            entry-point: /bin/ash
-            test-path: test/circleci_remote_docker_alpine.bats
+            bats-run-container-name: orb-executor-tools-test
+            ebats-ntry-point: /bin/ash
+            bats-test-path: test/circleci_remote_docker_alpine.bats
 
   test machine packages:
     machine:
@@ -115,21 +106,28 @@ workflows:
     jobs:
       - test commands:
           context: *context
-      # - test machine packages
-      # - executor-tools/machine-executor-dev-release:
-      #     context: *context
-      #     dockerfile: test/Dockerfile.build
-      #     image: orb-executor-tools
-      #     registry: *registry
-      #     snyk-scan: true
-      #     snyk-severity-threshold: medium
-      #     snyk-organization: twdps
-      #     trivy-scan: true
-      #     grype-scan: true
-      #     after-checkout:
-      #       - set-environment
-      #       - after-job-message:
-      #           msg: "after checkout"
-      #     before-build:
-      #       - before-job-message:
-      #           msg: "before build"
+      - test machine packages
+      - executor-tools/machine-executor-dev-release:
+          context: *context
+          dockerfile: test/Dockerfile.build
+          image: orb-executor-tools
+          registry: *registry
+          snyk-scan: true
+          snyk-severity-threshold: medium
+          snyk-organization: twdps
+          trivy-scan: true
+          grype-scan: true
+          bats-test: true
+          bats-run-container-name: orb-executor-tools-test
+          bats-entry-point: /bin/ash
+          bats-test-path: test/circleci_remote_docker_alpine.bats
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"

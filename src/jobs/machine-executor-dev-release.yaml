@@ -183,17 +183,17 @@ parameters:
     type: boolean
     default: false
 
-  container-name:
+  bats-run-container-name:
     description: name for running container
     type: string
     default: container-test
 
-  entry-point:
+  bats-entry-point:
     description: name of shell ( bash | ash | etc)
     type: string
     default: /bin/bash
 
-  test-path:
+  bats-test-path:
     description: Name of folder with tests
     type: string
     default: test
@@ -305,9 +305,9 @@ steps:
             registry: << parameters.registry >>
             image: << parameters.image >>
             tag: << parameters.tag-annotation >><< parameters.tag >>
-            container-name: << parameters.container-name >>
-            entry-point: << parameters.entry-point >>
-            test-path: << parameters.test-path >>
+            bats-run-container-name: << parameters.bats-run-container-name >>
+            bats-entry-point: << parameters.bats-entry-point >>
+            bats-test-path: << parameters.bats-test-path >>
   - when:
       name: Run after-build lifecycle hook steps.
       condition: << parameters.after-build >>
