@@ -24,7 +24,7 @@ parameters:
     type: string
     default: Dockerfile
 
-  severity-threshold:
+  snyk-severity-threshold:
     description: snyk test reporting threshold
     type: string
     default: low
@@ -38,10 +38,15 @@ parameters:
     description: Name of snyk organization
     type: string
 
-  skip-base-image:
+  snyk-skip-base-image:
     description: optionally, skip performing cve scan of base image
     type: boolean
     default: false
+
+  snyk-additional-args:
+    description: additional custom command line flags
+    type: string
+    default: ""
 
 steps:
   - run:
@@ -49,21 +54,31 @@ steps:
       command: |
         snyk config set api=${<< parameters.snyk-token >>}
         snyk config set org=<< parameters.snyk-organization >>
-  - unless:
-      condition: << parameters.skip-base-image >>
-      steps:
-        - run:
-            name: standard snyk docker scan
-            command: |
-              pwd
-              docker images
-              snyk test --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                        --file=<< parameters.dockerfile >> --policy-path=./.snyk --severity-threshold=<< parameters.severity-threshold >>
-  - when:
-      condition: << parameters.skip-base-image >>
-      steps:
-        - run:
-            name: snyk docker scan, skipping base image
-            command: |
-              snyk test --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                        --file=<< parameters.dockerfile >> --exclude-base-image-vulns --policy-path=./.snyk --severity-threshold=<< parameters.severity-threshold >>
+  - run:
+      name: snyk cli image scan
+      command: |
+        snyk test <<#parameters.snyk-additional-args>><<parameters.snyk-additional-args>><</parameters.snyk-additional-args>> \
+                  --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+                  -file=<< parameters.dockerfile >> \
+                  --policy-path=./.snyk \
+                  --severity-threshold=<< parameters.snyk-severity-threshold >> \
+                  <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>>
+
+  # - unless:
+  #     condition: << parameters.snyk-skip-base-image >>
+  #     steps:
+  #       - run:
+  #           name: standard snyk docker scan
+  #           command: |
+  #             pwd
+  #             docker images
+  #             snyk test --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+  #                       --file=<< parameters.dockerfile >> --policy-path=./.snyk --severity-threshold=<< parameters.snyk-severity-threshold >>
+  # - when:
+  #     condition: << parameters.snyk-skip-base-image >>
+  #     steps:
+  #       - run:
+  #           name: snyk docker scan, skipping base image
+  #           command: |
+  #             snyk test --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+  #                       --file=<< parameters.dockerfile >> --exclude-base-image-vulns --policy-path=./.snyk --severity-threshold=<< parameters.snyk-severity-threshold >>

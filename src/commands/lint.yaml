@@ -9,12 +9,12 @@ parameters:
     type: string
     default: Dockerfile
 
-  additional-commands:
-    description: hadolint flags
+  hadolint-additional-args:
+    description: additional custom command line flags
     type: string
     default: ""
 
 steps:
   - run:
       name: hadolint Dockerfile
-      command: hadolint << parameters.additional-commands >> << parameters.dockerfile >>
+      command: hadolint << parameters.hadolint-additional-args >> << parameters.dockerfile >>

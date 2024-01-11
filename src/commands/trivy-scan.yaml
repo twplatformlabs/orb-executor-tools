@@ -1,0 +1,41 @@
+# src/commands/cve-scan.yaml
+# yamllint disable rule:line-length
+---
+description: run trivy image scan
+
+parameters:
+
+  registry:
+    description: Name of registry
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image
+    type: string
+
+  tag:
+    description: Value for tag
+    type: string
+    default: dev.$CIRCLE_SHA1
+
+  dockerfile:
+    description: Name of dockerfile
+    type: string
+    default: Dockerfile
+
+  # severity:
+  #   description: trivy scan reporting threshold
+  #   type: string
+  #   default: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+
+  # skip-base-image:
+  #   description: optionally, skip performing cve scan of base image
+  #   type: boolean
+  #   default: false
+
+steps:
+  - run:
+      name: configure trivy
+      command: |
+        echo "here"

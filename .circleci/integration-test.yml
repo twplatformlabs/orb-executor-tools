@@ -59,7 +59,7 @@ jobs:
             image: orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
-            severity-threshold: medium
+            snyk-severity-threshold: medium
             snyk-organization: twdps
 
   test machine packages:
@@ -96,21 +96,21 @@ workflows:
 
   integration tests:
     jobs:
-      # - test commands:
-      #     context: *context
-      # - test machine packages
-      - executor-tools/machine-executor-dev-release:
+      - test commands:
           context: *context
-          dockerfile: test/Dockerfile.build
-          image: orb-executor-tools
-          registry: *registry
-          snyk-scan: true
-          severity-threshold: medium
-          snyk-organization: twdps
-          after-checkout:
-            - set-environment
-            - after-job-message:
-                msg: "after checkout"
-          before-build:
-            - before-job-message:
-                msg: "before build"
+      # - test machine packages
+      # - executor-tools/machine-executor-dev-release:
+      #     context: *context
+      #     dockerfile: test/Dockerfile.build
+      #     image: orb-executor-tools
+      #     registry: *registry
+      #     snyk-scan: true
+      #     severity-threshold: medium
+      #     snyk-organization: twdps
+      #     after-checkout:
+      #       - set-environment
+      #       - after-job-message:
+      #           msg: "after checkout"
+      #     before-build:
+      #       - before-job-message:
+      #           msg: "before build"
