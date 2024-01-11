@@ -97,6 +97,16 @@ parameters:
     type: string
     default: 0.48.2
 
+  trivy-severity:
+    description: trivy scan reporting threshold
+    type: string
+    default: "UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL"
+
+  trivy-additional-args:
+    description: additional custom command line flags
+    type: string
+    default: ""
+
   grype-version:
     type: string
     default: 0.74.0

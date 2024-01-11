@@ -36,6 +36,8 @@ parameters:
 
 steps:
   - run:
-      name: configure trivy
+      name: trivy image scan
       command: |
-        echo "here"
+        trivy image --severity << parameters.trivy-severity >> \
+                    <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
+                    << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
