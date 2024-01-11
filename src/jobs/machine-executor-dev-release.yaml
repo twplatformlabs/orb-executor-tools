@@ -97,6 +97,11 @@ parameters:
     type: string
     default: 0.48.2
 
+  trivy-scan:
+    description: perform trivy image scan
+    type: boolean
+    default: false
+
   trivy-severity:
     description: trivy scan reporting threshold
     type: string
@@ -260,7 +265,7 @@ steps:
 
   - when:
       name: Perform trivy image scan
-      condition: << parameters.snyk-scan >>
+      condition: << parameters.trivy-scan >>
       requires:
         - build
       steps:
