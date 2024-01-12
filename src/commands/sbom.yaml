@@ -36,5 +36,5 @@ steps:
   - run:
       name: push sbom to container registry
       command: |
-        echo ${<< parameters.registry-password >>} | oras login << parameters.oras-auth-registry >> -u ${<< parameters.registry-login >>} --password-stdin
-        oras push --artifact-type 'sbom' << parameters.oras-auth-registry >>/$(cat manifestid | sed 's/<< parameters.registry >>\///g' | sed 's/:/-/g' | sed 's/@/:/g').spdx << parameters.sbom-filename >>:application/json
+        echo ${<< parameters.registry-password >>} | oras login << parameters.registry >> -u ${<< parameters.registry-login >>} --password-stdin
+        oras push --artifact-type 'sbom' << parameters.registry >>/$(cat manifestid | sed 's/<< parameters.registry >>\///g' | sed 's/:/-/g' | sed 's/@/:/g').spdx << parameters.sbom-filename >>:application/json
