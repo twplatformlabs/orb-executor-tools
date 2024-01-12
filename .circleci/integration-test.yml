@@ -152,7 +152,7 @@ workflows:
           name: test dev release
           context: *context
           dockerfile: test/Dockerfile.build
-          image: orb-executor-tools
+          image: thoughtworks-dps/orb-executor-tools
           tag: edge
           registry: *registry
           snyk-scan: true
@@ -183,7 +183,7 @@ workflows:
           name: test publish
           context: *context
           registry: *registry
-          image: orb-executor-tools
+          image: thoughtworks-dps/orb-executor-tools
           pull-tag: edge
           version-tag: "0.0.0"
           tag-annotation: alpine-
