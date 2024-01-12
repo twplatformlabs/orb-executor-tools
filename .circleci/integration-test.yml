@@ -181,7 +181,6 @@ workflows:
           release-tag: stable
           sign-image: true
           sbom: true
-          oras-auth-registry: ghcr.io
           after-checkout:
             - set-environment
             - run:
