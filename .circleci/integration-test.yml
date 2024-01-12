@@ -190,6 +190,7 @@ workflows:
           release-tag: stable
           sign-image: true
           sbom: true
+          sbom-auth-registry: ghcr.io
           after-checkout:
             - set-environment
             - run:
