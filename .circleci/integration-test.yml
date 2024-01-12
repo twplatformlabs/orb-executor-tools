@@ -116,8 +116,8 @@ workflows:
 
   integration tests:
     jobs:
-      - test commands:
-          context: *context
+      # - test commands:
+      #     context: *context
       # - test machine packages
       # - executor-tools/machine-executor-dev-release:
       #     name: test machine executor dev release
@@ -148,63 +148,63 @@ workflows:
       #       - echo-message:
       #           msg: "after push"
       #       - delete-test-package
-      # - executor-tools/dev-release:
-      #     name: test dev release
-      #     context: *context
-      #     dockerfile: test/Dockerfile.build
-      #     image: orb-executor-tools
-      #     tag: edge
-      #     registry: *registry
-      #     snyk-scan: true
-      #     snyk-severity-threshold: medium
-      #     snyk-organization: twdps
-      #     trivy-scan: true
-      #     grype-scan: true
-      #     bats-test: true
-      #     bats-run-container-name: orb-executor-tools-test
-      #     bats-entry-point: /bin/ash
-      #     bats-test-path: test/circleci_remote_docker_alpine.bats
-      #     after-checkout:
-      #       - set-environment
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-build:
-      #       - echo-message:
-      #           msg: "before build"
-      #     after-build:
-      #       - echo-message:
-      #           msg: "after build"
-      #     after-push:
-      #       - echo-message:
-      #           msg: "after push"
-      #     # requires:
-      #     #   - test machine executor dev release
-      # - executor-tools/publish:
-      #     name: test publish
-      #     context: *context
-      #     registry: *registry
-      #     image: orb-executor-tools
-      #     pull-tag: edge
-      #     version-tag: "0.0.0"
-      #     tag-annotation: alpine-
-      #     release-tag: stable
-      #     sign-image: true
-      #     sbom: true
-      #     oras-auth-registry: ghcr.io
-      #     after-checkout:
-      #       - set-environment
-      #       - run:
-      #           name: setup cosign keys
-      #           command: |
-      #             op inject -i cosign.key.env -o cosign.key
-      #             op inject -i cosign.pub.env -o cosign.pub
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-publish:
-      #       - echo-message:
-      #           msg: "before publish"
-      #     after-publish:
-      #       - echo-message:
-      #           msg: "after publish"
-      #     requires:
-      #       - test dev release
+      - executor-tools/dev-release:
+          name: test dev release
+          context: *context
+          dockerfile: test/Dockerfile.build
+          image: orb-executor-tools
+          tag: edge
+          registry: *registry
+          snyk-scan: true
+          snyk-severity-threshold: medium
+          snyk-organization: twdps
+          trivy-scan: true
+          grype-scan: true
+          bats-test: true
+          bats-run-container-name: orb-executor-tools-test
+          bats-entry-point: /bin/ash
+          bats-test-path: test/circleci_remote_docker_alpine.bats
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"
+          after-push:
+            - echo-message:
+                msg: "after push"
+          # requires:
+          #   - test machine executor dev release
+      - executor-tools/publish:
+          name: test publish
+          context: *context
+          registry: *registry
+          image: orb-executor-tools
+          pull-tag: edge
+          version-tag: "0.0.0"
+          tag-annotation: alpine-
+          release-tag: stable
+          sign-image: true
+          sbom: true
+          oras-auth-registry: ghcr.io
+          after-checkout:
+            - set-environment
+            - run:
+                name: setup cosign keys
+                command: |
+                  op inject -i cosign.key.env -o cosign.key
+                  op inject -i cosign.pub.env -o cosign.pub
+            - echo-message:
+                msg: "after checkout"
+          before-publish:
+            - echo-message:
+                msg: "before publish"
+          after-publish:
+            - echo-message:
+                msg: "after publish"
+          requires:
+            - test dev release
