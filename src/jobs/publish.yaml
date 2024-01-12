@@ -208,7 +208,7 @@ steps:
             registry: << parameters.registry >>
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
-            oras-auth-registry: << parameters.registry-password >>
+            oras-auth-registry: << parameters.oras-auth-registry >>
             sbom-filename: << parameters.sbom-filename >>
 
 
