@@ -10,32 +10,23 @@
 </div>
 <br />
 
-See [orb registry](https://circleci.com/developer/orbs/orb/twdps/executor-tools) for detailed usage examples
+See [orb registry](https://circleci.com/developer/orbs/orb/twdps/executor-tools) for detailed usage examples.  
 
-Features include:
+By default, executor-tools jobs use the `twdps/circleci-executor-tools` image that has all the necessary tools supported by the orb pre-installed.  
 
-- hadolint scan of Dockerfile
-- available cve scan using Snyk
-- available CIS Docker Benchmark, Section 4, assessment using openpolicyagent-based scan
-- support for both bats and inspec based container configuration testing
-- uses a dedicated `executor-builder` image that has all the necessary tools supported by the orb pre-installed
-- machine executor can be specified as build environment
-- automated github release via github-release-notes  
-- override default shell options
-- define executor to use for build, default is ghcr.io/thoughtworks-dps/twdps/circleci-executor-builder
-- use machine executor, installs latest release versions of build/test tools
-- support for private dtr compatible registries and AWS ECR
-- support for customer dockerfile path/name, tags, tag annotations
-- hooks for extrag build args and lifecycle steps at multiple points
-- support for cosign image signing
+Feature options include:
 
-Workflows assume:
-
-* Trunk based development (TBD)
-* Versioned released are triggered/managed by tagging
+- [hadolint](https://github.com/hadolint/hadolint) scan of Dockerfile
+- available CIS Docker Benchmark, Section 4, assessment using [conftest](https://github.com/open-policy-agent/conftest) and opa [policy](CIS_BENCHMARK.md) for scan
+- runtime configuration testing using [bats](https://github.com/bats-core/bats-core)
+- [snyk](https://github.com/snyk/cli) vulnerability scan
+- aquasec/[trivy](https://github.com/aquasecurity/trivy) image scan
+- anchore/[grype](https://github.com/anchore/grype) image scane
+- image signing with sigstore/[cosign](https://github.com/sigstore/cosign)
+- sbom generation using anchore/[syft](https://github.com/anchore/syft)
+- upload sbom to container registry using [oras](https://github.com/oras-project/oras)
+- automated release notes via [github-release-notes](https://github.com/github-tools/github-release-notes)
+- support for machine executor as build environment
+- secrets management tools; [1password](https://1password.com), [teller](https://github.com/tellerops/teller), [vault](https://www.vaultproject.io)
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
-
-See [this](CIS_BENCHMARK.md) documentation for customizing the cis benchmark assessment.  
-
-cosign sign --key cosign.key --annotations sbom="$(cat sbom.b64)" $(cat manifestid) -y

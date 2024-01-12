@@ -68,11 +68,6 @@ parameters:
     type: string
     default: ""
 
-  on-tag:
-    description: generate release notes based on changes between last ne previous tag
-    type: boolean
-    default: false
-
   extra-release-args:
     description: Extra flags to pass to gren
     type: string
@@ -80,11 +75,6 @@ parameters:
 
   before-release:
     description: Optional steps to run prior to gren release.
-    type: steps
-    default: []
-
-  clean-tags:
-    description: steps to perform when cleaning up development tags
     type: steps
     default: []
 
@@ -122,6 +112,26 @@ parameters:
     description: name of generate sbom file
     type: string
     default: sbom.spdx
+
+  gren:
+    description: generate release notes
+    type: boolean
+    default: false
+
+  gren-on-tag:
+    description: generate release notes based -t CIRCLE_TAG option
+    type: boolean
+    default: false
+
+  gren-additional-args:
+    description: additional custom command line flags
+    type: string
+    default: ""
+
+  gren-before-release:
+    description: Optional steps to run prior to gren release.
+    type: steps
+    default: []
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -204,10 +214,11 @@ steps:
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
-
-
-
-  # - when:
-  #     name: clean up development (dev.SHA1) tags
-  #     condition: << parameters.clean-tags >>
-  #     steps: << parameters.clean-tags >>
+  - when:
+      name: generate release notes
+      condition: << parameters.gren >>
+      steps:
+        - release-notes:
+            gren-on-tag: << parameters.gren-on-tag >>
+            gren-additional-args: << parameters.gren-additional-args >>
+            gren-before-release: << parameters.gren-before-release >>
