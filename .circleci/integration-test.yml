@@ -7,7 +7,6 @@ orbs:
 
 globals:
   - &context orb-publishing
-  - &registry ghcr.io
 
 commands:
 
@@ -49,34 +48,28 @@ jobs:
       - executor-tools/lint:
           dockerfile: test/Dockerfile.alpine
           hadolint-additional-args: "--ignore DL3004"
-      - executor-tools/confirm-registry:
-          registry: *registry
+      - executor-tools/confirm-registry
       - executor-tools/cis-scan:
           dockerfile: test/Dockerfile.alpine
       - executor-tools/build:
           dockerfile: test/Dockerfile.build
-          registry: *registry
-          image: thoughtworks-dps/orb-executor-tools
+          image: twdps/orb-executor-tools
       - executor-tools/snyk-scan:
-            registry: *registry
-            image: thoughtworks-dps/orb-executor-tools
+            image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
             snyk-severity-threshold: medium
             snyk-organization: twdps
       - executor-tools/trivy-scan:
-            registry: *registry
-            image: thoughtworks-dps/orb-executor-tools
+            image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
       - executor-tools/grype-scan:
-            registry: *registry
-            image: thoughtworks-dps/orb-executor-tools
+            image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
       - executor-tools/bats:
-            registry: *registry
-            image: thoughtworks-dps/orb-executor-tools
+            image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             bats-run-container-name: orb-executor-tools-test
             bats-entry-point: /bin/ash
@@ -152,9 +145,8 @@ workflows:
           name: test dev release
           context: *context
           dockerfile: test/Dockerfile.build
-          image: thoughtworks-dps/orb-executor-tools
+          image: twdps/orb-executor-tools
           tag: edge
-          registry: *registry
           snyk-scan: true
           snyk-severity-threshold: medium
           snyk-organization: twdps
@@ -182,8 +174,7 @@ workflows:
       - executor-tools/publish:
           name: test publish
           context: *context
-          registry: *registry
-          image: thoughtworks-dps/orb-executor-tools
+          image: twdps/orb-executor-tools
           pull-tag: edge
           version-tag: "0.0.0"
           tag-annotation: alpine-

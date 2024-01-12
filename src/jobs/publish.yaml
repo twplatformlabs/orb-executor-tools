@@ -118,11 +118,6 @@ parameters:
     type: boolean
     default: false
 
-  oras-auth-registry:
-    description: oras
-    type: string
-    default: docker.io
-
   sbom-filename:
     description: name of generate sbom file
     type: string

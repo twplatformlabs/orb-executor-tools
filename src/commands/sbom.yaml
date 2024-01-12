@@ -9,11 +9,6 @@ parameters:
     type: string
     default: docker.io
 
-  oras-auth-registry:
-    description: oras
-    type: string
-    default: docker.io
-
   registry-login:
     description: username for reigstry access
     type: env_var_name
