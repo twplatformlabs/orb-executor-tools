@@ -195,16 +195,18 @@ steps:
             cosign-sign-key: << parameters.cosign-sign-key >>
             cosign-verify-key: << parameters.cosign-verify-key >>
             cosign-password: << parameters.cosign-password >>
+  - when:
+      name: generate sbom
+      condition: << parameters.sbom >>
+      steps:
+        - sbom:
+            registry: << parameters.registry >>
+            registry-login: << parameters.registry-login >>
+            registry-password: << parameters.registry-password >>
+            sbom-filename: << parameters.sbom-filename >>
 
-  # - when:
-  #     name: generate sbom using syft
-  #     condition: << parameters.sbom >>
-  #     steps:
-  #       - sbom:
-  #           registry: << parameters.registry >>
-  #           registry-login: << parameters.registry-login >>
-  #           registry-password: << parameters.registry-password >>
-  #           sbom-filename: << parameters.sbom-filename >>
+
+
   # - when:
   #     name: clean up development (dev.SHA1) tags
   #     condition: << parameters.clean-tags >>

@@ -189,7 +189,7 @@ workflows:
           tag-annotation: alpine-
           release-tag: stable
           sign-image: true
-          # sbom: true
+          sbom: true
           after-checkout:
             - set-environment
             - run:
