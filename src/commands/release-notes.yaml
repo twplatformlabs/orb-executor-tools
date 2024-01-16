@@ -5,7 +5,7 @@ description: |
 
   Dependencies:
   - expects GREN_GITHUB_TOKEN
-  - use extra-release-args t0 customize default behavior
+  - use gren-additional-args to customize default behavior
   - use .grenrc to customize release behavior
   - changelog behavior not supported
 

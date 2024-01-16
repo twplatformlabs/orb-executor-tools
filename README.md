@@ -30,3 +30,5 @@ Feature options include:
 - secrets management tools; [1password](https://1password.com), [teller](https://github.com/tellerops/teller), [vault](https://www.vaultproject.io)
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
+
+NOTE: v2.x.x is a breaking change. Review documentation in detail before upgrading.

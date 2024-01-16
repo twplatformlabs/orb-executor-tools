@@ -3,7 +3,7 @@ version: 2.1
 
 orbs:
   executor-tools: twdps/executor-tools@dev:<<pipeline.git.revision>>
-  op: twdps/onepassword@1.2.0
+  op: twdps/onepassword@2.0.2
 
 globals:
   - &context orb-publishing
