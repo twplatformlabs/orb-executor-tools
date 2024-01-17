@@ -260,7 +260,7 @@ steps:
       name: set org.opencontainer creation date and version labels
       condition: << parameters.opencontainer-labels >>
       steps:
-        - set-lables:
+        - set-labels:
             dockerfile: << parameters.dockerfile >>
   - build:
       dockerfile: << parameters.dockerfile >>
