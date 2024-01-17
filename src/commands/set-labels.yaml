@@ -1,0 +1,23 @@
+# src/commands/set-labels.yaml
+# yamllint disable rule:line-length
+---
+description: |
+  Set org.opencontainer date and version labels.
+
+  org.opencontainers.image.created="%Y-%m-%dT%H:%M:%SZ"
+  org.opencontainers.image.version="CIRCLE_SHA1"
+
+parameters:
+
+  dockerfile:
+    description: Target Dockerfile
+    type: string
+    default: docker.io
+
+steps:
+  - run:
+      name: sed creation date and version values in dockerfile
+      command: |
+        sed -i "s/CREATED/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" << parameters.dockerfile >>
+        sed -i "s/VERSION/${CIRCLE_SHA1}/g" << parameters.dockerfile >>
+        cat test/Dockerfile.biuld | grep ${CIRCLE_SHA1}

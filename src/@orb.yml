@@ -7,18 +7,18 @@ description: |
 
   Available options include:
 
-  - override default shell options
-  - define executor to use for build, default is twdps/circleci-executor-builder
-  - available machine executor option for build
-  - support for private dtr compatible registries and AWS ECR
+  - build and publis jobs
+  - override for build executor, default is twdps/circleci-executor-builder
+  - machine executor option for build
+  - support for private dtr compatible registries
   - support for customer dockerfile path/name, tags, tag annotations
-  - snyk cve scanning
+  - security scanning with snyk, trivy, grype
   - hadolint of dockerfile
-  - support for conftest CIS Docker benchmarks for section 4 (Docker image)
-  - support for bats and inspec image testing
+  - support for conftest-based CIS Docker benchmarks for section 4 (Docker image)
+  - support for bats-based runtime image testing
   - hooks for extrag build args and lifecycle steps at multiple points
   - support for cosign image signing
-
+  - support for sbom generation using syft
 
   NOTE: v2.x.x is a breaking change. Review documentation in detail before upgrading.
 

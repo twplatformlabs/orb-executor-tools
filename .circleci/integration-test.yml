@@ -62,6 +62,8 @@ jobs:
             bats-run-container-name: orb-executor-tools-test
             bats-entry-point: /bin/ash
             bats-test-path: test/circleci_remote_docker_alpine.bats
+      - executor-tools/set-labels:
+            dockerfile: test/Dockerfile.build
 
   test machine packages:
     machine:
