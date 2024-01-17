@@ -201,6 +201,11 @@ parameters:
     type: string
     default: ""
 
+  opencontainer-labels:
+    description: set org.opencontainer creation date and version labels
+    type: boolean
+    default: false
+
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
@@ -254,6 +259,12 @@ steps:
       condition: << parameters.cis-docker-image-scan >>
       steps:
         - cis-scan:
+            dockerfile: << parameters.dockerfile >>
+  - when:
+      name: set org.opencontainer creation date and version labels
+      condition: << parameters.opencontainer-labels >>
+      steps:
+        - set-lables:
             dockerfile: << parameters.dockerfile >>
   - build:
       dockerfile: << parameters.dockerfile >>
