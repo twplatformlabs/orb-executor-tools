@@ -20,4 +20,4 @@ steps:
       command: |
         sed -i "s/CREATED/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" << parameters.dockerfile >>
         sed -i "s/VERSION/${CIRCLE_SHA1}/g" << parameters.dockerfile >>
-        cat test/Dockerfile.biuld | grep ${CIRCLE_SHA1}
+        cat << parameters.dockerfile >> | grep ${CIRCLE_SHA1}
