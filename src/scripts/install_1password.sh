@@ -28,7 +28,7 @@ elif [[ "$OP_VERSION" == "latest-beta" ]]; then
 else
     OP_VERSION="v$OP_VERSION"
 fi
-
+echo "$OP_VERSION"
 install_op_cli
 op --version
               
