@@ -87,7 +87,7 @@ jobs:
             set -exo pipefail
             op --version | grep "2.26.0"
             teller version | grep "1.5.6"
-            vault version | grep "1.15.4"
+            vault version | grep "1.15.6"
             conftest --version | grep "0.48.0"
             snyk --version | grep "1.1268.0"
             bats --version | grep "1.10.0"
