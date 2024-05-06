@@ -7,7 +7,7 @@ description: |
 
   Available options include:
 
-  - build and publis jobs
+  - build and publish jobs
   - override for build executor, default is twdps/circleci-executor-builder
   - machine executor option for build
   - support for private dtr compatible registries
@@ -24,3 +24,4 @@ description: |
 
 display:
   source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
+  home_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
