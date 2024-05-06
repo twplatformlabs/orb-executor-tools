@@ -33,7 +33,6 @@ workflows:
           filters: *on-push-main
 
       - orb-tools/review:
-          #max_command_length: 100
           exclude: RC010
           filters: *on-push-main
 
