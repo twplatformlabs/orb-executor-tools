@@ -10,7 +10,7 @@ get_latest_cli_version() {
         conditional_path="!/beta/"
     fi
 
-    OP_VERSION="v$(curl -s $CLI_URL | awk -v RS='<h3>|</h3>' 'NR % 2 == 0 {gsub(/[[:blank:]]+/, ""); gsub(/<span[^>]*>|<\/span>|[\r\n]+/, ""); gsub(/&nbsp;.*$/, ""); if (!'"$1"' && '"$conditional_path"'){print; '"$1"'=1;}}')"
+    OP_VERSION="v$(curl -s "$CLI_URL" | awk -v RS='<h3>|</h3>' 'NR % 2 == 0 {gsub(/[[:blank:]]+/, ""); gsub(/<span[^>]*>|<\/span>|[\r\n]+/, ""); gsub(/&nbsp;.*$/, ""); if (!'"$1"' && '"$conditional_path"'){print; '"$1"'=1;}}')"
 }
 
 # Install op-cli

@@ -9,5 +9,5 @@ sudo apt update
 if [[ "$VAULT_VERSION" == "latest" ]]; then
     sudo apt install vault
 else
-    sudo apt install vault=$VAULT_VERSION
+    sudo apt install vault="$VAULT_VERSION"
 fi
