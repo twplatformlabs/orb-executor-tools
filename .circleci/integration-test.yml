@@ -71,8 +71,8 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - executor-tools/packages:
-          op-version: 2.27.0
+      - executor-tools/install:
+          op-version: 2.26.0
           teller-version: 1.5.6
           vault-version: 1.15.4
           conftest-version: 0.48.0
@@ -85,7 +85,7 @@ jobs:
           name: confirm installed version for available packages
           command: |
             set -exo pipefail
-            op --version | grep "2.27.0"
+            op --version | grep "2.26.0"
             teller version | grep "1.5.6"
             vault version | grep "1.15.4"
             conftest --version | grep "0.48.0"
@@ -101,7 +101,7 @@ jobs:
     resource_class: medium
     steps:
       - checkout
-      - executor-tools/packages:
+      - executor-tools/install:
           op-version: latest
           teller-version: latest
           vault-version: latest
