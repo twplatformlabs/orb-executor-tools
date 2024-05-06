@@ -32,5 +32,3 @@ Feature options include:
 _Incorporates concepts from circleci/docker-publish@0.1.2_
 
 NOTE: v2.x.x is a breaking change. Review documentation in detail before upgrading.
-
-release-snotes 

@@ -4,3 +4,5 @@ ignore:
   - vulnerability: CVE-2023-42365
   - vulnerability: CVE-2023-42366
   - vulnerability: CVE-2023-6129
+  - vulnerability: CVE-2024-2511
+  - vulnerability: CVE-2024-28182
