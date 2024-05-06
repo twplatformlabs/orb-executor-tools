@@ -1,0 +1,155 @@
+# src/commands/install.yaml
+# yamllint disable rule:line-length
+---
+description: |
+  The executor-tools orb expects a number of packages beyond those
+  that are already available on cimg:base or twdps/circleci-base-iamge.
+
+  The recommended practice is to create a custom executor that already
+  has the required packages so that pipelines using the orb do not
+  need to repeatedly install the same packages over and over again.
+
+  This orb will use the twdps/circleci-executor-builder by default
+  and you can review the executor repo for an example of how to
+  manage such a custom image. You may also override the default with
+  your own custom image.
+
+  There may be situations in which you need to override the particular
+  version of the tool used by the executor-tools orb or, in the case
+  of using the optional machine-executor-dev-release or specifying
+  a generic base image such as cimg:base, a means of installing
+  all the required tools.
+
+  This command will install the specified version of a package if
+  a version is provided or do nothing if not. The executor-tools
+  jobs use the command to provide a means of overriding the
+  default action.
+
+parameters:
+
+  op-version:
+    description: 1password-cli version
+    type: string
+    default: ""
+
+  teller-version:
+    description: teller version
+    type: string
+    default: ""
+
+  vault-version:
+    description: Hashi Vault version
+    type: string
+    default: ""
+
+  conftest-version:
+    description: open-policy-agent/conftest version
+    type: string
+    default: ""
+
+  snyk-version:
+    description: snyk npm module version
+    type: string
+    default: ""
+
+  bats-version:
+    description: bats npm module version
+    type: string
+    default: ""
+
+  hadolint-version:
+    description: hadolint version
+    type: string
+    default: ""
+
+  trivy-version:
+    description: trivy version
+    type: string
+    default: ""
+
+  grype-version:
+    description: grype version
+    type: string
+    default: ""
+
+steps:
+
+  - when:
+      condition: << parameters.op-version >>
+      steps:
+        - run:
+            name: install 1password-cli version << parameters.op-version >>
+            environment:
+              OP_VERSION: << parameters.op-version >>
+            command: <<include(scripts/install_1password.sh)>>
+
+  - when:
+      condition: << parameters.teller-version >>
+      steps:
+        - run:
+            name: install teller version << parameters.teller-version >>
+            environment:
+              TELLER_VERSION: << parameters.teller-version >>
+            command: <<include(scripts/install_teller.sh)>>
+
+  - when:
+      condition: << parameters.vault-version >>
+      steps:
+        - run:
+            name: install vault version << parameters.vault-version >>
+            environment:
+              VAULT_VERSION: << parameters.vault-version >>
+            command: <<include(scripts/install_vault.sh)>>
+
+  - when:
+      condition: << parameters.conftest-version >>
+      steps:
+        - run:
+            name: install conftest version << parameters.conftest-version >>
+            environment:
+              CONFTEST_VERSION: << parameters.conftest-version >>
+            command: <<include(scripts/install_conftest.sh)>>
+
+  - when:
+      condition: << parameters.snyk-version >>
+      steps:
+        - run:
+            name: install snyk version << parameters.snyk-version >>
+            environment:
+              SNYK_VERSION: << parameters.snyk-version >>
+            command: <<include(scripts/install_snyk.sh)>>
+
+  - when:
+      condition: << parameters.bats-version >>
+      steps:
+        - run:
+            name: install bats version << parameters.bats-version >>
+            environment:
+              BATS_VERSION: << parameters.bats-version >>
+            command: <<include(scripts/install_bats.sh)>>
+
+  - when:
+      condition: << parameters.hadolint-version >>
+      steps:
+        - run:
+            name: install hadolint version << parameters.hadolint-version >>
+            environment:
+              HADOLINT_VERSION: << parameters.hadolint-version >>
+            command: <<include(scripts/install_hadolint.sh)>>
+
+  - when:
+      condition: << parameters.trivy-version >>
+      steps:
+        - run:
+            name: install trivy version << parameters.trivy-version >>
+            environment:
+              TRIVY_VERSION: << parameters.trivy-version >>
+            command: <<include(scripts/install_trivy.sh)>>
+  - when:
+      condition: << parameters.grype-version >>
+      steps:
+        - run:
+            name: install grype version << parameters.grype-version >>
+            environment:
+              GRYPE_VERSION: << parameters.grype-version >>
+            command: <<include(scripts/install_grype.sh)>>
