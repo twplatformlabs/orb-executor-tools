@@ -1,4 +1,5 @@
 # src/jobs/dev-release.yaml
+# yamllint disable rule:line-length
 ---
 description: Continuous integration and development build of circleci remote-docker executor.
 
