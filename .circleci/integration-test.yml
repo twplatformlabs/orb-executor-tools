@@ -74,7 +74,7 @@ jobs:
       - executor-tools/install:
           op-version: 2.26.0
           teller-version: 1.5.6
-          vault-version: 1.15.4
+          vault-version: 1.16.2
           conftest-version: 0.48.0
           snyk-version: 1.1268.0
           bats-version: 1.10.0
