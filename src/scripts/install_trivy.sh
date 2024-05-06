@@ -12,7 +12,7 @@ install_trivy_cli() {
     echo "Installing trivy version v${TRIVY_VERSION}"
     curl -L "https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" --output "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
     sudo tar -xzf "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz" -C /usr/local/bin trivy
-    rm "trivy_${TRIVY_VERSION}__Linux-64bit.tar.gz"
+    rm "trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz"
 }
 
 if [[ "$TRIVY_VERSION" == "latest" ]]; then
