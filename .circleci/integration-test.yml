@@ -129,11 +129,11 @@ workflows:
 
   integration tests:
     jobs:
-      - test versioned machine package installs
-      - test machine package installs usinsg latest
+      # - test versioned machine package installs
+      # - test machine package installs usinsg latest
 
-      # - test commands:
-      #     context: *context
+      - test commands:
+          context: *context
 
 
 
@@ -208,6 +208,7 @@ workflows:
       #     release-tag: stable
       #     sign-image: true
       #     sbom: true
+      #     gren: true
       #     after-checkout:
       #       - set-environment
       #       - run:
