@@ -4,7 +4,7 @@ set -eo pipefail
 # if policy file does not exist, create default
 if [[ ! -f ".conftest/cis-docker-benchmark.rego" ]]; then
     mkdir -p .conftest
-    cat \<<EOF > .conftest/cis-docker-benchmark.rego
+    cat <<EOF > .conftest/cis-docker-benchmark.rego
 # conftest policy to test docker image for CIS Docker Benchmark compliance
 package main
 
@@ -159,7 +159,7 @@ fi
 # if assertions do not exit, create default
 if [[ ! -f ".conftest/cis-benchmark-policy.yaml" ]]; then
     mkdir -p .conftest
-    cat \<<EOF > .conftest/cis-benchmark-policy.yaml
+    cat <<EOF > .conftest/cis-benchmark-policy.yaml
 cispolicyconfig:
     level_2_benchmark: false
     run_as_user_required: true
