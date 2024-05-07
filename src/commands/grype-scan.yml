@@ -1,4 +1,4 @@
-# src/commands/grype-scan.yaml
+# src/commands/grype-scan.yml
 # yamllint disable rule:line-length
 ---
 description: run grype image scan

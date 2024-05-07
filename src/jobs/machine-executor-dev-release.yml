@@ -1,15 +1,12 @@
-# src/jobs/dev-release.yaml
+# src/jobs/machine-executor-dev-release.yml
 # yamllint disable rule:line-length
 ---
-description: Continuous integration and development build of circleci remote-docker executor.
+description: Machine executor version of continuoud integration and development build of circleci remote-docker executor.
 
 executor:
-  name: circleci-executor-builder
-  image: << parameters.executor-image-name >>
+  name: machine-image
+  image-name: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
-  registry-login: << parameters.registry-login >>
-  registry-password: << parameters.registry-password >>
-
 shell: << parameters.shell >>
 
 parameters:
@@ -20,9 +17,9 @@ parameters:
     default: /bin/bash -eo pipefail
 
   executor-image-name:
-    description: specify docker executor image
+    description: specify machine executor
     type: string
-    default: twdps/circleci-executor-builder:alpine-stable
+    default: ubuntu-2204:current
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -32,19 +29,19 @@ parameters:
 
   op-version:
     type: string
-    default: ""
+    default: latest
 
   teller-version:
     type: string
-    default: ""
+    default: latest
 
   vault-version:
     type: string
-    default: ""
+    default: latest
 
   conftest-version:
     type: string
-    default: ""
+    default: latest
 
   cis-docker-image-scan:
     description: perform CIS Docker Benchmark section 4 scan
@@ -53,7 +50,7 @@ parameters:
 
   snyk-version:
     type: string
-    default: ""
+    default: latest
 
   snyk-scan:
     description: perform snyk.io docker cve scan
@@ -87,7 +84,7 @@ parameters:
 
   bats-version:
     type: string
-    default: ""
+    default: latest
 
   bats-test:
     description: Run container configuration check bats test
@@ -111,7 +108,7 @@ parameters:
 
   hadolint-version:
     type: string
-    default: ""
+    default: latest
 
   hadolint-additional-args:
     description: additional custom command line flags
@@ -120,7 +117,7 @@ parameters:
 
   trivy-version:
     type: string
-    default: ""
+    default: latest
 
   trivy-scan:
     description: perform trivy image scan
@@ -139,7 +136,7 @@ parameters:
 
   grype-version:
     type: string
-    default: ""
+    default: latest
 
   grype-scan:
     description: perform grype image scan
@@ -229,8 +226,7 @@ parameters:
 
 steps:
   - checkout
-  - setup_remote_docker
-  - packages:
+  - install:
       op-version: << parameters.op-version >>
       teller-version: << parameters.teller-version >>
       vault-version: << parameters.vault-version >>

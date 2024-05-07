@@ -1,4 +1,4 @@
-# src/executors/machine-image.yaml
+# src/executors/machine-image.yml
 ---
 description: Define the circleci machine vm image for a build job.
 

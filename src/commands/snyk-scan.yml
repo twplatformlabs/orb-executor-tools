@@ -1,4 +1,4 @@
-# src/commands/snyk-scan.yaml
+# src/commands/snyk-scan.yml
 # yamllint disable rule:line-length
 ---
 description: run snyk-cli:docker scan

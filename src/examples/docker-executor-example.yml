@@ -1,23 +1,25 @@
-# src/examples/standard-workflow.yaml
-
+# src/examples/docker-executor-example.yaml
+# yamllint disable rule:line-length
+---
 description: |
-  Standard workflow demonstrating use of commonly used features.
+  Standard remote-docker workflow demonstrating use of common features.
 
   - Git push on trunk triggers dev-build, git tag for release
   - executor 'shell' command
+  - opencontainer.labels updated with date and build info before image build
   - builds Dockerfile
   - development builds are tagged with 'edge'
   - release builds include image tagged with 'latest'
   - docker.io credentials are set with the default ENV variables
-  - conftest used to perform cis docker benchmark section 4 tests
-  - snyk used to perform scan for cve 
+  - snyk used to perform scan for cve
   - bats used to test image configuration, --entrypoint specified as 'ash' to support alpine
 
 usage:
   version: 2.1
 
   orbs:
-    executor-tools: twdps/executor-tools@0.1.0
+    executor-tools: twdps/executor-tools@3.0.0
+    op: twdps/onepassword@3.0.0
 
   on-push-main: &on-push-main
     branches:
@@ -42,12 +44,15 @@ usage:
             context: team-context
             image: org/image-name
             tag: edge
-            cis-docker-image-scan: true
-            docker-cve-scan: true
-            snyk-organization: org-name
+            snyk-scan: true
+            snyk-severity-threshold: high
+            snyk-organization: my-org
+            snyk-skip-base-image: true
             bats-test: true
-            entry-point: /bin/ash
-            container-name: run-docker-alpine-image
+            bats-run-container-name: run-docker-alpine-image
+            bats-entry-point: /bin/ash
+            bats-test-path: test
+            opencontainer-labels: true
             filters: *on-push-main
 
         - executor-tools/publish:

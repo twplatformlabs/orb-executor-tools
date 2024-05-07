@@ -1,4 +1,4 @@
-# src/commands/bats.yaml
+# src/commands/bats.yml
 # yamllint disable rule:line-length
 ---
 description: |

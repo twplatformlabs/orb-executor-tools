@@ -1,11 +1,15 @@
-# src/jobs/machine-executor-dev-release.yaml
+# src/jobs/dev-release.yml
+# yamllint disable rule:line-length
 ---
-description: Machine executor version of continuoud integration and development build of circleci remote-docker executor.
+description: Continuous integration and development build of circleci remote-docker executor.
 
 executor:
-  name: machine-image
-  image-name: << parameters.executor-image-name >>
+  name: circleci-executor-builder
+  image: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
+  registry-login: << parameters.registry-login >>
+  registry-password: << parameters.registry-password >>
+
 shell: << parameters.shell >>
 
 parameters:
@@ -16,9 +20,9 @@ parameters:
     default: /bin/bash -eo pipefail
 
   executor-image-name:
-    description: specify machine executor
+    description: specify docker executor image
     type: string
-    default: ubuntu-2204:2023.10.1 # last update: 01-09-2024
+    default: twdps/circleci-executor-builder:alpine-stable
 
   executor-resource-class:
     description: specify executor resource class. Default is medium.
@@ -28,19 +32,19 @@ parameters:
 
   op-version:
     type: string
-    default: 2.24.0-1
+    default: ""
 
   teller-version:
     type: string
-    default: 1.5.6
+    default: ""
 
   vault-version:
     type: string
-    default: 1.15.4-1
+    default: ""
 
   conftest-version:
     type: string
-    default: 0.48.0
+    default: ""
 
   cis-docker-image-scan:
     description: perform CIS Docker Benchmark section 4 scan
@@ -49,7 +53,7 @@ parameters:
 
   snyk-version:
     type: string
-    default: 1.1268.0
+    default: ""
 
   snyk-scan:
     description: perform snyk.io docker cve scan
@@ -83,7 +87,7 @@ parameters:
 
   bats-version:
     type: string
-    default: 1.10.0
+    default: ""
 
   bats-test:
     description: Run container configuration check bats test
@@ -107,7 +111,7 @@ parameters:
 
   hadolint-version:
     type: string
-    default: 2.12.0
+    default: ""
 
   hadolint-additional-args:
     description: additional custom command line flags
@@ -116,7 +120,7 @@ parameters:
 
   trivy-version:
     type: string
-    default: 0.48.2
+    default: ""
 
   trivy-scan:
     description: perform trivy image scan
@@ -135,7 +139,7 @@ parameters:
 
   grype-version:
     type: string
-    default: 0.74.0
+    default: ""
 
   grype-scan:
     description: perform grype image scan
@@ -225,7 +229,8 @@ parameters:
 
 steps:
   - checkout
-  - packages:
+  - setup_remote_docker
+  - install:
       op-version: << parameters.op-version >>
       teller-version: << parameters.teller-version >>
       vault-version: << parameters.vault-version >>

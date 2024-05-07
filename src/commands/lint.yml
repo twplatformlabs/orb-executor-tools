@@ -1,4 +1,5 @@
-# src/commands/lint.yaml
+# src/commands/lint.yml
+# yamllint disable rule:line-length
 ---
 description: Run Hadolint against Dockerfile.
 

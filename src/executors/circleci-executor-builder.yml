@@ -1,4 +1,4 @@
-# src/executors/circleci-base-image.yaml
+# src/executors/circleci-executor-builder.yml
 ---
 description: >
   By default, orb-executor-tools uses the alpine based dps circleci-executor-builder

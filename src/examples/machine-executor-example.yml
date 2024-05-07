@@ -1,23 +1,26 @@
-# src/examples/standard-workflow.yaml
-
+# src/examples/machine-executor-example.yaml
+# yamllint disable rule:line-length
+---
 description: |
-  Standard workflow demonstrating use of commonly used features.
+  Standard machine executor workflow demonstrating use of common features.
 
   - Git push on trunk triggers dev-build, git tag for release
-  - executor 'shell' command
   - builds Dockerfile
   - development builds are tagged with 'edge'
   - release builds include image tagged with 'latest'
   - docker.io credentials are set with the default ENV variables
   - conftest used to perform cis docker benchmark section 4 tests
-  - snyk used to perform scan for cve 
+  - trivy used to perform scan for cve 
   - bats used to test image configuration, --entrypoint specified as 'ash' to support alpine
+  - installs all tools onto machine executor
+  - uses before-build, before-publish step parameters to configure env vars
 
 usage:
   version: 2.1
 
   orbs:
-    executor-tools: twdps/executor-tools@0.1.0
+    executor-tools: twdps/executor-tools@3.0.0
+    op: twdps/onepassword@3.0.0
 
   on-push-main: &on-push-main
     branches:
@@ -34,20 +37,20 @@ usage:
   workflows:
     version: 2
 
-    circleci-docker-executor-build-pipeline:
+    circleci-machine-executor-build-pipeline:
       jobs:
-        - executor-tools/dev-release:
-            shell: op run -- /bin/sh -eo pipefail
+        - executor-tools/machine-executor-dev-release:
             name: dev-build
             context: team-context
             image: org/image-name
             tag: edge
             cis-docker-image-scan: true
-            docker-cve-scan: true
-            snyk-organization: org-name
+            trivy-scan: true
             bats-test: true
             entry-point: /bin/ash
             container-name: run-docker-alpine-image
+            before-build:
+              - op/env
             filters: *on-push-main
 
         - executor-tools/publish:
@@ -58,4 +61,6 @@ usage:
             image: org/image-name
             release-tag: latest
             release-notes: true
+            before-publish:
+              - op/env
             filters: *on-tag-main

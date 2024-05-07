@@ -1,4 +1,4 @@
-# src/commands/set-labels.yaml
+# src/commands/set-labels.yml
 # yamllint disable rule:line-length
 ---
 description: |

@@ -1,4 +1,4 @@
-# src/commands/install.yaml
+# src/commands/install.yml
 # yamllint disable rule:line-length
 ---
 description: |

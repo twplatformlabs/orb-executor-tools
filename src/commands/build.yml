@@ -1,4 +1,4 @@
-# src/commands/build.yaml
+# src/commands/build.yml
 # yamllint disable rule:line-length
 ---
 description: Build executor Docker image.

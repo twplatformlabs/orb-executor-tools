@@ -1,4 +1,4 @@
-# src/commands/trivy-scan.yaml
+# src/commands/trivy-scan.yml
 # yamllint disable rule:line-length
 ---
 description: run trivy image scan

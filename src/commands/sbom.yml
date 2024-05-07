@@ -1,6 +1,8 @@
-# src/commands/sbom.yaml
+# src/commands/sbom.yml
+# yamllint disable rule:line-length
 ---
-description: generate sbom for the image and write to OCI compatible registry. Assumes manifestif is present.
+description: Use syft to generate sbom for OCI image and write to OCI compatible registry
+  using oras. Assumes manifest is present. 
 
 parameters:
 
