@@ -164,63 +164,63 @@ workflows:
             - echo-message:
                 msg: "after push"
 
-      # - executor-tools/dev-release:
-      #     name: test dev release
-      #     context: *context
-      #     dockerfile: test/Dockerfile.build
-      #     image: twdps/orb-executor-tools
-      #     tag: edge
-      #     snyk-scan: true
-      #     snyk-severity-threshold: medium
-      #     snyk-organization: twdps
-      #     trivy-scan: true
-      #     grype-scan: true
-      #     bats-test: true
-      #     bats-run-container-name: orb-executor-tools-test
-      #     bats-entry-point: /bin/ash
-      #     bats-test-path: test/circleci_remote_docker_alpine.bats
-      #     opencontainer-labels: true
-      #     after-checkout:
-      #       - set-environment
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-build:
-      #       - echo-message:
-      #           msg: "before build"
-      #     after-build:
-      #       - echo-message:
-      #           msg: "after build"
-      #     after-push:
-      #       - echo-message:
-      #           msg: "after push"
-      #     requires:
-      #       - test machine executor dev release
+      - executor-tools/dev-release:
+          name: test dev release
+          context: *context
+          dockerfile: test/Dockerfile.build
+          image: twdps/orb-executor-tools
+          tag: edge
+          snyk-scan: true
+          snyk-severity-threshold: medium
+          snyk-organization: twdps
+          trivy-scan: true
+          grype-scan: true
+          bats-test: true
+          bats-run-container-name: orb-executor-tools-test
+          bats-entry-point: /bin/ash
+          bats-test-path: test/circleci_remote_docker_alpine.bats
+          opencontainer-labels: true
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"
+          after-push:
+            - echo-message:
+                msg: "after push"
+          requires:
+            - test machine executor dev release
 
-      # - executor-tools/publish:
-      #     name: test publish
-      #     context: *context
-      #     image: twdps/orb-executor-tools
-      #     pull-tag: edge
-      #     version-tag: "0.0.0"
-      #     tag-annotation: alpine-
-      #     release-tag: stable
-      #     sign-image: true
-      #     sbom: true
-      #     gren: true
-      #     after-checkout:
-      #       - set-environment
-      #       - run:
-      #           name: setup cosign keys
-      #           command: |
-      #             op inject -i cosign.key.env -o cosign.key
-      #             op inject -i cosign.pub.env -o cosign.pub
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-publish:
-      #       - echo-message:
-      #           msg: "before publish"
-      #     after-publish:
-      #       - echo-message:
-      #           msg: "after publish"
-      #     requires:
-      #       - test dev release
+      - executor-tools/publish:
+          name: test publish
+          context: *context
+          image: twdps/orb-executor-tools
+          pull-tag: edge
+          version-tag: "0.0.0"
+          tag-annotation: alpine-
+          release-tag: stable
+          sign-image: true
+          sbom: true
+          gren: true
+          after-checkout:
+            - set-environment
+            - run:
+                name: setup cosign keys
+                command: |
+                  op inject -i cosign.key.env -o cosign.key
+                  op inject -i cosign.pub.env -o cosign.pub
+            - echo-message:
+                msg: "after checkout"
+          before-publish:
+            - echo-message:
+                msg: "before publish"
+          after-publish:
+            - echo-message:
+                msg: "after publish"
+          requires:
+            - test dev release
