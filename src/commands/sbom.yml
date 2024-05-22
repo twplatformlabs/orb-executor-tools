@@ -2,7 +2,7 @@
 # yamllint disable rule:line-length
 ---
 description: Use syft to generate sbom for OCI image and write to OCI compatible registry
-  using oras. Assumes manifest is present. 
+  using oras. Assumes manifest is present.
 
 parameters:
 
@@ -29,7 +29,8 @@ parameters:
 steps:
   - run:
       name: generate sbom
-      command: syft packages --verbose --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
+      no_output_timeout: 20m
+      command: syft --verbose --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
   - run:
       name: push sbom to container registry
       command: |
