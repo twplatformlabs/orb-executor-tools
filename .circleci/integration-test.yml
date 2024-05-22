@@ -103,7 +103,7 @@ jobs:
       - checkout
       - executor-tools/install:
           op-version: latest
-          teller-version: latest
+          teller-version: 1.5.6
           vault-version: latest
           conftest-version: latest
           snyk-version: latest
@@ -141,6 +141,7 @@ workflows:
           context: *context
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
+          teller-version: 1.5.6
           snyk-scan: true
           snyk-severity-threshold: medium
           snyk-organization: twdps
@@ -170,6 +171,7 @@ workflows:
           context: *context
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
+          teller-version: 1.5.6
           tag: edge
           snyk-scan: true
           snyk-severity-threshold: medium
