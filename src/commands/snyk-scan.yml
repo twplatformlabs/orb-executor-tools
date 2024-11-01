@@ -48,7 +48,13 @@ parameters:
     type: string
     default: ""
 
+  pipeline-nofail:
+    description: Instead of the pipeline failing, generate scan results as saved artifact
+    type: boolean
+    default: false
+
 steps:
+
   - run:
       name: snyk cli image scan
       command: |
@@ -59,4 +65,13 @@ steps:
                   -file=<< parameters.dockerfile >> \
                   --policy-path=./.snyk \
                   --severity-threshold=<< parameters.snyk-severity-threshold >> \
-                  <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>>
+                  <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>> \
+                  <<#parameters.pipeline-nofail>> > << parameters.image >>:<< parameters.tag >>_build_log.txt || true<</parameters.pipeline-nofail>>
+
+  - when:
+      name: Save build_log as artifact
+      condition: << parameters.pipeline-nofail >>
+      steps:
+        - store_artifacts:
+            path: << parameters.image >>:<< parameters.tag >>_build_log.txt
+            destination: << parameters.image >>:<< parameters.tag >>_build_log.txt
