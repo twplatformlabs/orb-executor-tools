@@ -8,19 +8,23 @@ description: |
   Available options include:
 
   - build and publish jobs
-  - override for build executor, default is twdps/circleci-executor-builder
+  - override for build executor, default is twdps/circleci-executor-builder:latest
   - machine executor option for build
   - support for private dtr compatible registries
-  - support for customer dockerfile path/name, tags, tag annotations
+  - custom dockerfile path/name, tags, tag annotations
   - security scanning with snyk, trivy, grype
   - hadolint of dockerfile
-  - support for conftest-based CIS Docker benchmarks for section 4 (Docker image)
-  - support for bats-based runtime image testing
+  - bats-based runtime image testing
   - hooks for extrag build args and lifecycle steps at multiple points
-  - support for cosign image signing
-  - support for sbom generation using syft
+  - cosign image signing
+  - sbom generation in spdx format using syft
+  - publishing of sbom to dtr compatible registry using oras
 
-  NOTE: v3.x.x is a breaking change. Review documentation in detail before upgrading.
+  NOTE: v4.x.x is a breaking change. Review documentation in detail before upgrading.
+
+  - The CIS scan option has been removed. BAsic functionality is included in the
+  supported imsage scan options.
+
 
 display:
   source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"

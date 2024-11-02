@@ -5,11 +5,11 @@ description: Define the circleci machine vm image for a build job.
 parameters:
 
   image-name:
-    description: specify circleci machine vm image
+    description: Specify circleci Machine image.
     type: string
 
   resource-class:
-    description: specify the resouce class for the image
+    description: Machine image resource class.
     type: enum
     enum: [medium, large, xlarge, 2xlarge, 2xlarge+]
 

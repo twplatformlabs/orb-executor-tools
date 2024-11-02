@@ -2,45 +2,45 @@
 # yamllint disable rule:line-length
 ---
 description: |
-  A common method of testing docker image configuration for infrastructure-as-code oriented containers.
+  A common method of testing docker image configuration health.
   This test will first run the docker image and then execute the bats test.
   (see https://github.com/bats-core/bats-core)
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
   bats-run-container-name:
-    description: name for running container
+    description: Name assigned to running container. Default is container-test.
     type: string
     default: container-test
 
   bats-entry-point:
-    description: name of shell ( bash | ash | etc )
+    description: Name of shell entrypoint for bats test. Default is /bin/bash.
     type: string
     default: /bin/bash
 
   bats-test-path:
-    description: Name of folder with bats tests
+    description: Name of folder with tests. Default is test.
     type: string
     default: test
 
 steps:
   - run:
-      name: run image to be tested
+      name: Run image to be tested
       command: docker run -it -d --name << parameters.bats-run-container-name >> --entrypoint << parameters.bats-entry-point >> << parameters.registry >>/<< parameters.image>>:<< parameters.tag >>
   - run:
-      name: run bats test
+      name: Run bats test
       command: bats << parameters.bats-test-path >>

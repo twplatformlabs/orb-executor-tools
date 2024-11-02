@@ -9,10 +9,10 @@ description: |
   - development builds are tagged with 'edge'
   - release builds include image tagged with 'latest'
   - docker.io credentials are set with the default ENV variables
-  - conftest used to perform cis docker benchmark section 4 tests
-  - trivy used to perform scan for cve 
+  - trivy used to perform scan for cve
   - bats used to test image configuration, --entrypoint specified as 'ash' to support alpine
   - installs all tools onto machine executor
+  - CVE and security scans set to not fail pipeline and upload artifacts
   - uses before-build, before-publish step parameters to configure env vars
 
 usage:
@@ -44,11 +44,11 @@ usage:
             context: team-context
             image: org/image-name
             tag: edge
-            cis-docker-image-scan: true
             trivy-scan: true
             bats-test: true
             entry-point: /bin/ash
             container-name: run-docker-alpine-image
+            security-scan-nofail: true
             before-build:
               - op/env
             filters: *on-push-main

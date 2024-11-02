@@ -1,26 +1,27 @@
 # src/commands/pull.yml
 # yamllint disable rule:line-length
 ---
-description: Publish docker image to a registry
+description: |
+  Publish docker image to a dtr compatible registry. Will generate image manifest to file=manifestid.
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for tag.
     type: string
 
 steps:
   - run:
-      name: Pull image tag from docker registry
+      name: Pull image tag from registry
       command: docker pull << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
   - run:
       name: write image manifest id

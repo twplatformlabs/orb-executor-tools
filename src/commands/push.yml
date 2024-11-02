@@ -1,24 +1,24 @@
 # src/commands/push.yml
 # yamllint disable rule:line-length
 ---
-description: Publish docker image to a registry
+description: Publish docker image to a registry.
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for tag.
     type: string
 
 steps:
   - run:
-      name: Publish a tagged image to the docker registry
+      name: Publish image to registry
       command: docker push << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>

@@ -1,38 +1,44 @@
 # src/commands/build.yml
 # yamllint disable rule:line-length
 ---
-description: Build executor Docker image.
+description: |
+  Build executor Docker image. The log output from Build is displayed in the circleci job log.
+  The build log is also saved as a pipeline Job artifact and persisted to the pipeline workspace.
+
+  Log file name: << parameters.tag >>_build_log.txt
+
+  By persisting the log file to the pipeline workspace, you will have the option to publish the
+  contents with the release notes for the image. This will allow users to review package versions
+  for all packages or tools installed.
 
 parameters:
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile. Default is Dockerfile.
     type: string
     default: Dockerfile
 
   path:
-    description: Path to the directory containing your Dockerfile and build context
+    description: Path to the directory containing your Dockerfile and build context. Default is "."
     type: string
     default: .
 
-  image:
-    description: Name of image
-    type: string
-
-  tag:
-    description: Value for tag
-    type: string
-    default: dev.${CIRCLE_SHA1:0:7}
-
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
+  image:
+    description: Name of image.
+    type: string
+
+  tag:
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
   extra-build-args:
-    description: >
-      Extra flags to pass to docker build. For examples, see
-      https://docs.docker.com/engine/reference/commandline/build
+    description: Extra flags to pass to docker build.
     type: string
     default: ""
 
@@ -50,3 +56,8 @@ steps:
   - store_artifacts:
       path: << parameters.tag >>_build_log.txt
       destination: << parameters.tag >>_build_log.txt
+
+  - persist_to_workspace:
+      root: workspace
+      paths:
+        - << parameters.tag >>_build_log.txt

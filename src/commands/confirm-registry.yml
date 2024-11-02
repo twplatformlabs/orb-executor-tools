@@ -9,17 +9,17 @@ description: |
 parameters:
 
   registry:
-    description: Docker registry
+    description: Docker registry. Default is docker.io
     type: string
     default: docker.io
 
   registry-login:
-    description: username for reigstry access
+    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: password for registry access
+    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
     type: env_var_name
     default: DOCKER_PASSWORD
 

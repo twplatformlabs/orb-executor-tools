@@ -26,7 +26,7 @@ commands:
 
 jobs:
 
-  test commands:
+  test non-install commands:
     docker:
       - image: twdps/circleci-executor-builder:alpine-stable
     steps:
@@ -37,8 +37,6 @@ jobs:
           dockerfile: test/Dockerfile.alpine
           hadolint-additional-args: "--ignore DL3004"
       - executor-tools/confirm-registry
-      - executor-tools/cis-scan:
-          dockerfile: test/Dockerfile.alpine
       - executor-tools/build:
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
@@ -75,7 +73,6 @@ jobs:
           op-version: 2.29.0
           teller-version: 1.5.6
           vault-version: 1.15.6-1
-          conftest-version: 0.48.0
           snyk-version: 1.1268.0
           bats-version: 1.10.0
           hadolint-version: 2.12.0
@@ -88,7 +85,6 @@ jobs:
             op --version | grep "2.29.0"
             teller version | grep "1.5.6"
             vault version | grep "1.15.6"
-            conftest --version | grep "0.48.0"
             snyk --version | grep "1.1268.0"
             bats --version | grep "1.10.0"
             hadolint --version | grep "2.12.0"
@@ -105,7 +101,6 @@ jobs:
           op-version: latest
           teller-version: 1.5.6
           vault-version: latest
-          conftest-version: latest
           snyk-version: latest
           bats-version: latest
           hadolint-version: latest
@@ -129,49 +124,47 @@ workflows:
 
   integration tests:
     jobs:
-      # - test versioned machine package installs
+      - test versioned machine package installs
 
-      # - test machine package installs using latest
+      - test machine package installs using latest
 
-      # - test commands:
-      #     context: *context
+      - test non-install commands:
+          context: *context
 
-      # - executor-tools/machine-executor-dev-release:
-      #     name: test machine executor dev release
-      #     context: *context
-      #     dockerfile: test/Dockerfile.build
-      #     image: twdps/orb-executor-tools
-      #     teller-version: 1.5.6
-      #     snyk-scan: true
-      #     snyk-severity-threshold: medium
-      #     snyk-organization: twdps
-      #     trivy-scan: true
-      #     grype-scan: true
-      #     bats-test: true
-      #     bats-run-container-name: orb-executor-tools-test
-      #     bats-entry-point: /bin/ash
-      #     bats-test-path: test/circleci_remote_docker_alpine.bats
-      #     opencontainer-labels: true
-      #     after-checkout:
-      #       - set-environment
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-build:
-      #       - echo-message:
-      #           msg: "before build"
-      #     after-build:
-      #       - echo-message:
-      #           msg: "after build"
-      #     after-push:
-      #       - echo-message:
-      #           msg: "after push"
+      - executor-tools/machine-executor-dev-release:
+          name: test machine executor dev release
+          context: *context
+          dockerfile: test/Dockerfile.build
+          image: twdps/orb-executor-tools
+          snyk-scan: true
+          snyk-severity-threshold: medium
+          snyk-organization: twdps
+          trivy-scan: true
+          grype-scan: true
+          bats-test: true
+          bats-run-container-name: orb-executor-tools-test
+          bats-entry-point: /bin/ash
+          bats-test-path: test/circleci_remote_docker_alpine.bats
+          opencontainer-labels: true
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"
+          after-push:
+            - echo-message:
+                msg: "after push"
 
       - executor-tools/dev-release:
           name: test dev release
           context: *context
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
-          teller-version: 1.5.6
           tag: edge
           snyk-scan: true
           snyk-severity-threshold: medium
@@ -197,34 +190,40 @@ workflows:
           after-push:
             - echo-message:
                 msg: "after push"
-      #     requires:
-      #       - test machine executor dev release
+          requires:
+            - test machine executor dev release
 
-      # - executor-tools/publish:
-      #     name: test publish
-      #     context: *context
-      #     image: twdps/orb-executor-tools
-      #     pull-tag: edge
-      #     version-tag: "0.0.0"
-      #     tag-annotation: alpine-
-      #     release-tag: stable
-      #     sign-image: true
-      #     sbom: true
-      #     gren: true
-      #     after-checkout:
-      #       - set-environment
-      #       - run:
-      #           name: setup cosign keys
-      #           command: |
-      #             op inject -i cosign.key.env -o cosign.key
-      #             op inject -i cosign.pub.env -o cosign.pub
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-publish:
-      #       - echo-message:
-      #           msg: "before publish"
-      #     after-publish:
-      #       - echo-message:
-      #           msg: "after publish"
-      #     requires:
-      #       - test dev release
+      - executor-tools/publish:
+          name: test publish
+          context: *context
+          image: twdps/orb-executor-tools
+          pull-tag: edge
+          version-tag: "0.0.0"
+          tag-annotation: alpine-
+          release-tag: stable
+          sign-image: true
+          sbom: true
+          gren: true
+          after-checkout:
+            - set-environment
+            - op/write-to-file:
+              op-value: empc-lab/svc-cosign-private-key/notesPlain
+              out-file: cosign.key
+            - op/write-to-file:
+                op-value: empc-lab/svc-cosign-public-key/notesPlain
+                out-file: cosign.pub
+            # - run:
+            #     name: setup cosign keys
+            #     command: |
+            #       op inject -i cosign.key.env -o cosign.key
+            #       op inject -i cosign.pub.env -o cosign.pub
+            - echo-message:
+                msg: "after checkout"
+          before-publish:
+            - echo-message:
+                msg: "before publish"
+          after-publish:
+            - echo-message:
+                msg: "after publish"
+          requires:
+            - test dev release

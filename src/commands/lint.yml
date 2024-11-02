@@ -6,12 +6,12 @@ description: Run Hadolint against Dockerfile.
 parameters:
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile. Default is Dockerfile.
     type: string
     default: Dockerfile
 
   hadolint-additional-args:
-    description: additional custom command line flags
+    description: Additional Hadolint CLI command line flags.
     type: string
     default: ""
 

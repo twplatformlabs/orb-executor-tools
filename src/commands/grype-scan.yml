@@ -1,47 +1,50 @@
 # src/commands/grype-scan.yml
 # yamllint disable rule:line-length
 ---
-description: run grype image scan
+description: |
+  Run Grype CLI image scan. Optionally, upload scan log as save artifact and persist to pipeline workspace.
+
+  Log file name: << parameters.tag >>_grype_log.txt
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.$CIRCLE_SHA1
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile. Default is Dockerfile.
     type: string
     default: Dockerfile
 
   grype-severity:
-    description: grype scan reporting threshold
+    description: Grype CLI scan reporting threshold=[negligible | low | medium | high | critical]. Default is critical.
     type: string
-    default: "medium"
+    default: "critical"
 
   grype-additional-args:
-    description: additional custom command line flags
+    description: Additional Gryp CLI command line flags
     type: string
     default: ""
 
   security-scan-nofail:
-    description: Instead of the pipeline failing, generate scan results as saved artifact
+    description: Instead of the pipeline failing, generate scan results as saved artifact. Default is false.
     type: boolean
     default: false
 
 steps:
   - run:
-      name: grype image scan
+      name: Grype CLI image scan
       command: |
         grype --fail-on << parameters.grype-severity >> \
               <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
@@ -50,9 +53,18 @@ steps:
               <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   - when:
-      name: Save grype scan output log as artifact
+      name: Save Grype scan output log as artifact
       condition: << parameters.security-scan-nofail >>
       steps:
         - store_artifacts:
             path: << parameters.tag >>_grype_log.txt
             destination: << parameters.tag >>_grype_log.txt
+
+  - when:
+      name: Persist Grype scan output log to workspace
+      condition: << parameters.security-scan-nofail >>
+      steps:
+        - persist_to_workspace:
+            root: workspace
+            paths:
+              - << parameters.tag >>_grype_log.txt

@@ -1,28 +1,31 @@
 # src/commands/sbom.yml
 # yamllint disable rule:line-length
 ---
-description: Use syft to generate sbom for OCI image and write to OCI compatible registry
-  using oras. Assumes manifest is present.
+description: |
+  Use syft to generate sbom for OCI image and write to OCI compatible registry
+  using oras. Assumes manifest file names manifestid is present.
+
+  Currently supports spdx file format only.
 
 parameters:
 
   registry:
-    description: full registry path for writing signature
+    description: Registry path for writing signature. Default is docker.io
     type: string
     default: docker.io
 
   registry-login:
-    description: username for reigstry access
+    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: password for registry access
+    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
     type: env_var_name
     default: DOCKER_PASSWORD
 
   sbom-filename:
-    description: name of generate sbom file
+    description: Name of sbom file. Default is sbom.spdx
     type: string
     default: sbom.spdx
 

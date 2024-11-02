@@ -2,21 +2,22 @@
 # yamllint disable rule:line-length
 ---
 description: |
-  Set org.opencontainer date and version labels.
+  Set org.opencontainer date, version, and base name labels.
 
   org.opencontainers.image.created="%Y-%m-%dT%H:%M:%SZ"
   org.opencontainers.image.version="CIRCLE_SHA1"
+  org.opencontainers.image.base.name="FROM line of Dockerfile"
 
 parameters:
 
   dockerfile:
-    description: Target Dockerfile
+    description: Name of Dockerfile. Default is Dockerfile.
     type: string
     default: docker.io
 
 steps:
   - run:
-      name: sed creation date and version labels in dockerfile
+      name: Set org.opencontainer date, version, and base.name labels
       command: |
         #!/usr/bin/env bash
         set -eo pipefail

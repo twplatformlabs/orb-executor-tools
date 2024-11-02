@@ -1,7 +1,7 @@
 # src/jobs/publish.yml
 # yamllint disable rule:line-length
 ---
-description: Tag and publish a release version
+description: Tag and publish a release version.
 
 executor:
   name: circleci-executor-builder
@@ -15,52 +15,52 @@ shell: << parameters.shell >>
 parameters:
 
   shell:
-    description: default shell invocation. Override to support different shells or tools like 1password
+    description: Default shell invocation.
     type: string
     default: /bin/bash -eo pipefail
 
   executor-image-name:
-    description: specify machine executor
+    description: Remote-docker executor image. Default is twdps/circleci-executor-builder:latest.
     type: string
-    default: docker.io/twdps/circleci-executor-builder:alpine-stable
+    default: docker.io/twdps/circleci-executor-builder:latest
 
   registry-login:
-    description: Environment variable to reference as username for the registry specified by executor-image-name parameter
+    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: Environment variable to reference as password for the registry specified by executor-image parameter
+    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
     type: env_var_name
     default: DOCKER_PASSWORD
 
   executor-resource-class:
-    description: specify executor resource class. Default is medium.
+    description: Executor resource class. Default is medium.
     type: enum
     enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   pull-tag:
-    description: Value for tag to pull and make publish release
+    description: Value of tag to pull for publish release. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
   tag-annotation:
-    description: Additional text for semantic version tag
+    description: Additional text for semantic version tag.
     type: string
     default: ""
 
   version-tag:
-    description: default version release tag
+    description: Version release tag. Default is $CIRCLE_TAG.
     type: string
     default: ${CIRCLE_TAG}
 
@@ -70,7 +70,7 @@ parameters:
     default: ""
 
   extra-release-args:
-    description: Extra flags to pass to gren
+    description: Extra flags to pass to gren.
     type: string
     default: ""
 
@@ -80,52 +80,52 @@ parameters:
     default: []
 
   sign-image:
-    description: Sign OCI image using cosign
+    description: Sign OCI image using cosign. Default is false.
     type: boolean
     default: false
 
   cosign-attestations:
-    description: attestations to include in signature
+    description: Attestations to include in signature.
     type: string
     default: ""
 
   cosign-sign-key:
-    description: path to private key used to sign image
+    description: Path to private key used to sign image. Default is ./cosign.key
     type: string
     default: cosign.key
 
   cosign-verify-key:
-    description: path to public key used to verify signature
+    description: Path to public key used to verify signature. Default is ./cosign.pub
     type: string
     default: cosign.pub
 
   cosign-password:
-    description: signing key passphrase
+    description: Environment variable containing signing key passphrase. Default is COSIGN_PASSWORD.
     type: env_var_name
     default: COSIGN_PASSWORD
 
   sbom:
-    description: include a software bill of materials with the signature
+    description: Include a software bill of materials with the signature. Default is false.
     type: boolean
     default: false
 
   sbom-filename:
-    description: name of generate sbom file
+    description: Name of sbom file. Default is sbom.spdx
     type: string
     default: sbom.spdx
 
   gren:
-    description: generate release notes
+    description: Generate release notes. Default is false.
     type: boolean
     default: false
 
   gren-on-tag:
-    description: generate release notes based -t CIRCLE_TAG option
+    description: Generate release notes based -t CIRCLE_TAG option. Default is false.
     type: boolean
     default: false
 
   gren-additional-args:
-    description: additional custom command line flags
+    description: Additional Gren command line flags.
     type: string
     default: ""
 
@@ -170,7 +170,7 @@ steps:
       current-tag: << parameters.pull-tag >>
       release-tag: << parameters.tag-annotation >><< parameters.version-tag >>
   - when:
-      name: tag additional release tag
+      name: Create additional release tag
       condition: << parameters.release-tag >>
       steps:
         - tag:
@@ -183,7 +183,7 @@ steps:
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.version-tag >>
   - when:
-      name: push additional release tag
+      name: Push additional release tag
       condition: << parameters.release-tag >>
       steps:
         - push:
@@ -191,11 +191,11 @@ steps:
             image: << parameters.image >>
             tag: << parameters.release-tag >>
   - when:
-      name: Run after-publish lifecycle hook steps.
+      name: Run after-publish lifecycle hook steps
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
   - when:
-      name: Sign image using cosign
+      name: Sign image using Cosign
       condition: << parameters.sign-image >>
       steps:
         - sign:
@@ -207,7 +207,7 @@ steps:
             cosign-verify-key: << parameters.cosign-verify-key >>
             cosign-password: << parameters.cosign-password >>
   - when:
-      name: generate sbom
+      name: Generate sbom
       condition: << parameters.sbom >>
       steps:
         - sbom:
@@ -216,7 +216,7 @@ steps:
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
   - when:
-      name: generate release notes
+      name: Generate release notes
       condition: << parameters.gren >>
       steps:
         - release-notes:

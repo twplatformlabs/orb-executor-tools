@@ -1,62 +1,65 @@
 # src/commands/snyk-scan.yml
 # yamllint disable rule:line-length
 ---
-description: run snyk-cli:docker scan
+description: |
+  Run Snyk CLI docker image scan. Optionally, upload scan log as save artifact and persist to pipeline workspace.
+
+  Log file name: << parameters.tag >>_snyk_log.txt
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.$CIRCLE_SHA1
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile. Default is Dockerfile.
     type: string
     default: Dockerfile
 
   snyk-severity-threshold:
-    description: snyk test reporting threshold
+    description: Snyk test reporting threshold=[low | medium | high | critical]. Default is critical.
     type: string
-    default: low
+    default: critical
 
   snyk-token:
-    description: snyk api-token
+    description: Environment Variable containing Snyk.io api-token. Default is SNYK_TOKEN.
     type: env_var_name
     default: SNYK_TOKEN
 
   snyk-organization:
-    description: Name of snyk organization
+    description: Name of snyk organization.
     type: string
 
   snyk-skip-base-image:
-    description: optionally, skip performing cve scan of base image
+    description: Pptionally, skip performing CVE scan of base image. Default is false.
     type: boolean
     default: false
 
   snyk-additional-args:
-    description: additional custom command line flags
+    description: Additional Snyk CLI command line flags.
     type: string
     default: ""
 
   security-scan-nofail:
-    description: Instead of the pipeline failing, generate scan results as saved artifact
+    description: Instead of the pipeline failing, generate scan results as saved artifact. Default is false.
     type: boolean
     default: false
 
 steps:
 
   - run:
-      name: snyk cli image scan
+      name: Snyk CLI image scan
       command: |
         snyk config set api=${<< parameters.snyk-token >>}
         snyk config set org=<< parameters.snyk-organization >>
@@ -71,9 +74,18 @@ steps:
                   <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   - when:
-      name: Save snyk scan output log as artifact
+      name: Save Snyk scan output log as artifact
       condition: << parameters.security-scan-nofail >>
       steps:
         - store_artifacts:
             path: << parameters.tag >>_snyk_log.txt
             destination: << parameters.tag >>_snyk_log.txt
+
+  - when:
+      name: Persist Snyk scan output log to workspace
+      condition: << parameters.security-scan-nofail >>
+      steps:
+        - persist_to_workspace:
+            root: workspace
+            paths:
+              - << parameters.tag >>_snyk_log.txt

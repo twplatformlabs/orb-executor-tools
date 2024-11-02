@@ -6,7 +6,7 @@ description: |
 
   - Git push on trunk triggers dev-build, git tag for release
   - executor 'shell' command
-  - opencontainer.labels updated with date and build info before image build
+  - opencontainer.labels updated with create date, version, and base.name info before image build
   - builds Dockerfile
   - development builds are tagged with 'edge'
   - release builds include image tagged with 'latest'

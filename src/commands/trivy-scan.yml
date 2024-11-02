@@ -1,47 +1,50 @@
 # src/commands/trivy-scan.yml
 # yamllint disable rule:line-length
 ---
-description: run trivy image scan
+description: |
+  Run Trivy CLI image scan. Optionally, upload scan log as save artifact and persist to pipeline workspace.
+
+  Log file name: << parameters.tag >>_trivy_log.txt
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   tag:
-    description: Value for tag
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.$CIRCLE_SHA1
 
   dockerfile:
-    description: Name of dockerfile
+    description: Name of dockerfile. Default is Dockerfile.
     type: string
     default: Dockerfile
 
   trivy-severity:
-    description: trivy scan reporting threshold
+    description: Each Trivy CLI scan desired reporting threshold level="UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL". Default is "CRITICAL".
     type: string
-    default: "LOW,MEDIUM,HIGH,CRITICAL"
+    default: "CRITICAL"
 
   trivy-additional-args:
-    description: additional custom command line flags
+    description: Ddditional Trivy CLI command line flags.
     type: string
     default: ""
 
   security-scan-nofail:
-    description: Instead of the pipeline failing, generate scan results as saved artifact
+    description: Instead of the pipeline failing, generate scan results as saved artifact. Default is false.
     type: boolean
     default: false
 
 steps:
   - run:
-      name: trivy image scan
+      name: Trivy CLI image scan
       command: |
         trivy image --severity << parameters.trivy-severity >> \
                     --exit-code 1 \
@@ -57,3 +60,12 @@ steps:
         - store_artifacts:
             path: << parameters.tag >>_trivy_log.txt
             destination: << parameters.tag >>_trivy_log.txt
+
+  - when:
+      name: Persist Trivy scan output log to workspace
+      condition: << parameters.security-scan-nofail >>
+      steps:
+        - persist_to_workspace:
+            root: workspace
+            paths:
+              - << parameters.tag >>_trivy_log.txt

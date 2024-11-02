@@ -1,25 +1,25 @@
 # src/commands/tag.yml
 # yamllint disable rule:line-length
 ---
-description: tag docker image
+description: Tag docker image.
 
 parameters:
 
   registry:
-    description: Name of registry
+    description: Name of registry. Default is docker.io
     type: string
     default: docker.io
 
   image:
-    description: Name of image
+    description: Name of image.
     type: string
 
   current-tag:
-    description: Existing image tag
+    description: Existing image tag.
     type: string
 
   release-tag:
-    description: Additional image release tag
+    description: Additional image release tag.
     type: string
 
 steps:

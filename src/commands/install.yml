@@ -7,7 +7,7 @@ description: |
 
   The recommended practice is to create a custom executor that already
   has the required packages so that pipelines using the orb do not
-  need to repeatedly install the same packages over and over again.
+  need to repeatedly install the same packages with each job run.
 
   This orb will use the twdps/circleci-executor-builder by default
   and you can review the executor repo for an example of how to
@@ -16,59 +16,53 @@ description: |
 
   There may be situations in which you need to override the particular
   version of the tool used by the executor-tools orb or, in the case
-  of using the optional machine-executor-dev-release or specifying
-  a generic base image such as cimg:base, a means of installing
+  of using the optional machine-executor-dev-release, a means of installing
   all the required tools.
 
   This command will install the specified version of a package if
   a version is provided or do nothing if not. The executor-tools
-  jobs use the command to provide a means of overriding the
+  jobs uses the command to provide a means of overriding the
   default action.
 
 parameters:
 
   op-version:
-    description: 1password-cli version
+    description: Install 1Password CLI version if provided.
     type: string
     default: ""
 
   teller-version:
-    description: teller version
+    description: Install Teller CLI version if provided.
     type: string
     default: ""
 
   vault-version:
-    description: Hashi Vault version
-    type: string
-    default: ""
-
-  conftest-version:
-    description: open-policy-agent/conftest version
+    description: Install Hashi Vault CLI version if provided.
     type: string
     default: ""
 
   snyk-version:
-    description: snyk npm module version
+    description: Install Snyk CLI npm module version if provided.
     type: string
     default: ""
 
   bats-version:
-    description: bats npm module version
+    description: Install Bats CLI npm mpdule version if provided.
     type: string
     default: ""
 
   hadolint-version:
-    description: hadolint version
+    description: Install Hadolint CLI version if provided.
     type: string
     default: ""
 
   trivy-version:
-    description: trivy version
+    description: Install Trivy CLI version if provided.
     type: string
     default: ""
 
   grype-version:
-    description: grype version
+    description: Install Grype CLI version if provided.
     type: string
     default: ""
 
@@ -100,15 +94,6 @@ steps:
             environment:
               VAULT_VERSION: << parameters.vault-version >>
             command: <<include(scripts/install_vault.sh)>>
-
-  - when:
-      condition: << parameters.conftest-version >>
-      steps:
-        - run:
-            name: install conftest version << parameters.conftest-version >>
-            environment:
-              CONFTEST_VERSION: << parameters.conftest-version >>
-            command: <<include(scripts/install_conftest.sh)>>
 
   - when:
       condition: << parameters.snyk-version >>

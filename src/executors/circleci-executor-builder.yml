@@ -10,22 +10,21 @@ description: >
 parameters:
 
   image:
-    description: specify circleci docker executor
+    description: Specify circleci remote-docker executor image.
     type: string
-    default: docker.io/twdps/circleci-executor-builder:alpine-stable
 
   resource-class:
-    description: specify the resouce class for the image
+    description: Executor resource class.
     type: enum
     enum: [medium, large, xlarge, 2xlarge, 2xlarge+]
 
   registry-login:
-    description: username for executor registry authentication
+    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
     type: env_var_name
     default: DOCKER_LOGIN
 
   registry-password:
-    description: password for executor registry authentication
+    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
     type: env_var_name
     default: DOCKER_PASSWORD
 
