@@ -60,13 +60,15 @@ steps:
       command: |
         snyk config set api=${<< parameters.snyk-token >>}
         snyk config set org=<< parameters.snyk-organization >>
+        snyk -v
         snyk test <<#parameters.snyk-additional-args>><<parameters.snyk-additional-args>><</parameters.snyk-additional-args>> \
                   --docker << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
                   -file=<< parameters.dockerfile >> \
                   --policy-path=./.snyk \
                   --severity-threshold=<< parameters.snyk-severity-threshold >> \
                   <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>> \
-                  <<#parameters.security-scan-nofail>>2>&1 | tee << parameters.tag >>_snyk_log.txt<</parameters.security-scan-nofail>>
+                  2>&1 | tee << parameters.tag >>_snyk_log.txt \
+                  <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   - when:
       name: Save snyk scan output log as artifact

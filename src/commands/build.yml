@@ -40,9 +40,6 @@ steps:
   - run:
       name: Build executor image
       command: |
-        #!/usr/bin/env bash
-        set -eo pipefail
-
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
