@@ -49,9 +49,6 @@ steps:
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
           -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee << parameters.tag >>_build_log.txt
 
-  - run:
-      name: Save build_log as artifact << parameters.tag >>_build_log.txt
-      steps:
-        - store_artifacts:
-            path: << parameters.tag >>_build_log.txt
-            destination: << parameters.tag >>_build_log.txt
+  - store_artifacts:
+      path: << parameters.tag >>_build_log.txt
+      destination: << parameters.tag >>_build_log.txt
