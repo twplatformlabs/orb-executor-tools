@@ -91,7 +91,7 @@ jobs:
             trivy --version | grep "0.48.2"
             grype --version | grep "0.74.0"
 
-  test machine package installs usinsg latest:
+  test machine package installs using latest:
     machine:
       image: ubuntu-2204:current
     resource_class: medium
