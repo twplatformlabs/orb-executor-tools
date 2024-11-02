@@ -70,7 +70,7 @@ jobs:
     steps:
       - checkout
       - executor-tools/install:
-          op-version: 2.26.0
+          op-version: 2.29.0
           teller-version: 1.5.6
           vault-version: 1.15.6-1
           snyk-version: 1.1268.0
@@ -133,6 +133,13 @@ workflows:
       - executor-tools/machine-executor-dev-release:
           name: test machine executor dev release
           context: *context
+          install:
+            op-version: latest
+            snyk-version: latest
+            bats-version: latest
+            hadolint-version: latest
+            trivy-version: latest
+            grype-version: latest
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
           snyk-scan: true
