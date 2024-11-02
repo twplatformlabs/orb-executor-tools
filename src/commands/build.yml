@@ -46,8 +46,8 @@ steps:
   - run:
       name: Build executor image
       command: |
+        echo "set workspace" && mkdir -p workspace
         cat << parameters.dockerfile >>
-        mkdir -p workspace
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
