@@ -46,4 +46,14 @@ steps:
         trivy image --severity << parameters.trivy-severity >> \
                     --exit-code 1 \
                     <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
-                    << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+                    << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+                    2>&1 | tee << parameters.tag >>_trivy_log.txt \
+                    <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
+
+  - when:
+      name: Save trivy scan output log as artifact
+      condition: << parameters.security-scan-nofail >>
+      steps:
+        - store_artifacts:
+            path: << parameters.tag >>_trivy_log.txt
+            destination: << parameters.tag >>_trivy_log.txt

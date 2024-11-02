@@ -45,4 +45,14 @@ steps:
       command: |
         grype --fail-on << parameters.grype-severity >> \
               <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
-              << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+              << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
+              2>&1 | tee << parameters.tag >>_grype_log.txt \
+              <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
+
+  - when:
+      name: Save grype scan output log as artifact
+      condition: << parameters.security-scan-nofail >>
+      steps:
+        - store_artifacts:
+            path: << parameters.tag >>_grype_log.txt
+            destination: << parameters.tag >>_grype_log.txt
