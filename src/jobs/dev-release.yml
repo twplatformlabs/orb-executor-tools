@@ -156,6 +156,11 @@ parameters:
     type: string
     default: ""
 
+  security-scan-nofail:
+    description: Instead of the pipeline failing, generate scan results as saved artifact
+    type: boolean
+    default: false
+
   dockerfile:
     description: Name of dockerfile
     type: string
@@ -290,6 +295,7 @@ steps:
             snyk-token: << parameters.snyk-token >>
             snyk-skip-base-image: << parameters.snyk-skip-base-image >>
             snyk-additional-args: << parameters.snyk-additional-args >>
+            security-scan-nofail: << parameters.security-scan-nofail >>
   - when:
       name: Perform trivy image scan
       condition: << parameters.trivy-scan >>
@@ -303,6 +309,7 @@ steps:
             dockerfile: << parameters.dockerfile >>
             trivy-severity: << parameters.trivy-severity >>
             trivy-additional-args: << parameters.trivy-additional-args >>
+            security-scan-nofail: << parameters.security-scan-nofail >>
   - when:
       name: Perform grype image scan
       condition: << parameters.grype-scan >>
@@ -316,6 +323,7 @@ steps:
             dockerfile: << parameters.dockerfile >>
             grype-severity: << parameters.grype-severity >>
             grype-additional-args: << parameters.grype-additional-args >>
+            security-scan-nofail: << parameters.security-scan-nofail >>
   - when:
       name: perform bats container configuration test
       condition: << parameters.bats-test >>

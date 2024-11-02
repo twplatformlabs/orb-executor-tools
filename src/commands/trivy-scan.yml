@@ -34,6 +34,11 @@ parameters:
     type: string
     default: ""
 
+  security-scan-nofail:
+    description: Instead of the pipeline failing, generate scan results as saved artifact
+    type: boolean
+    default: false
+
 steps:
   - run:
       name: trivy image scan

@@ -48,7 +48,7 @@ parameters:
     type: string
     default: ""
 
-  pipeline-nofail:
+  security-scan-nofail:
     description: Instead of the pipeline failing, generate scan results as saved artifact
     type: boolean
     default: false
@@ -66,12 +66,12 @@ steps:
                   --policy-path=./.snyk \
                   --severity-threshold=<< parameters.snyk-severity-threshold >> \
                   <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>> \
-                  <<#parameters.pipeline-nofail>> > << parameters.image >>:<< parameters.tag >>_build_log.txt || true<</parameters.pipeline-nofail>>
+                  <<#parameters.security-scan-nofail>>2>&1 | tee << parameters.tag >>_snyk_log.txt<</parameters.security-scan-nofail>>
 
   - when:
-      name: Save build_log as artifact
-      condition: << parameters.pipeline-nofail >>
+      name: Save snyk scan output log as artifact
+      condition: << parameters.security-scan-nofail >>
       steps:
         - store_artifacts:
-            path: << parameters.image >>:<< parameters.tag >>_build_log.txt
-            destination: << parameters.image >>:<< parameters.tag >>_build_log.txt
+            path: << parameters.tag >>_snyk_log.txt
+            destination: << parameters.tag >>_snyk_log.txt
