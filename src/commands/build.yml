@@ -47,6 +47,7 @@ steps:
       name: Build executor image
       command: |
         cat << parameters.dockerfile >>
+        mkdir -p workspace
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \

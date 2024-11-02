@@ -70,7 +70,7 @@ jobs:
     steps:
       - checkout
       - executor-tools/install:
-          op-version: 2.29.0
+          op-version: 2.26.0
           teller-version: 1.5.6
           vault-version: 1.15.6-1
           snyk-version: 1.1268.0
@@ -113,7 +113,6 @@ jobs:
             op --help | grep "1Password"
             teller --help | grep "teller"
             vault --help | grep "vault"
-            conftest --help | grep "conftest"
             snyk --help | grep "Snyk"
             bats --help | grep "bats"
             hadolint --help | grep "hadolint"
