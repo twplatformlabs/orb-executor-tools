@@ -133,13 +133,12 @@ workflows:
       - executor-tools/machine-executor-dev-release:
           name: test machine executor dev release
           context: *context
-          install:
-            op-version: latest
-            snyk-version: latest
-            bats-version: latest
-            hadolint-version: latest
-            trivy-version: latest
-            grype-version: latest
+          op-version: latest
+          snyk-version: latest
+          bats-version: latest
+          hadolint-version: latest
+          trivy-version: latest
+          grype-version: latest
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
           snyk-scan: true
