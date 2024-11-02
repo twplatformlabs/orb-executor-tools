@@ -18,7 +18,9 @@ steps:
   - run:
       name: sed creation date and version labels in dockerfile
       command: |
+        #!/usr/bin/env bash
+        set -eo pipefail
         sed -i "s/%%CREATED%%/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" << parameters.dockerfile >>
         sed -i "s/%%VERSION%%/${CIRCLE_SHA1}/g" << parameters.dockerfile >>
-        sed -i "s/%%BASE%%/$(<< parameters.dockerfile >>)/g" << parameters.dockerfile >>
+        sed -i "s/%%BASE%%/$(head -n 1 << parameters.dockerfile >>)/g" << parameters.dockerfile >>
         cat << parameters.dockerfile >> | grep ${CIRCLE_SHA1}
