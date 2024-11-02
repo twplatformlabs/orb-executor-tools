@@ -207,8 +207,8 @@ workflows:
           after-checkout:
             - set-environment
             - op/write-to-file:
-              op-value: empc-lab/svc-cosign-private-key/notesPlain
-              out-file: cosign.key
+                op-value: empc-lab/svc-cosign-private-key/notesPlain
+                out-file: cosign.key
             - op/write-to-file:
                 op-value: empc-lab/svc-cosign-public-key/notesPlain
                 out-file: cosign.pub
