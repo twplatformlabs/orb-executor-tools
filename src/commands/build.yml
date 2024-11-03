@@ -50,19 +50,16 @@ steps:
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee "<< parameters.tag >>_build_log.txt"
-
-          ls -la
-          cat "<< parameters.tag >>_build_log.txt"
+          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee build_log.txt
 
   - persist_to_workspace:
       root: ./
       paths:
-        - "<< parameters.tag >>_build_log.txt"
+        - build_log.txt
 
   - store_artifacts:
-      path: "<< parameters.tag >>_build_log.txt"
-      destination: "<< parameters.tag >>_build_log.txt"
+      path: build_log.txt
+      destination: build_log.txt
 
   # - when:
   #     name: Upload build log and persist to pipeline workspace
