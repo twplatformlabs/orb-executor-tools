@@ -55,7 +55,8 @@ steps:
   - persist_to_workspace:
       root: .
       paths:
-        - << parameters.tag >>_build_log.txt
+        - validate.sh
+        #- << parameters.tag >>_build_log.txt
 
   # - persist_to_workspace:
   #     root: workspace
