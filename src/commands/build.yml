@@ -56,7 +56,7 @@ steps:
           -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee "logs/${LOGFILENAMEID}_build_log.txt"
 
           ls -la
-          la -la logs
+          ls -la logs
           cat "logs/$LOGFILENAMEID_build_log.txt"
 
   - persist_to_workspace:
@@ -65,7 +65,7 @@ steps:
         - "$LOGFILENAMEID_build_log.txt"
 
   - store_artifacts:
-      path: logs/$LOGFILENAMEID_build_log.txt
+      path: "logs/$LOGFILENAMEID_build_log.txt"
       destination: $LOGFILENAMEID_build_log.txt
 
   # - when:
