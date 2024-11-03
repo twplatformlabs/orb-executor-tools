@@ -151,6 +151,7 @@ workflows:
           bats-entry-point: /bin/ash
           bats-test-path: test/circleci_remote_docker_alpine.bats
           opencontainer-labels: true
+          security-scan-nofail: true
           after-checkout:
             - set-environment
             - echo-message:

@@ -53,12 +53,16 @@ steps:
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee logs/$LOGFILENAMEID_build_log.txt
+          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee "logs/${LOGFILENAMEID}_build_log.txt"
+
+          ls -la
+          la -la logs
+          cat "logs/$LOGFILENAMEID_build_log.txt"
 
   - persist_to_workspace:
       root: logs
       paths:
-        - $LOGFILENAMEID_build_log.txt
+        - "$LOGFILENAMEID_build_log.txt"
 
   - store_artifacts:
       path: logs/$LOGFILENAMEID_build_log.txt
