@@ -46,27 +46,23 @@ steps:
   - run:
       name: Build executor image
       command: |
-        mkdir -p logs
-        echo "LOGFILENAMEID=<< parameters.tag >>" >> $BASH_ENV
-
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee "logs/${LOGFILENAMEID}_build_log.txt"
+          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee "<< parameters.tag >>_build_log.txt"
 
           ls -la
-          ls -la logs
-          cat "logs/$LOGFILENAMEID_build_log.txt"
+          cat "<< parameters.tag >>_build_log.txt"
 
   - persist_to_workspace:
-      root: logs
+      root: ./
       paths:
-        - "$LOGFILENAMEID_build_log.txt"
+        - "<< parameters.tag >>_build_log.txt"
 
   - store_artifacts:
-      path: "logs/$LOGFILENAMEID_build_log.txt"
-      destination: $LOGFILENAMEID_build_log.txt
+      path: "<< parameters.tag >>_build_log.txt"
+      destination: "<< parameters.tag >>_build_log.txt"
 
   # - when:
   #     name: Upload build log and persist to pipeline workspace
