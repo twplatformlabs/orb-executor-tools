@@ -63,9 +63,9 @@ steps:
   #     paths:
   #       - << parameters.tag >>_build_log.txt
 
-  # - store_artifacts:
-  #     path: << parameters.tag >>_build_log.txt
-  #     destination: << parameters.tag >>_build_log.txt
+  - store_artifacts:
+      path: << parameters.tag >>_build_log.txt
+      destination: << parameters.tag >>_build_log.txt
 
   # - when:
   #     name: Upload build log and persist to pipeline workspace
