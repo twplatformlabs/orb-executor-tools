@@ -16,6 +16,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
 RUN apk add --no-cache \
         git \
         openssh \
+        sudo \
         tar \
         gzip \
         ca-certificates
