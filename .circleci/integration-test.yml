@@ -98,10 +98,10 @@ jobs:
           snyk-version: 1.1268.0
           trivy-version: 0.48.2
           grype-version: 0.74.0
-          cosign: 2.2.1
-          syft: 1.4.0
-          oras: 1.2.0
-          gren: 0.17.1
+          cosign-version: 2.2.1
+          syft-version: 1.4.0
+          oras-version: 1.2.0
+          gren-version: 0.17.1
           op-version: 2.29.0
           vault-version: 1.15.6-1
       - run:
@@ -132,10 +132,10 @@ jobs:
           snyk-version: latest
           trivy-version: latest
           grype-version: latest
-          cosign: latest
-          syft: latest
-          oras: latest
-          gren: latest
+          cosign-version: latest
+          syft-version: latest
+          oras-version: latest
+          gren-version: latest
           op-version: latest
           vault-version: latest
       - run:
