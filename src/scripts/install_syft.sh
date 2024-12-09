@@ -10,7 +10,7 @@ get_latest_cli_version() {
 # Install syft
 install_syft_cli() {
     echo "Installing syft version v${SYFT_VERSION}"
-    curl -sSfL "https://raw.githubusercontent.com/anchore/syft/main/install.sh" | sh -s -- -b /usr/local/bin "v${SYFT_VERSION}"
+    sudo bash -c "curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v${SYFT_VERSION}"
 }
 
 if [[ "$SYFT_VERSION" == "latest" ]]; then
