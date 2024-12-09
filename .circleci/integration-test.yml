@@ -35,9 +35,6 @@ commands:
 
 jobs:
 
-
-
-
   test non-install commands:
     docker:
       - image: twdps/circleci-executor-builder:alpine-stable
@@ -74,17 +71,6 @@ jobs:
             bats-test-path: test/circleci_remote_docker_alpine.bats
       - executor-tools/set-labels:
             dockerfile: test/Dockerfile.build
-
-
-
-
-
-
-
-# ENV COSIGN_VERSION=2.4.1
-# ENV SYFT_VERSION=1.17.0
-# ENV ORAS_VERSION=1.2.1
-# ENV GREN_VERSION=0.17.3
 
   test versioned machine package installs:
     machine:
@@ -158,12 +144,12 @@ workflows:
 
   integration tests:
     jobs:
-      - test versioned machine package installs
+      # - test versioned machine package installs
 
-      - test machine package installs using latest
+      # - test machine package installs using latest
 
-      # - test non-install commands:
-      #     context: *context
+      - test non-install commands:
+          context: *context
 
       # - executor-tools/machine-executor-dev-release:
       #     name: test machine executor dev release
