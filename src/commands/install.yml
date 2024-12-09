@@ -66,6 +66,26 @@ parameters:
     type: string
     default: ""
 
+  cosign-version:
+    description: Install Cosign CLI version if provided.
+    type: string
+    default: ""
+
+  syft-version:
+    description: Install Syft CLI version if provided.
+    type: string
+    default: ""
+
+  oras-version:
+    description: Install Oras CLI version if provided.
+    type: string
+    default: ""
+
+  gren-version:
+    description: Install github-release-notes version if provided.
+    type: string
+    default: ""
+
 steps:
 
   - when:
@@ -114,6 +134,15 @@ steps:
             command: <<include(scripts/install_bats.sh)>>
 
   - when:
+      condition: << parameters.gren-version >>
+      steps:
+        - run:
+            name: install gren version << parameters.gren-version >>
+            environment:
+              GREN_VERSION: << parameters.gren-version >>
+            command: <<include(scripts/install_gren.sh)>>
+
+  - when:
       condition: << parameters.hadolint-version >>
       steps:
         - run:
@@ -130,6 +159,7 @@ steps:
             environment:
               TRIVY_VERSION: << parameters.trivy-version >>
             command: <<include(scripts/install_trivy.sh)>>
+
   - when:
       condition: << parameters.grype-version >>
       steps:
@@ -138,3 +168,30 @@ steps:
             environment:
               GRYPE_VERSION: << parameters.grype-version >>
             command: <<include(scripts/install_grype.sh)>>
+
+  - when:
+      condition: << parameters.cosign-version >>
+      steps:
+        - run:
+            name: install cosign version << parameters.cosign-version >>
+            environment:
+              COSIGN_VERSION: << parameters.cosign-version >>
+            command: <<include(scripts/install_cosign.sh)>>
+
+  - when:
+      condition: << parameters.oras-version >>
+      steps:
+        - run:
+            name: install oras version << parameters.oras-version >>
+            environment:
+              ORAS_VERSION: << parameters.oras-version >>
+            command: <<include(scripts/install_oras.sh)>>
+
+  - when:
+      condition: << parameters.syft-version >>
+      steps:
+        - run:
+            name: install syft version << parameters.syft-version >>
+            environment:
+              SYFT_VERSION: << parameters.syft-version >>
+            command: <<include(scripts/install_syft.sh)>>
