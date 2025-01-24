@@ -35,11 +35,6 @@ parameters:
     type: string
     default: ""
 
-  teller-version:
-    description: Specify specific Teller CLI version. Default assumes version already installed on executor.
-    type: string
-    default: ""
-
   vault-version:
     description: Specify specific Hashi Vault CLI version. Default assumes version already installed on executor.
     type: string
@@ -237,7 +232,6 @@ steps:
   - checkout
   - install:
       op-version: << parameters.op-version >>
-      teller-version: << parameters.teller-version >>
       vault-version: << parameters.vault-version >>
       snyk-version: << parameters.snyk-version >>
       bats-version: << parameters.bats-version >>

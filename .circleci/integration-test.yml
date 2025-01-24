@@ -24,15 +24,6 @@ commands:
           name: echo msg
           command: echo "<< parameters.msg >>"
 
-  publish-with-build-log-in-notes:
-    steps:
-      - run:
-          name: get latest artifacts
-          command: |
-            curl -H "Circle-Token: $CIRCLE_TOKEN" "https://circleci.com/api/v1.1/project/github/$CIRCLE_USERNAME/$CIRCLE_PROJECT_REPONAME/latest/artifacts"
-            ls -la
-            ls -la workspace
-
 jobs:
 
   test non-install commands:

@@ -27,16 +27,11 @@ parameters:
   executor-resource-class:
     description: Executor resource class. Default is medium.
     type: enum
-    enum: [medium, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   op-version:
     description: Specify specific 1Password CLI version. Default assumes version already installed on executor.
-    type: string
-    default: ""
-
-  teller-version:
-    description: Specify specific Teller CLI version. Default assumes version already installed on executor.
     type: string
     default: ""
 
@@ -238,7 +233,6 @@ steps:
   - setup_remote_docker
   - install:
       op-version: << parameters.op-version >>
-      teller-version: << parameters.teller-version >>
       vault-version: << parameters.vault-version >>
       snyk-version: << parameters.snyk-version >>
       bats-version: << parameters.bats-version >>

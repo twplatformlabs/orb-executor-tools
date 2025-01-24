@@ -21,7 +21,10 @@ steps:
       command: |
         #!/usr/bin/env bash
         set -eo pipefail
+        echo "set org.opencontainer build details"
+        echo "org.opencontainers.image.version=${CIRCLE_SHA1}"
+        echo "org.opencontainers.image.base.name=$(head -n 1 << parameters.dockerfile >>)"
+
         sed -i "s/%%CREATED%%/$(date -u +"%Y-%m-%dT%H:%M:%SZ")/g" << parameters.dockerfile >>
         sed -i "s/%%VERSION%%/${CIRCLE_SHA1}/g" << parameters.dockerfile >>
         sed -i "s/%%BASE%%/$(head -n 1 << parameters.dockerfile >>)/g" << parameters.dockerfile >>
-        cat << parameters.dockerfile >> | grep ${CIRCLE_SHA1}

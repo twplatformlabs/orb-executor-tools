@@ -37,7 +37,7 @@ parameters:
   executor-resource-class:
     description: Executor resource class. Default is medium.
     type: enum
-    enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [small, medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   registry:
@@ -113,26 +113,6 @@ parameters:
     description: Name of sbom file. Default is sbom.spdx
     type: string
     default: sbom.spdx
-
-  gren:
-    description: Generate release notes. Default is false.
-    type: boolean
-    default: false
-
-  gren-on-tag:
-    description: Generate release notes based -t CIRCLE_TAG option. Default is false.
-    type: boolean
-    default: false
-
-  gren-additional-args:
-    description: Additional Gren command line flags.
-    type: string
-    default: ""
-
-  gren-before-release:
-    description: Optional steps to run prior to gren release.
-    type: steps
-    default: []
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -215,11 +195,3 @@ steps:
             registry-login: << parameters.registry-login >>
             registry-password: << parameters.registry-password >>
             sbom-filename: << parameters.sbom-filename >>
-  - when:
-      name: Generate release notes
-      condition: << parameters.gren >>
-      steps:
-        - release-notes:
-            gren-on-tag: << parameters.gren-on-tag >>
-            gren-additional-args: << parameters.gren-additional-args >>
-            gren-before-release: << parameters.gren-before-release >>
