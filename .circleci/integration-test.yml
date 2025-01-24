@@ -24,6 +24,29 @@ commands:
           name: echo msg
           command: echo "<< parameters.msg >>"
 
+  check-artifacts:
+    steps:
+      - run:
+          name: validate build log artifact
+          environment:
+            FILENAME: "build_log.txt"
+          command: <<include(scripts/validate_file_exists.sh)>>
+      - run:
+          name: validate Snyk scan log artifact
+          environment:
+            FILENAME: "snyk_log.txt"
+          command: <<include(scripts/validate_file_exists.sh)>>
+      - run:
+          name: validate Trivy scan log artifact
+          environment:
+            FILENAME: "trivy_log.txt"
+          command: <<include(scripts/validate_file_exists.sh)>>
+      - run:
+          name: validate Grype scan log artifact
+          environment:
+            FILENAME: "grype_log.txt"
+          command: <<include(scripts/validate_file_exists.sh)>>
+
 jobs:
 
   test non-install commands:
@@ -54,6 +77,7 @@ jobs:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
+      - check-artifacts
       - executor-tools/bats:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
