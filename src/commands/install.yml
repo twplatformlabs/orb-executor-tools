@@ -31,11 +31,6 @@ parameters:
     type: string
     default: ""
 
-  teller-version:
-    description: Install Teller CLI version if provided.
-    type: string
-    default: ""
-
   vault-version:
     description: Install Hashi Vault CLI version if provided.
     type: string
@@ -96,15 +91,6 @@ steps:
             environment:
               OP_VERSION: << parameters.op-version >>
             command: <<include(scripts/install_1password.sh)>>
-
-  - when:
-      condition: << parameters.teller-version >>
-      steps:
-        - run:
-            name: install teller version << parameters.teller-version >>
-            environment:
-              TELLER_VERSION: << parameters.teller-version >>
-            command: <<include(scripts/install_teller.sh)>>
 
   - when:
       condition: << parameters.vault-version >>
