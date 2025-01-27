@@ -83,8 +83,6 @@ jobs:
             dockerfile: test/Dockerfile.build
       - check-artifacts:
           filename: workspace/grype_log.txt
-      - check-artifacts:
-          filename: build_log.txt
       - executor-tools/bats:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
@@ -166,9 +164,9 @@ workflows:
 
   integration tests:
     jobs:
-      # - test versioned machine package installs
+      - test versioned machine package installs
 
-      # - test machine package installs using latest
+      - test machine package installs using latest
 
       - test non-install commands:
           context: *context
