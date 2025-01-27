@@ -265,7 +265,6 @@ workflows:
             - echo-message:
                 msg: "after checkout"
           before-publish:
-            - publish-with-build-log-in-notes
             - echo-message:
                 msg: "before publish"
           after-publish:
