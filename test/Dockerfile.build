@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.description="Build artifact for orb-executor-tools integration testing" \
       org.opencontainers.image.base.name="%%BASE%%"
 
-# hadolint ignore=DL3018
+# hadolint ignore=DL3018,DL3006
 RUN apk add --no-cache \
         git \
         openssh \
