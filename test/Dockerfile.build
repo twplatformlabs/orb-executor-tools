@@ -1,4 +1,4 @@
-FROM alpine
+FROM alpine:3.21
 
 LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
@@ -12,7 +12,7 @@ LABEL org.opencontainers.image.created="%%CREATED%%" \
       org.opencontainers.image.description="Build artifact for orb-executor-tools integration testing" \
       org.opencontainers.image.base.name="%%BASE%%"
 
-# hadolint ignore=DL3018,DL3006
+# hadolint ignore=DL3018
 RUN apk add --no-cache \
         git \
         openssh \
