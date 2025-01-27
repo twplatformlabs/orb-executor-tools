@@ -24,28 +24,26 @@ commands:
           name: echo msg
           command: echo "<< parameters.msg >>"
 
-  check-artifacts:
+  check-artifact:
+    parameters:
+      filename:
+        description: name of artifact file to confirm
+        type: string
     steps:
       - run:
           name: validate build log artifact
-          environment:
-            FILENAME: "build_log.txt"
-          command: <<include(scripts/validate_file_exists.sh)>>
-      - run:
-          name: validate Snyk scan log artifact
-          environment:
-            FILENAME: "snyk_log.txt"
-          command: <<include(scripts/validate_file_exists.sh)>>
-      - run:
-          name: validate Trivy scan log artifact
-          environment:
-            FILENAME: "trivy_log.txt"
-          command: <<include(scripts/validate_file_exists.sh)>>
-      - run:
-          name: validate Grype scan log artifact
-          environment:
-            FILENAME: "grype_log.txt"
-          command: <<include(scripts/validate_file_exists.sh)>>
+          command: |
+            #!/usr/bin/env bash
+            set -eo pipefail
+
+            echo "validate file:${FILENAME} exists"
+            if [ -f "$FILENAME" ]; then
+              echo "$FILENAME contents"
+              cat "$FILENAME"
+            else
+              echo "File $FILENAME does not exist."
+              exit 1
+            fi
 
 jobs:
 
@@ -63,21 +61,30 @@ jobs:
       - executor-tools/build:
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
+      - check-artifacts:
+          filename: workspace/build_log.txt
       - executor-tools/snyk-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
             snyk-severity-threshold: medium
             snyk-organization: twdps
+      - check-artifacts:
+          filename: workspace/snyk_log.txt
       - executor-tools/trivy-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
+      - check-artifacts:
+          filename: workspace/trivy_log.txt
       - executor-tools/grype-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
-      - check-artifacts
+      - check-artifacts:
+          filename: workspace/grype_log.txt
+      - check-artifacts:
+          filename: build_log.txt
       - executor-tools/bats:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
