@@ -248,7 +248,6 @@ workflows:
           release-tag: stable
           sign-image: true
           sbom: true
-          gren: true
           after-checkout:
             - set-environment
             - op/write-to-file:
