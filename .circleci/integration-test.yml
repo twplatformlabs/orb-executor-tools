@@ -24,7 +24,7 @@ commands:
           name: echo msg
           command: echo "<< parameters.msg >>"
 
-  check-artifact:
+  check-artifacts:
     parameters:
       filename:
         description: name of artifact file to confirm
