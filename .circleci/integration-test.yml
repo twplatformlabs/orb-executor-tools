@@ -256,11 +256,6 @@ workflows:
             - op/write-to-file:
                 op-value: empc-lab/svc-cosign-public-key/notesPlain
                 out-file: cosign.pub
-            # - run:
-            #     name: setup cosign keys
-            #     command: |
-            #       op inject -i cosign.key.env -o cosign.key
-            #       op inject -i cosign.pub.env -o cosign.pub
             - echo-message:
                 msg: "after checkout"
           before-publish:
