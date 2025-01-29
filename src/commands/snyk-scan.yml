@@ -70,22 +70,18 @@ steps:
                   --policy-path=./.snyk \
                   --severity-threshold=<< parameters.snyk-severity-threshold >> \
                   <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>> \
-                  2>&1 | tee workspace/snyk_log.txt \
+                  2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_snyk_log.txt \
                   <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
-  - when:
-      name: Save Snyk scan output log as artifact
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - store_artifacts:
-            path: workspace/snyk_log.txt
-            destination: snyk_log.txt
+  # - store_artifacts:
+  #     path: workspace
+  #     destination: "*_log.txt"
 
-  - when:
-      name: Persist Snyk scan output log to workspace
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - persist_to_workspace:
-            root: workspace
-            paths:
-              - snyk_log.txt
+  # - when:
+  #     name: Persist Snyk scan output log to workspace
+  #     condition: << parameters.security-scan-nofail >>
+  #     steps:
+  #       - persist_to_workspace:
+  #           root: workspace
+  #           paths:
+  #             - snyk_log.txt

@@ -49,22 +49,18 @@ steps:
         grype --fail-on << parameters.grype-severity >> \
               <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
               << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-              2>&1 | tee workspace/grype_log.txt \
+              2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_grype_log.txt \
               <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
-  - when:
-      name: Save Grype scan output log as artifact
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - store_artifacts:
-            path: workspace/grype_log.txt
-            destination: grype_log.txt
+  # - store_artifacts:
+  #     path: workspace
+  #     destination: "*_log.txt"
 
-  - when:
-      name: Persist Grype scan output log to workspace
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - persist_to_workspace:
-            root: workspace
-            paths:
-              - grype_log.txt
+  # - when:
+  #     name: Persist Grype scan output log to workspace
+  #     condition: << parameters.security-scan-nofail >>
+  #     steps:
+  #       - persist_to_workspace:
+  #           root: workspace
+  #           paths:
+  #             - grype_log.txt

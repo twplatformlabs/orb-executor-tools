@@ -50,22 +50,18 @@ steps:
                     --exit-code 1 \
                     <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                    2>&1 | tee workspace/trivy_log.txt \
+                    2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_trivy_log.txt \
                     <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
-  - when:
-      name: Save trivy scan output log as artifact
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - store_artifacts:
-            path: workspace/trivy_log.txt
-            destination: trivy_log.txt
+  # - store_artifacts:
+  #     path: workspace
+  #     destination: "*_log.txt"
 
-  - when:
-      name: Persist Trivy scan output log to workspace
-      condition: << parameters.security-scan-nofail >>
-      steps:
-        - persist_to_workspace:
-            root: workspace
-            paths:
-              - trivy_log.txt
+  # - when:
+  #     name: Persist Trivy scan output log to workspace
+  #     condition: << parameters.security-scan-nofail >>
+  #     steps:
+  #       - persist_to_workspace:
+  #           root: workspace
+  #           paths:
+  #             - trivy_log.txt

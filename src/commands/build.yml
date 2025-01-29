@@ -46,18 +46,17 @@ steps:
   - run:
       name: Build executor image
       command: |
-        mkdir -p workspace
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee workspace/build_log.txt
+          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_build_log.txt
 
-  - persist_to_workspace:
-      root: workspace
-      paths:
-        - build_log.txt
+  # - persist_to_workspace:
+  #     root: workspace
+  #     paths:
+  #       - "*_log.txt"
 
-  - store_artifacts:
-      path: workspace/build_log.txt
-      destination: build_log.txt
+  # - store_artifacts:
+  #     path: workspace/build_log.txt
+  #     destination: build_log.txt
