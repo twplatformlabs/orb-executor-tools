@@ -46,11 +46,13 @@ steps:
   - run:
       name: Build executor image
       command: |
+        str="<< parameters.image >>.<< parameters.tag >>.build.out"
+        outfile=${str#*/}
         docker -v
         docker build \
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_build_log.txt
+          -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee workspace/$outfile
 
   # - persist_to_workspace:
   #     root: workspace

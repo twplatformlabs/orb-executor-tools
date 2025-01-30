@@ -339,7 +339,7 @@ steps:
   - persist_to_workspace:
       root: workspace
       paths:
-        - "*_log.txt"
+        - "*.out"
   - when:
       name: Run after-push lifecycle hook steps
       condition: << parameters.after-push >>
