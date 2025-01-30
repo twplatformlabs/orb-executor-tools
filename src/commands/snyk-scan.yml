@@ -61,6 +61,8 @@ steps:
   - run:
       name: Snyk CLI image scan
       command: |
+        str="<< parameters.image >>.<< parameters.tag >>.snyk.out"
+        outfile=${str#*/}
         snyk config set api=${<< parameters.snyk-token >>}
         snyk config set org=<< parameters.snyk-organization >>
         snyk -v
@@ -70,7 +72,7 @@ steps:
                   --policy-path=./.snyk \
                   --severity-threshold=<< parameters.snyk-severity-threshold >> \
                   <<#parameters.snyk-skip-base-image>>--exclude-base-image-vulns<</parameters.snyk-skip-base-image>> \
-                  2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_snyk_log.txt \
+                  2>&1 | tee workspace/$outfile \
                   <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   # - store_artifacts:

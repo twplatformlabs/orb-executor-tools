@@ -46,11 +46,13 @@ steps:
   - run:
       name: Trivy CLI image scan
       command: |
+        str="<< parameters.image >>.<< parameters.tag >>.trivy.out"
+        outfile=${str#*/}
         trivy image --severity << parameters.trivy-severity >> \
                     --exit-code 1 \
                     <<#parameters.trivy-additional-args>><<parameters.trivy-additional-args>><</parameters.trivy-additional-args>> \
                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-                    2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_trivy_log.txt \
+                    2>&1 | tee workspace/$outfile \
                     <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   # - store_artifacts:

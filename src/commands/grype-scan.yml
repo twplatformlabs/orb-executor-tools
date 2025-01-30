@@ -46,10 +46,12 @@ steps:
   - run:
       name: Grype CLI image scan
       command: |
+        str="<< parameters.image >>.<< parameters.tag >>.grype.out"
+        outfile=${str#*/}
         grype --fail-on << parameters.grype-severity >> \
               <<#parameters.grype-additional-args>><<parameters.grype-additional-args>><</parameters.grype-additional-args>> \
               << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
-              2>&1 | tee workspace/<< parameters.image >>_<< parameters.tag >>_grype_log.txt \
+              2>&1 | tee workspace/$outfile \
               <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
 
   # - store_artifacts:
