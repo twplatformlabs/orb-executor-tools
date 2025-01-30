@@ -336,14 +336,8 @@ steps:
       registry: << parameters.registry >>
       image: << parameters.image >>
       tag: << parameters.tag-annotation >><< parameters.tag >>
-  - persist_to_workspace:
-      root: workspace
-      paths:
-        - "*"
   - when:
       name: Run after-push lifecycle hook steps
       condition: << parameters.after-push >>
       steps: << parameters.after-push >>
-  - persist_to_workspace:
-      root: workspace
-      paths: logs
+  - persist-workspace
