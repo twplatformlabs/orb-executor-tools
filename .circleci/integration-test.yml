@@ -65,7 +65,7 @@ jobs:
           dockerfile: test/Dockerfile.build
           image: twdps/orb-executor-tools
       - check-artifacts:
-          filename: workspace/build_log.txt
+          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.build.out
       - executor-tools/snyk-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
@@ -73,19 +73,19 @@ jobs:
             snyk-severity-threshold: medium
             snyk-organization: twdps
       - check-artifacts:
-          filename: workspace/snyk_log.txt
+          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.snyk.out
       - executor-tools/trivy-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
       - check-artifacts:
-          filename: workspace/trivy_log.txt
+          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.triby.out
       - executor-tools/grype-scan:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
       - check-artifacts:
-          filename: workspace/grype_log.txt
+          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.grype.out
       - executor-tools/bats:
             image: twdps/orb-executor-tools
             tag: dev.${CIRCLE_SHA1:0:7}
