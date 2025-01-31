@@ -54,6 +54,9 @@ jobs:
       - checkout
       - setup_remote_docker
       - set-environment
+      - run:
+        name: setup artifact workspace
+        command: mkdir -p workspace
       - executor-tools/lint:
           dockerfile: test/Dockerfile.alpine
           hadolint-additional-args: "--ignore DL3004"
