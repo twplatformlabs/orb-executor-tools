@@ -12,19 +12,16 @@ description: |
   - machine executor option for build
   - support for private dtr compatible registries
   - custom dockerfile path/name, tags, tag annotations
-  - security scanning with snyk, trivy, grype
+  - security scanning with snyk, trivy, grype, flag for non-breaking scans
   - hadolint of dockerfile
   - bats-based runtime image testing
   - hooks for extrag build args and lifecycle steps at multiple points
   - cosign image signing
   - sbom generation in spdx format using syft
   - publishing of sbom to dtr compatible registry using oras
+  - persisting build and scan logs to artifact workspace
 
   NOTE: v4.x.x is a breaking change. Review documentation in detail before upgrading.
-
-  - The CIS scan option has been removed. BAsic functionality is included in the
-  supported imsage scan options.
-
 
 display:
   source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"

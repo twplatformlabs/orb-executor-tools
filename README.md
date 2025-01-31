@@ -17,18 +17,19 @@ By default, executor-tools jobs use the `twdps/circleci-executor-tools` image th
 Feature options include:
 
 - [hadolint](https://github.com/hadolint/hadolint) scan of Dockerfile
-- available CIS Docker Benchmark, Section 4, assessment using [conftest](https://github.com/open-policy-agent/conftest) and opa [policy](CIS_BENCHMARK.md) for scan
 - runtime configuration testing using [bats](https://github.com/bats-core/bats-core)
 - [snyk](https://github.com/snyk/cli) vulnerability scan
 - aquasec/[trivy](https://github.com/aquasecurity/trivy) image scan
 - anchore/[grype](https://github.com/anchore/grype) image scane
+- support for non-breaking scans
 - image signing with sigstore/[cosign](https://github.com/sigstore/cosign)
 - sbom generation using anchore/[syft](https://github.com/anchore/syft)
 - upload sbom to container registry using [oras](https://github.com/oras-project/oras)
 - automated release notes via [github-release-notes](https://github.com/github-tools/github-release-notes)
 - support for machine executor as build environment
-- secrets management tools; [1password](https://1password.com), [teller](https://github.com/tellerops/teller), [vault](https://www.vaultproject.io)
+- secrets management tools; [1password](https://1password.com), [vault](https://www.vaultproject.io)
+- build and scan logs persisted to artifact workspace
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
 
-NOTE: v2.x.x is a breaking change. Review documentation in detail before upgrading.
+NOTE: v4.x.x is a breaking change. Review documentation in detail before upgrading.
