@@ -54,16 +54,3 @@ steps:
                     << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
                     2>&1 | tee workspace/$outfile \
                     <<#parameters.security-scan-nofail>> || true <</parameters.security-scan-nofail>>
-
-  # - store_artifacts:
-  #     path: workspace
-  #     destination: "*_log.txt"
-
-  # - when:
-  #     name: Persist Trivy scan output log to workspace
-  #     condition: << parameters.security-scan-nofail >>
-  #     steps:
-  #       - persist_to_workspace:
-  #           root: workspace
-  #           paths:
-  #             - trivy_log.txt
