@@ -2,9 +2,9 @@ FROM twdps/circleci-base-image:alpine-7.0.1
 
 LABEL org.opencontainers.image.title="circleci-executor-builder" \
       org.opencontainers.image.description="Alpine-based CircleCI executor image" \
-      org.opencontainers.image.documentation="https://github.com/ThoughtWorks-DPS/circleci-executor-builder" \
-      org.opencontainers.image.source="https://github.com/ThoughtWorks-DPS/circleci-executor-builder" \
-      org.opencontainers.image.url="https://github.com/ThoughtWorks-DPS/circleci-executor-builder" \
+      org.opencontainers.image.documentation="https://github.com/twplatformlabs/circleci-executor-builder" \
+      org.opencontainers.image.source="https://github.com/twplatformlabs/circleci-executor-builder" \
+      org.opencontainers.image.url="https://github.com/twplatformlabs/circleci-executor-builder" \
       org.opencontainers.image.vendor="ThoughtWorks, Inc." \
       org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
       org.opencontainers.image.licenses="MIT" \

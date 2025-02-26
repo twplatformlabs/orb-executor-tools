@@ -71,7 +71,7 @@ jobs:
             tag: dev.${CIRCLE_SHA1:0:7}
             dockerfile: test/Dockerfile.build
             snyk-severity-threshold: medium
-            snyk-organization: twdps
+            snyk-organization: twplatformlabs
       - check-artifacts:
           filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.snyk.out
       - executor-tools/trivy-scan:
@@ -254,10 +254,10 @@ workflows:
           after-checkout:
             - set-environment
             - op/write-to-file:
-                op-value: empc-lab/svc-cosign-private-key/notesPlain
+                op-value: platform/svc-cosign-private-key/notesPlain
                 out-file: cosign.key
             - op/write-to-file:
-                op-value: empc-lab/svc-cosign-public-key/notesPlain
+                op-value: platform/svc-cosign-public-key/notesPlain
                 out-file: cosign.pub
             - echo-message:
                 msg: "after checkout"

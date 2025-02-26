@@ -22,7 +22,9 @@ description: |
   - persisting build and scan logs to artifact workspace
 
   NOTE: v4.x.x is a breaking change. Review documentation in detail before upgrading.
+  The GitHub organization for these resources has changed to twplatformlabs. Until further
+  notice, the CircleCI org slug will remain twdps.
 
 display:
-  source_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
-  home_url: "https://github.com/ThoughtWorks-DPS/orb-executor-tools"
+  source_url: "https://github.com/twplatformlabs/orb-executor-tools"
+  home_url: "https://github.com/twplatformlabs/orb-executor-tools"
