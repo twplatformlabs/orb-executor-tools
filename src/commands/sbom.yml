@@ -10,24 +10,31 @@ description: |
 parameters:
 
   registry:
-    description: Registry path for writing signature. Default is docker.io
+    description: Registry path for writing signature.
     type: string
-    default: docker.io
 
-  registry-login:
-    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
-    type: env_var_name
-    default: DOCKER_LOGIN
+  image:
+    description: Name of image.
+    type: string
 
-  registry-password:
-    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
-    type: env_var_name
-    default: DOCKER_PASSWORD
+  tag:
+    description: Value for tag.
+    type: string
+
+  cosign-sign-key:
+    description: Path to private key used to sign image. Default is ./cosign.key
+    type: string
+    default: cosign.key
+
+  cosign-verify-key:
+    description: Path to public key used to verify signature. Default is ./cosign.pub
+    type: string
+    default: cosign.pub
 
   sbom-filename:
     description: Name of sbom file. Default is sbom.spdx
     type: string
-    default: sbom.spdx
+    default: sbom.spdx.json
 
 steps:
   - run:
@@ -35,7 +42,24 @@ steps:
       no_output_timeout: 20m
       command: syft --verbose --output spdx-json $(cat manifestid) > << parameters.sbom-filename >>
   - run:
-      name: push sbom to container registry
+      name: Add sbom attestation to image manifest
       command: |
-        echo ${<< parameters.registry-password >>} | oras login << parameters.registry >> -u ${<< parameters.registry-login >>} --password-stdin
-        oras push --artifact-type 'application/vnd.unknown.config.v1+json' << parameters.registry >>/$(cat manifestid | sed 's/<< parameters.registry >>\///g' | sed 's/:/-/g' | sed 's/@/:/g').spdx << parameters.sbom-filename >>:application/json
+        cosign attest \
+          --predicate << parameters.sbom-filename >> \
+          --key << parameters.cosign-sign-key >> --yes \
+          --type https://spdx.dev/Document \
+          << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+  - run:
+      name: verify attestation
+      command: |
+        cosign verify-attestation \
+               --type https://spdx.dev/Document \
+               --key << parameters.cosign-verify-key >> \
+               << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+  - run:
+      name: verify signature
+      command: |
+        cosign verify \
+               --key << parameters.cosign-verify-key >> \
+               << parameters.registry >>/<< parameters.image >>:<< parameters.tag >>
+

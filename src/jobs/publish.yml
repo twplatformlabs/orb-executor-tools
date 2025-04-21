@@ -187,11 +187,13 @@ steps:
             cosign-verify-key: << parameters.cosign-verify-key >>
             cosign-password: << parameters.cosign-password >>
   - when:
-      name: Generate sbom
+      name: Add sbom attestations
       condition: << parameters.sbom >>
       steps:
         - sbom:
             registry: << parameters.registry >>
-            registry-login: << parameters.registry-login >>
-            registry-password: << parameters.registry-password >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+            cosign-sign-key: << parameters.cosign-sign-key >>
+            cosign-verify-key: << parameters.cosign-verify-key >>
             sbom-filename: << parameters.sbom-filename >>
