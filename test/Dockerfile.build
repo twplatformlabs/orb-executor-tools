@@ -1,22 +1,25 @@
-FROM alpine:3.21
+FROM twdps/circleci-base-image:alpine-7.0.1
 
-LABEL org.opencontainers.image.created="%%CREATED%%" \
-      org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
-      org.opencontainers.image.url="https://github.com/twplatformlabs/orb-executor-tools" \
-      org.opencontainers.image.documentation="https://github.com/twplatformlabs/orb-executor-tools" \
-      org.opencontainers.image.source="https://github.com/twplatformlabs/orb-executor-tools" \
-      org.opencontainers.image.version="%%VERSION%%" \
+LABEL org.opencontainers.image.title="circleci-executor-builder" \
+      org.opencontainers.image.description="Alpine-based CircleCI executor image" \
+      org.opencontainers.image.documentation="https://github.com/twplatformlabs/circleci-executor-builder" \
+      org.opencontainers.image.source="https://github.com/twplatformlabs/circleci-executor-builder" \
+      org.opencontainers.image.url="https://github.com/twplatformlabs/circleci-executor-builder" \
       org.opencontainers.image.vendor="ThoughtWorks, Inc." \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.title="orb-executor-tools" \
-      org.opencontainers.image.description="Build artifact for orb-executor-tools integration testing" \
-      org.opencontainers.image.base.name="%%BASE%%"
+      org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
+      org.opencontainers.image.licenses="MIT"
 
-# hadolint ignore=DL3018
-RUN apk add --no-cache \
-        git \
-        openssh \
-        sudo \
-        tar \
-        gzip \
-        ca-certificates
+ENV BATS_VERSION=1.10.0
+ENV SNYK_VERSION=1.1268.0
+
+# hadolint ignore=DL3004
+RUN sudo apk add --no-cache \
+             nodejs-current==21.4.0-r0 \
+             npm==10.2.5-r0 && \
+    sudo npm install -g \
+             snyk@${SNYK_VERSION} \
+             bats@${BATS_VERSION}
+
+USER circleci
+
+WORKDIR /home/circleci/project
