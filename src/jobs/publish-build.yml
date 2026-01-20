@@ -1,0 +1,199 @@
+# src/jobs/publish.yml
+# yamllint disable rule:line-length
+---
+description: Tag and publish a release version.
+
+executor:
+  name: circleci-executor-builder
+  image: << parameters.executor-image-name >>
+  resource-class: << parameters.executor-resource-class >>
+  registry-login: << parameters.registry-login >>
+  registry-password: << parameters.registry-password >>
+
+shell: << parameters.shell >>
+
+parameters:
+
+  shell:
+    description: Default shell invocation.
+    type: string
+    default: /bin/bash -eo pipefail
+
+  executor-image-name:
+    description: Remote-docker executor image. Default is twdps/circleci-executor-builder:latest.
+    type: string
+    default: docker.io/twdps/circleci-executor-builder:latest
+
+  registry-login:
+    description: Environment variable containing Username for reigstry access. Default is DOCKER_LOGIN.
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  registry-password:
+    description: Environment variable containing Password for reigstry access. Default is DOCKER_PASSWORD.
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
+  executor-resource-class:
+    description: Executor resource class. Default is medium.
+    type: enum
+    enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    default: medium
+
+  registry:
+    description: Name of registry. Default is docker.io
+    type: string
+    default: docker.io
+
+  image:
+    description: Name of image.
+    type: string
+
+  pull-tag:
+    description: Value of tag to pull for publish release. Default is dev.${CIRCLE_SHA1:0:7}.
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  tag-annotation:
+    description: Additional text for semantic version tag.
+    type: string
+    default: ""
+
+  version-tag:
+    description: Version release tag. Default is $CIRCLE_TAG.
+    type: string
+    default: ${CIRCLE_TAG}
+
+  release-tag:
+    description: Value for an additional release tag.
+    type: string
+    default: ""
+
+  extra-release-args:
+    description: Extra flags to pass to gren.
+    type: string
+    default: ""
+
+  before-release:
+    description: Optional steps to run prior to gren release.
+    type: steps
+    default: []
+
+  sign-image:
+    description: Sign OCI image using cosign. Default is false.
+    type: boolean
+    default: false
+
+  cosign-attestations:
+    description: Attestations to include in signature.
+    type: string
+    default: ""
+
+  cosign-sign-key:
+    description: Path to private key used to sign image. Default is ./cosign.key
+    type: string
+    default: cosign.key
+
+  cosign-verify-key:
+    description: Path to public key used to verify signature. Default is ./cosign.pub
+    type: string
+    default: cosign.pub
+
+  cosign-password:
+    description: Environment variable containing signing key passphrase. Default is COSIGN_PASSWORD.
+    type: env_var_name
+    default: COSIGN_PASSWORD
+
+  sbom:
+    description: Include a software bill of materials with the signature. Default is false.
+    type: boolean
+    default: false
+
+  sbom-filename:
+    description: Name of sbom file. Default is sbom.spdx
+    type: string
+    default: sbom.spdx
+
+  after-checkout:
+    description: Optional steps to run after checking out the code.
+    type: steps
+    default: []
+
+  before-publish:
+    description: Optional steps to run before publishing the docker image.
+    type: steps
+    default: []
+
+  after-publish:
+    description: Optional steps to run after publishing the docker image.
+    type: steps
+    default: []
+
+steps:
+  - checkout
+  - setup_remote_docker
+  - when:
+      name: Run after-checkout lifecycle hook steps.
+      condition: << parameters.after-checkout >>
+      steps: << parameters.after-checkout >>
+  - confirm-registry:
+      registry: << parameters.registry >>
+      registry-login: << parameters.registry-login >>
+      registry-password: << parameters.registry-password >>
+  - pull:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.pull-tag >>
+  - tag:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      current-tag: << parameters.pull-tag >>
+      release-tag: << parameters.tag-annotation >><< parameters.version-tag >>
+  - when:
+      name: Create additional release tag
+      condition: << parameters.release-tag >>
+      steps:
+        - tag:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            current-tag: << parameters.pull-tag >>
+            release-tag: << parameters.release-tag >>
+  - push:
+      registry: << parameters.registry >>
+      image: << parameters.image >>
+      tag: << parameters.tag-annotation >><< parameters.version-tag >>
+  - when:
+      name: Push additional release tag
+      condition: << parameters.release-tag >>
+      steps:
+        - push:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+  - when:
+      name: Run after-publish lifecycle hook steps
+      condition: << parameters.after-publish >>
+      steps: << parameters.after-publish >>
+  - when:
+      name: Sign image using Cosign
+      condition: << parameters.sign-image >>
+      steps:
+        - sign:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+            cosign-attestations: << parameters.cosign-attestations >>
+            cosign-sign-key: << parameters.cosign-sign-key >>
+            cosign-verify-key: << parameters.cosign-verify-key >>
+            cosign-password: << parameters.cosign-password >>
+  - when:
+      name: Add sbom attestations
+      condition: << parameters.sbom >>
+      steps:
+        - sbom:
+            registry: << parameters.registry >>
+            image: << parameters.image >>
+            tag: << parameters.release-tag >>
+            cosign-sign-key: << parameters.cosign-sign-key >>
+            cosign-verify-key: << parameters.cosign-verify-key >>
+            sbom-filename: << parameters.sbom-filename >>
