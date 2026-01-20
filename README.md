@@ -32,4 +32,13 @@ Feature options include:
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
 
-NOTE: v4.x.x is a breaking change. Review documentation in detail before upgrading.
+NOTE: v5.x.x is a breaking change. Review documentation in detail before upgrading.
+
+In the v5 release, the default behavior of the dev-release, machine-executor-dev-release, and publish jobs is refactored for buildx-based bake file manifest multi-image builds that incorporate the buildx --provenance and --sbom generation.  
+
+The historical, simple build jobs will remain with new names: (_note the inclusion of the word build to indicate use of simple docker build command._)  
+- dev-build-release
+- machine-executor-dev-release
+- publish-build
+
+Also, the buildx jobs demonstrate the docker scout sve scan capability. The snyk, trivy, and grype examples will remain in the simple build jobs.  
