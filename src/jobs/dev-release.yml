@@ -85,6 +85,11 @@ parameters:
     type: string
     default: test
 
+  dockerfiles-path:
+    description: Name of folder with dockerfiles. Default is pwd.
+    type: string
+    default: "Dockerfile.*"
+
   hadolint-version:
     description: Specify specific Hadolint CLI version. Default assumes version already installed on executor.
     type: string
@@ -151,7 +156,7 @@ steps:
       name: setup artifact workspace
       command: mkdir -p workspace
   - lint:
-      dockerfile: "Dockerfile.*"
+      dockerfile: << parameters.dockerfiles-path >>
       hadolint-additional-args: << parameters.hadolint-additional-args >>
   - confirm-registry:
       registry: << parameters.registry >>
