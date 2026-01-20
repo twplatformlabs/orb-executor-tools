@@ -30,6 +30,16 @@ parameters:
     enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
+  bake-file:
+    description: Name of docker-bake.json file. Default is docker-bake.json.
+    type: string
+    default: "docker-bake.json"
+
+  target:
+    description: Bake file build target. Default is default.
+    type: string
+    default: "default"
+
   op-version:
     description: Specify specific 1Password CLI version. Default assumes version already installed on executor.
     type: string
@@ -40,40 +50,15 @@ parameters:
     type: string
     default: ""
 
-  snyk-version:
-    description: Specify specific Snyk CLI version. Default assumes version already installed on executor.
-    type: string
-    default: ""
-
-  snyk-scan:
-    description: Perform Snyk CLI dockerfile and image CVE scan. Default is false.
+  scout-scan:
+    description: Perform Docker Scout CVE scan of all targets in bake file. Default is false.
     type: boolean
     default: false
 
-  snyk-severity-threshold:
-    description: Snyk test reporting threshold=[low | medium | high | critical]. Default is critical.
+  scout-outfile:
+    description: Name of output file for Docker Scout CVE scan. Default is scout.out.
     type: string
-    default: "critical"
-
-  snyk-organization:
-    description: Organization registered with snyk.io.
-    type: string
-    default: ""
-
-  snyk-token:
-    description: Environment Variable containing Snyk.io api-token. Default is SNYK_TOKEN.
-    type: env_var_name
-    default: SNYK_TOKEN
-
-  snyk-skip-base-image:
-    description: Skip performing CVE scan of base image. Default is false.
-    type: boolean
-    default: false
-
-  snyk-additional-args:
-    description: Additional Snyk CLI command line flags.
-    type: string
-    default: ""
+    default: "scout.out"
 
   bats-version:
     description: Specify specific Bats CLI version. Default assumes version already installed on executor.
@@ -110,61 +95,6 @@ parameters:
     type: string
     default: ""
 
-  trivy-version:
-    description: Specify specific Trivy CLI version. Default assumes version already installed on executor.
-    type: string
-    default: ""
-
-  trivy-scan:
-    description: Perform Trivy CLI image scan. Default is false.
-    type: boolean
-    default: false
-
-  trivy-severity:
-    description: Each Trivy CLI scan desired reporting threshold level="UNKNOWN,LOW,MEDIUM,HIGH,CRITICAL". Default is "CRITICAL".
-    type: string
-    default: "CRITICAL"
-
-  trivy-additional-args:
-    description: Additional Trivy CLI command line flags.
-    type: string
-    default: ""
-
-  grype-version:
-    description: Specify specific Grype CLI version. Default assumes version already installed on executor.
-    type: string
-    default: ""
-
-  grype-scan:
-    description: Perform Grype CLI image scan. Default is false.
-    type: boolean
-    default: false
-
-  grype-severity:
-    description: Grype CLI scan reporting threshold=[negligible | low | medium | high | critical]. Default is critical.
-    type: string
-    default: "critical"
-
-  grype-additional-args:
-    description: Additional Gryp CLI command line flags
-    type: string
-    default: ""
-
-  security-scan-nofail:
-    description: Instead of the pipeline failing, generate scan results as saved artifact. Default is false.
-    type: boolean
-    default: false
-
-  dockerfile:
-    description: Name of dockerfile. Default is Dockerfile.
-    type: string
-    default: Dockerfile
-
-  path:
-    description: Path to the directory containing your Dockerfile and build context.  Default is "."
-    type: string
-    default: .
-
   registry:
     description: Name of registry. Default is docker.io
     type: string
@@ -180,33 +110,15 @@ parameters:
     type: env_var_name
     default: DOCKER_PASSWORD
 
-  image:
-    description: Name of image.
-    type: string
-
   tag:
     description: Value for dev build tag. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
-  tag-annotation:
-    description: Additional text prepended to semantic version tag.
-    type: string
-    default: ""
-
   extra-build-args:
     description: Extra flags to pass to docker build.
     type: string
     default: ""
-
-  opencontainer-labels:
-    description: |
-      Set opencontainer created, version, and base.name labels. Default is false.
-        org.opencontainers.image.created="%Y-%m-%dT%H:%M:%SZ"
-        org.opencontainers.image.version="CIRCLE_SHA1"
-        org.opencontainers.image.base.name="FROM line of Dockerfile"
-    type: boolean
-    default: false
 
   after-checkout:
     description: Optional steps to run after checking out the code.
@@ -223,22 +135,14 @@ parameters:
     type: steps
     default: []
 
-  after-push:
-    description: Optional steps to run after pushing the dev release docker image.
-    type: steps
-    default: []
-
 steps:
   - checkout
   - setup_remote_docker
   - install:
       op-version: << parameters.op-version >>
       vault-version: << parameters.vault-version >>
-      snyk-version: << parameters.snyk-version >>
       bats-version: << parameters.bats-version >>
       hadolint-version: << parameters.hadolint-version >>
-      trivy-version: << parameters.trivy-version >>
-      grype-version: << parameters.grype-version >>
   - when:
       name: Run after-checkout lifecycle hook steps
       condition: << parameters.after-checkout >>
@@ -247,7 +151,7 @@ steps:
       name: setup artifact workspace
       command: mkdir -p workspace
   - lint:
-      dockerfile: << parameters.dockerfile >>
+      dockerfile: "Dockerfile.*"
       hadolint-additional-args: << parameters.hadolint-additional-args >>
   - confirm-registry:
       registry: << parameters.registry >>
@@ -257,87 +161,35 @@ steps:
       name: Run before-build lifecycle hook steps
       condition: << parameters.before-build >>
       steps: << parameters.before-build >>
-  - when:
-      name: set org.opencontainer creation date, version, and base.name labels
-      condition: << parameters.opencontainer-labels >>
-      steps:
-        - set-labels:
-            dockerfile: << parameters.dockerfile >>
-  - build:
-      dockerfile: << parameters.dockerfile >>
-      path: << parameters.path >>
-      image: << parameters.image >>
-      tag: << parameters.tag-annotation >><< parameters.tag >>
-      registry: << parameters.registry >>
+  - buildx:
+      tag: << parameters.tag >>
+      bake-file: << parameters.bake-file >>
+      target: << parameters.target >>
       extra-build-args: << parameters.extra-build-args >>
   - when:
-      name: Perform Snyk CLI CVE scan
-      condition: << parameters.snyk-scan >>
+      name: Perform Docker Scout CVE scan
+      condition: << parameters.scout-scan >>
       requires:
-        - build
+        - buildx
       steps:
-        - snyk-scan:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.tag-annotation >><< parameters.tag >>
-            dockerfile: << parameters.dockerfile >>
-            snyk-severity-threshold: << parameters.snyk-severity-threshold >>
-            snyk-organization: << parameters.snyk-organization >>
-            snyk-token: << parameters.snyk-token >>
-            snyk-skip-base-image: << parameters.snyk-skip-base-image >>
-            snyk-additional-args: << parameters.snyk-additional-args >>
-            security-scan-nofail: << parameters.security-scan-nofail >>
-  - when:
-      name: Perform Trivy CLI image scan
-      condition: << parameters.trivy-scan >>
-      requires:
-        - build
-      steps:
-        - trivy-scan:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.tag-annotation >><< parameters.tag >>
-            dockerfile: << parameters.dockerfile >>
-            trivy-severity: << parameters.trivy-severity >>
-            trivy-additional-args: << parameters.trivy-additional-args >>
-            security-scan-nofail: << parameters.security-scan-nofail >>
-  - when:
-      name: Perform Grype CLI image scan
-      condition: << parameters.grype-scan >>
-      requires:
-        - build
-      steps:
-        - grype-scan:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.tag-annotation >><< parameters.tag >>
-            dockerfile: << parameters.dockerfile >>
-            grype-severity: << parameters.grype-severity >>
-            grype-additional-args: << parameters.grype-additional-args >>
-            security-scan-nofail: << parameters.security-scan-nofail >>
+        - scout-scan:
+            bake-file: << parameters.bake-file >>
+            outfile: << parameters.scout-outfile >>
   - when:
       name: Run bats container configuration health check
       condition: << parameters.bats-test >>
       requires:
-        - build
+        - buildx
       steps:
-        - bats:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.tag-annotation >><< parameters.tag >>
-            bats-run-container-name: << parameters.bats-run-container-name >>
-            bats-entry-point: << parameters.bats-entry-point >>
-            bats-test-path: << parameters.bats-test-path >>
+        - run:
+            name: Run bats container configuration health check on targets in bake file.
+            environment:
+              BAKEFILE: << parameters.bake-file >>
+              BATS_ENTRY_POINT: << parameters.bats-entry-point >>
+              BATS_TEST_PATH: << parameters.bats-test-path >>
+            command: <<include(scripts/bats_scan.sh)>>
   - when:
       name: Run after-build lifecycle hook steps.
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
-  - push:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      tag: << parameters.tag-annotation >><< parameters.tag >>
-  - when:
-      name: Run after-push lifecycle hook steps
-      condition: << parameters.after-push >>
-      steps: << parameters.after-push >>
   - persist-workspace

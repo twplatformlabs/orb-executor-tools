@@ -53,12 +53,3 @@ steps:
           <<#parameters.extra-build-args>><<parameters.extra-build-args>><</parameters.extra-build-args>> \
           -t << parameters.registry >>/<< parameters.image >>:<< parameters.tag >> \
           -f << parameters.dockerfile >> << parameters.path >> 2>&1 | tee workspace/$outfile
-
-  # - persist_to_workspace:
-  #     root: workspace
-  #     paths:
-  #       - "*_log.txt"
-
-  # - store_artifacts:
-  #     path: workspace/build_log.txt
-  #     destination: build_log.txt
