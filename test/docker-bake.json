@@ -1,9 +1,4 @@
 {
-  "variable": {
-    "TAG": {
-      "default": "latest"
-    }
-  },
   "group": {
     "executors": {
       "targets": ["alpine", "ubuntu"]
@@ -35,7 +30,7 @@
       ]
     },
     "alpine": {
-      "dockerfile": "Dockerfile.alpine",
+      "dockerfile": "test/Dockerfile.alpine",
       "tags": ["docker.io/twdps/orb-executor-tools:alpine-${TAG}"],
       "context": ".",
       "platforms": ["linux/amd64", "linux/arm64"],
@@ -50,7 +45,7 @@
       }
     },
     "ubuntu": {
-      "dockerfile": "Dockerfile.ubuntu",
+      "dockerfile": "test/Dockerfile.ubuntu",
       "tags": ["docker.io/twdps/circleci-remote-docker:ubuntu-${TAG}"],
       "context": ".",
       "platforms": ["linux/amd64", "linux/arm64"],
