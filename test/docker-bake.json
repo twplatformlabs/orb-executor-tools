@@ -1,4 +1,13 @@
 {
+
+  "variable": {
+    "CREATED": { "default": "" },
+    "VERSION": { "default": "" },
+    "ALPINE_BASE": { "default": "" },
+    "UBUNTU_BASE": { "default": "" },
+    "TAG": { "default": "latest" }
+  },
+
   "group": {
     "executors": {
       "targets": ["alpine", "ubuntu"]
