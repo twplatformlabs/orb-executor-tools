@@ -7,7 +7,7 @@ orbs:
 
 globals:
   - &context orb-publishing
-  - &image-name twdps/circleci-executor-builder:ubuntu-2026.01.2
+  - &image-name twdps/circleci-executor-builder:ubuntu-2026.01.1
 
 commands:
 
