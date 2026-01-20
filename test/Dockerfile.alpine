@@ -1,58 +1,14 @@
-FROM twdps/circleci-base-image:alpine-7.0.1
+FROM alpine:3
 
-LABEL org.opencontainers.image.title="circleci-executor-builder" \
-      org.opencontainers.image.description="Alpine-based CircleCI executor image" \
-      org.opencontainers.image.documentation="https://github.com/twplatformlabs/circleci-executor-builder" \
-      org.opencontainers.image.source="https://github.com/twplatformlabs/circleci-executor-builder" \
-      org.opencontainers.image.url="https://github.com/twplatformlabs/circleci-executor-builder" \
-      org.opencontainers.image.vendor="ThoughtWorks, Inc." \
-      org.opencontainers.image.authors="nic.cheneweth@thoughtworks.com" \
-      org.opencontainers.image.licenses="MIT" \
-      org.opencontainers.image.created="CREATED" \
-      org.opencontainers.image.version="VERSION"
+# LABEL is managed in docker-bake file
 
-ENV BATS_VERSION=1.10.0
-ENV CONFTEST_VERSION=0.48.0
-ENV HADOLINT_VERSION=2.12.0
-ENV SNYK_VERSION=1.1268.0
-ENV TRIVY_VERSION=0.48.2
-ENV GRYPE_VERSION=0.74.0
-ENV COSIGN_VERSION=2.2.2
-ENV SYFT_VERSION=0.100.0
-ENV ORAS_VERSION=1.1.0
-ENV GREN_VERSION=0.17.3
-
-
-RUN sudo apk add --no-cache \
-             nodejs-current==21.4.0-r0 \
-             npm==10.2.5-r0 && \
-    sudo npm install -g \
-             snyk@${SNYK_VERSION} \
-             bats@${BATS_VERSION} \
-             github-release-notes@${GREN_VERSION} && \
-    sudo chown -R root:root /usr/local/lib/node_modules && \
-    curl -LO https://github.com/open-policy-agent/conftest/releases/download/v${CONFTEST_VERSION}/conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz && \
-    tar xzf conftest_${CONFTEST_VERSION}_Linux_x86_64.tar.gz && \
-    sudo mv conftest /usr/local/bin && rm ./* && \
-    curl -LO https://github.com/sigstore/cosign/releases/download/v${COSIGN_VERSION}/cosign-linux-amd64 && \
-    chmod +x cosign-linux-amd64 && sudo mv cosign-linux-amd64 /usr/local/bin/cosign && \
-    sudo bash -c "curl -sSfL https://raw.githubusercontent.com/anchore/syft/main/install.sh | sh -s -- -b /usr/local/bin v${SYFT_VERSION}" && \
-    curl -LO "https://github.com/oras-project/oras/releases/download/v${ORAS_VERSION}/oras_${ORAS_VERSION}_linux_amd64.tar.gz" && \
-    mkdir -p oras-install && \
-    tar -zxf oras_${ORAS_VERSION}_*.tar.gz -C oras-install/ && \
-    sudo mv oras-install/oras /usr/local/bin/ && \
-    rm -rf ./oras_${ORAS_VERSION}_*.tar.gz oras-install/ && \
-    curl -LO https://github.com/aquasecurity/trivy/releases/download/v${TRIVY_VERSION}/trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && \
-    tar xzf trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz trivy && \
-    sudo mv trivy /usr/local/bin && rm trivy_${TRIVY_VERSION}_Linux-64bit.tar.gz && \
-    curl -LO https://github.com/hadolint/hadolint/releases/download/v${HADOLINT_VERSION}/hadolint-Linux-x86_64 && \
-    sudo mv hadolint-Linux-x86_64 /usr/local/bin/hadolint && sudo chmod +x /usr/local/bin/hadolint && \
-    curl -LO https://github.com/anchore/grype/releases/download/v${GRYPE_VERSION}/grype_${GRYPE_VERSION}_linux_amd64.tar.gz && \
-    tar xzf grype_${GRYPE_VERSION}_linux_amd64.tar.gz grype && \
-    sudo mv grype /usr/local/bin && rm grype_${GRYPE_VERSION}_linux_amd64.tar.gz
-
-COPY inspec /etc/chef/accepted_licenses/inspec
-
-USER circleci
-
-WORKDIR /home/circleci/project
+# Configured for automatic, monthly build using current package repository release versions.
+# Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
+# hadolint ignore=DL3018
+RUN apk add --no-cache \
+        bash \
+        git \
+        openssh \
+        tar \
+        gzip \
+        ca-certificates

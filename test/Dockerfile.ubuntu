@@ -1,0 +1,15 @@
+FROM ubuntu:24.04
+
+# LABEL is managed in docker-bake file
+
+# Configured for automatic, monthly build using current package repository release versions.
+# Pin downstream executor builds to specific OS and package versions using YYYY.MM tag.
+# hadolint ignore=DL3008
+RUN apt-get update && \
+    apt-get install --no-install-recommends -y \
+            git \
+            openssh-server \
+            tar \
+            gzip \
+            ca-certificates && \
+    apt-get clean && rm -rf /var/lib/apt/lists/*
