@@ -1,0 +1,65 @@
+# src/commands/build.yml
+# yamllint disable rule:line-length
+---
+description: |
+  Uses buildx with a bake file for advanced builds. Defaults to docker-bake.json and can override.
+
+  Persists the log file to the pipeline workspace and makes available as artifact.
+  Log file name: << parameters.tag >>_build_log.txt
+
+parameters:
+
+  # dockerfile:
+  #   description: Name of dockerfile. Default is Dockerfile.
+  #   type: string
+  #   default: Dockerfile
+
+  # path:
+  #   description: Path to the directory containing your Dockerfile and build context. Default is "."
+  #   type: string
+  #   default: .
+
+  # registry:
+  #   description: Name of registry. Default is docker.io
+  #   type: string
+  #   default: docker.io
+
+  # image:
+  #   description: Name of image.
+  #   type: string
+
+  tag:
+    description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
+    type: string
+    default: dev.${CIRCLE_SHA1:0:7}
+
+  bake-file:
+    description: Name of docker-bake.json file. Default is docker-bake.json.
+    type: string
+    default: docker-bake.json
+
+  target:
+    description: Bake file build target. Default is default.
+    type: string
+    default: default
+
+  extra-build-args:
+    description: Extra flags to pass to docker build.
+    type: string
+    default: ""
+
+steps:
+  - run:
+      name: Add <<parameters.tag>> to BASH_ENV
+      environment:
+        TAG: << parameters.tag >>
+      command: <<include(scripts/env_tag.sh)>>
+  - run:
+      name: Buildx based on docker bake file configuration.
+      command: |
+        str="bake.<< parameters.tag >>.build.out"
+        outfile=${str#*/}
+        docker -v
+        docker buildx --progress plain --metadata-file metadata.json bake \
+          <<#parameters.extra-build-args>><< parameters.extra-build-args >><</parameters.extra-build-args>> \
+          --push -f << parameters.bake-file >> << parameters.target >> 2>&1 | tee workspace/$outfile
