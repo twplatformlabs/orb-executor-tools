@@ -191,9 +191,6 @@ workflows:
           after-build:
             - echo-message:
                 msg: "after build"
-          after-push:
-            - echo-message:
-                msg: "after push"
 
       # - test non-install commands:
       #     context: *context
