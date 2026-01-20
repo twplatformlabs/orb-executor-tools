@@ -174,7 +174,7 @@ workflows:
       - executor-tools/dev-release:
           name: test buildx dev release
           context: *context
-          dockerfile: test/Dockerfile.*
+          dockerfiles-path: test/Dockerfile.*
           scout-scan: true
           bats-test: true
           bats-entry-point: /bin/ash
