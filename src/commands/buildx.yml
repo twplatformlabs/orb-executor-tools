@@ -60,6 +60,6 @@ steps:
         str="bake.<< parameters.tag >>.build.out"
         outfile=${str#*/}
         docker -v
-        docker buildx --progress plain --metadata-file metadata.json bake \
+        docker buildx bake --progress plain --metadata-file metadata.json \
           <<#parameters.extra-build-args>><< parameters.extra-build-args >><</parameters.extra-build-args>> \
           --push -f << parameters.bake-file >> << parameters.target >> 2>&1 | tee workspace/$outfile
