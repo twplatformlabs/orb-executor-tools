@@ -28,14 +28,8 @@
         "BUILDKIT_SBOM_SCAN_CONTEXT": "1"
       },
       "attest": [
-        {
-          "type": "provenance",
-          "mode": "max",
-          "version": "v1"
-        },
-        {
-          "type": "sbom"
-        }
+        "type=provenance,mode=max,version=v1",
+        "type=sbom"
       ]
     },
     "alpine": {
