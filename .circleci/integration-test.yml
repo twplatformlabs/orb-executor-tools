@@ -7,6 +7,7 @@ orbs:
 
 globals:
   - &context orb-publishing
+  - &image-name twdps/circleci-executor-builder:ubuntu-2026.01
 
 commands:
 
@@ -174,6 +175,7 @@ workflows:
       - executor-tools/dev-release:
           name: test buildx dev release
           context: *context
+          executor-image-name: *image-name
           dockerfiles-path: test/Dockerfile.*
           bake-file: test/docker-bake.json
           target: executors
