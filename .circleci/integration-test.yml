@@ -175,6 +175,7 @@ workflows:
           name: test buildx dev release
           context: *context
           dockerfiles-path: test/Dockerfile.*
+          bake-file: test/docker-bake.json
           target: executors
           scout-scan: true
           bats-test: true
