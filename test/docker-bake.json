@@ -36,16 +36,16 @@
     },
     "alpine": {
       "dockerfile": "Dockerfile.alpine",
-      "tags": ["docker.io/twdps/circleci-remote-docker:alpine-${TAG}"],
+      "tags": ["docker.io/twdps/orb-executor-tools:alpine-${TAG}"],
       "context": ".",
       "platforms": ["linux/amd64", "linux/arm64"],
       "inherits": ["_release"],
       "labels": {
-        "org.opencontainers.image.url": "https://github.com/twplatformlabs/circleci-remote-docker",
-        "org.opencontainers.image.documentation": "https://github.com/twplatformlabs/circleci-remote-docker",
-        "org.opencontainers.image.source": "https://github.com/twplatformlabs/circleci-remote-docker",
-        "org.opencontainers.image.title": "circleci-remote-docker",
-        "org.opencontainers.image.description": "Alpine-based CircleCI executor image containing only the minimum required packages",
+        "org.opencontainers.image.url": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.documentation": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.source": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.title": "orb-executor-tools",
+        "org.opencontainers.image.description": "test fixture image used in the orb-executor-tools ci",
         "org.opencontainers.image.base.name": "${ALPINE_BASE}"
       }
     },
@@ -54,7 +54,15 @@
       "tags": ["docker.io/twdps/circleci-remote-docker:ubuntu-${TAG}"],
       "context": ".",
       "platforms": ["linux/amd64", "linux/arm64"],
-      "inherits": ["_release"]
+      "inherits": ["_release"],
+      "labels": {
+        "org.opencontainers.image.url": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.documentation": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.source": "https://github.com/twplatformlabs/orb-executor-tools",
+        "org.opencontainers.image.title": "orb-executor-tools",
+        "org.opencontainers.image.description": "test fixture image used in the orb-executor-tools ci",
+        "org.opencontainers.image.base.name": "${UBUNTU_BASE}"
+      }
     }
   }
 }
