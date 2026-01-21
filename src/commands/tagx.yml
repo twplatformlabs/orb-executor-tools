@@ -20,6 +20,11 @@ parameters:
     type: string
     default: ${CIRCLE_TAG}
 
+  include-latest:
+    description: Include latest tag in release. Default is false.
+    type: string
+    default: "false"
+
 steps:
   - run:
       name: Add <<parameters.commit-tag>> to BASH_ENV
@@ -31,4 +36,5 @@ steps:
       environment:
         BAKEFILE: << parameters.bake-file >>
         RELEASE_TAG: << parameters.release-tag >>
+        LATEST_TAG: << parameters.include-latest >>
       command: <<include(scripts/add_tag_to_manifest.sh)>>

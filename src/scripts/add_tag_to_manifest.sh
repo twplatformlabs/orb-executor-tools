@@ -43,6 +43,15 @@ while IFS=$'\t' read -r target_name raw_tag; do
 
   echo "Digest reference: ${image_ref%@*}@${digest}"
 
+  # optionally add latest tag
+  if [[ "$LATEST_TAG" == "true" ]]; then
+    latest_image_ref="${image_ref/$TAG/latest}"
+    echo "(Optional) Use Latest: ${latest_image_ref}"
+    docker buildx imagetools create -t "${latest_image_ref}" "${image_ref%@*}@${digest}"
+  else
+    echo "(Optional) Use Latest: skipped"
+  fi
+
   # Create release tag
   release_image_ref="${image_ref/$TAG/$RELEASE_TAG}"
   echo "Release tag: ${release_image_ref}"

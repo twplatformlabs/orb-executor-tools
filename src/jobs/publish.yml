@@ -45,20 +45,25 @@ parameters:
     type: string
     default: docker.io
 
+  bake-file:
+    description: Name of docker-bake.json file. Default is docker-bake.json.
+    type: string
+    default: docker-bake.json
+
   commit-tag:
     description: Value of tag to pull for publish release. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
-  version-tag:
-    description: Semantic release tag. Default is $CIRCLE_TAG.
-    type: string
-    default: ${CIRCLE_TAG}
-
   release-tag:
     description: Value for an additional release tag.
     type: string
     default: ${CIRCLE_TAG}
+
+  include-latest:
+    description: Include latest tag in release. Default is false.
+    type: string
+    default: "false"
 
   extra-release-args:
     description: Extra flags to pass to gren.
@@ -133,55 +138,24 @@ steps:
       registry-password: << parameters.registry-password >>
 
   - tagx:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      current-tag: << parameters.pull-tag >>
-      release-tag: << parameters.tag-annotation >><< parameters.version-tag >>
-  - when:
-      name: Create additional release tag
-      condition: << parameters.release-tag >>
-      steps:
-        - tag:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            current-tag: << parameters.pull-tag >>
-            release-tag: << parameters.release-tag >>
-  - push:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      tag: << parameters.tag-annotation >><< parameters.version-tag >>
-  - when:
-      name: Push additional release tag
-      condition: << parameters.release-tag >>
-      steps:
-        - push:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.release-tag >>
+      bake-file: << parameters.bake-file >>
+      commit-tag: << parameters.commit-tag >>
+      release-tag: << parameters.release-tag >>
+      include-latest: << parameters.include-latest >>
+
   - when:
       name: Run after-publish lifecycle hook steps
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
-  - when:
-      name: Sign image using Cosign
-      condition: << parameters.sign-image >>
-      steps:
-        - sign:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.release-tag >>
-            cosign-attestations: << parameters.cosign-attestations >>
-            cosign-sign-key: << parameters.cosign-sign-key >>
-            cosign-verify-key: << parameters.cosign-verify-key >>
-            cosign-password: << parameters.cosign-password >>
-  - when:
-      name: Add sbom attestations
-      condition: << parameters.sbom >>
-      steps:
-        - sbom:
-            registry: << parameters.registry >>
-            image: << parameters.image >>
-            tag: << parameters.release-tag >>
-            cosign-sign-key: << parameters.cosign-sign-key >>
-            cosign-verify-key: << parameters.cosign-verify-key >>
-            sbom-filename: << parameters.sbom-filename >>
+  # - when:
+  #     name: Sign image using Cosign
+  #     condition: << parameters.sign-image >>
+  #     steps:
+  #       - sign:
+  #           registry: << parameters.registry >>
+  #           image: << parameters.image >>
+  #           tag: << parameters.release-tag >>
+  #           cosign-attestations: << parameters.cosign-attestations >>
+  #           cosign-sign-key: << parameters.cosign-sign-key >>
+  #           cosign-verify-key: << parameters.cosign-verify-key >>
+  #           cosign-password: << parameters.cosign-password >>
