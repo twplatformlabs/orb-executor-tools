@@ -45,29 +45,20 @@ parameters:
     type: string
     default: docker.io
 
-  image:
-    description: Name of image.
-    type: string
-
-  pull-tag:
+  commit-tag:
     description: Value of tag to pull for publish release. Default is dev.${CIRCLE_SHA1:0:7}.
     type: string
     default: dev.${CIRCLE_SHA1:0:7}
 
-  tag-annotation:
-    description: Additional text for semantic version tag.
-    type: string
-    default: ""
-
   version-tag:
-    description: Version release tag. Default is $CIRCLE_TAG.
+    description: Semantic release tag. Default is $CIRCLE_TAG.
     type: string
     default: ${CIRCLE_TAG}
 
   release-tag:
     description: Value for an additional release tag.
     type: string
-    default: ""
+    default: ${CIRCLE_TAG}
 
   extra-release-args:
     description: Extra flags to pass to gren.
@@ -140,11 +131,8 @@ steps:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
-  - pull:
-      registry: << parameters.registry >>
-      image: << parameters.image >>
-      tag: << parameters.pull-tag >>
-  - tag:
+
+  - tagx:
       registry: << parameters.registry >>
       image: << parameters.image >>
       current-tag: << parameters.pull-tag >>
