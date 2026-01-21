@@ -42,6 +42,7 @@ jq -r '
     docker scout cves "$image_ref" --details
     docker scout recommendations "$image_ref"
     echo
+    echo "view scout output in pipeline artifacts for details"
     echo "--- End of ${target_name} scan ---"
     echo
   } >> "workspace/$OUTFILE"
