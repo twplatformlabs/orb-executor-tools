@@ -6,3 +6,4 @@ if [[ -z "$CIRCLE_TAG" ]]; then
   echo "export TAG=$CIRCLE_TAG" >> "$BASH_ENV"
 else
   echo "export TAG=$TAG" >> "$BASH_ENV"
+fi
