@@ -181,7 +181,7 @@ workflows:
           target: executors
           scout-scan: true
           bats-test: true
-          bats-entry-point: /bin/ash
+          bats-entry-point: /bin/bash
           bats-test-path: test/circleci_remote_docker.bats
           after-checkout:
             - set-environment
