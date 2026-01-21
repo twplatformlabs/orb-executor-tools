@@ -32,7 +32,8 @@ jq -r '
   # requires bats files to contain any target specific logic
   echo "===== Target: ${target_name}  Image: ${image_ref} ====="
   docker run -it -d --name "${target_name}-container" --entrypoint "${BATS_ENTRY_POINT}" "${image_ref}"
-  bats "$BATS_TEST_PATH"
+  docker ps
+  TEST_CONTAINER="${target_name}-containe" bats "$BATS_TEST_PATH"
   echo
   echo "--- End of ${target_name} test ---"
   echo

@@ -182,7 +182,7 @@ workflows:
           scout-scan: true
           bats-test: true
           bats-entry-point: /bin/ash
-          bats-test-path: test/circleci_remote_docker_alpine.bats
+          bats-test-path: test/circleci_remote_docker.bats
           after-checkout:
             - set-environment
             - echo-message:
