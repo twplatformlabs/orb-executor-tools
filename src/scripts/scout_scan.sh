@@ -39,7 +39,8 @@ jq -r '
   # Run Docker Scout CVE scan and append to OUTFILE
   {
     echo "===== Target: ${target_name}  Image: ${image_ref} ====="
-    docker scout cves "$image_ref"
+    docker scout cves "$image_ref" --details
+    docker scout recommendations "$image_ref"
     echo
     echo "--- End of ${target_name} scan ---"
     echo
