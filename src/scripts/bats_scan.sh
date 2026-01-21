@@ -33,7 +33,7 @@ jq -r '
   echo "===== Target: ${target_name}  Image: ${image_ref} ====="
   docker run -it -d --name "${target_name}-container" --entrypoint "${BATS_ENTRY_POINT}" "${image_ref}"
   docker ps
-  TEST_CONTAINER="${target_name}-containe" bats "$BATS_TEST_PATH"
+  TEST_CONTAINER="${target_name}-container" bats "$BATS_TEST_PATH"
   echo
   echo "--- End of ${target_name} test ---"
   echo
