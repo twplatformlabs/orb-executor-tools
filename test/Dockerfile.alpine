@@ -11,4 +11,7 @@ RUN apk add --no-cache \
         openssh \
         tar \
         gzip \
-        ca-certificates
+        ca-certificates && \
+    download_url=$(curl -s "https://api.github.com/repos/hadolint/hadolint/releases/latest" | jq -r ".assets[] | select(.name == \"hadolint-linux-x86_64\") | .browser_download_url") && \
+    curl -LO "${download_url}" && \
+    chmod +x hadolint-linux-x86_64 && sudo mv hadolint-linux-x86_64 /usr/local/bin/hadolint

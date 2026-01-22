@@ -8,3 +8,4 @@ cosign.key
 *.asc
 *.pem
 Pipfile.lock
+notes.md
