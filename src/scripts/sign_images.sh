@@ -40,8 +40,8 @@ while IFS=$'\t' read -r target_name raw_tag; do
 
   # Replace bakefile var reference with actual VAR value.
   # We define it twice to support both ${TAG} and $TAG
-  image_ref="${image_ref//\$\{TAG\}/$TAG}"
-  image_ref="${image_ref//\$TAG/$TAG}"
+  image_ref="${image_ref//\$\{TAG\}/$RELEASE_TAG}"
+  image_ref="${image_ref//\$TAG/$RELEASE_TAG}"
 
   # pick up any other ENV should they exist in the defition (allow more customization)
   image_ref="$(eval echo "$image_ref")"
