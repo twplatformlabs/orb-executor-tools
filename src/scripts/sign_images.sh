@@ -20,9 +20,6 @@ fi
 if [[ -z "${COSIGN_PASSWORD}" ]]; then
   echo "Key passphrase is provided"
 fi
-if [[ "${COSIGN_ATTESTATIONS}" != "" ]]; then
-  echo "Additional attestations are provided"
-fi
 echo
 
 # Extract all targets and their tags
@@ -59,7 +56,7 @@ while IFS=$'\t' read -r target_name raw_tag; do
 
   echo "Signing digest reference: ${image_ref%@*}@${digest}"
   # sign image
-  cosign sign --key "${COSIGN_SIGN_KEY}" "${COSIGN_ATTESTATIONS}" "${image_ref%@*}@${digest}" -y
+  cosign sign --key "${COSIGN_SIGN_KEY}" "${image_ref%@*}@${digest}" -y
 
   # verify signature
   cosign verify --key "${COSIGN_VERIFY_KEY}" "${image_ref}@${digest}"

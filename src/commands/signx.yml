@@ -15,11 +15,6 @@ parameters:
     type: string
     default: $CIRCLE_TAG
 
-  cosign-attestations:
-    description: Attestations to include in signature.
-    type: string
-    default: ""
-
   cosign-sign-key:
     description: Path to private key used to sign image. Default is ./cosign.key
     type: string
@@ -61,5 +56,4 @@ steps:
         COSIGN_SIGN_KEY: << parameters.cosign-sign-key >>
         COSIGN_VERIFY_KEY: << parameters.cosign-verify-key >>
         COSIGN_PASSWORD: << parameters.cosign-password >>
-        COSIGN_ATTESTATIONS: << parameters.cosign-attestations >>
       command: <<include(scripts/sign_images.sh)>>
