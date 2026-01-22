@@ -1,7 +1,7 @@
 #!/bin/bash
 set -euo pipefail
 
-echo "Adding release tag to existing image manifests."
+echo "Signing released images."
 
 if [[ ! -f "$BAKEFILE" ]]; then
   echo "Bake file not found: $BAKEFILE" >&2
@@ -9,7 +9,19 @@ if [[ ! -f "$BAKEFILE" ]]; then
 fi
 
 echo "Using bake file: $BAKEFILE"
-echo "release tag: $TAG"
+echo "release tag: $RELEASE_TAG"
+if [[ -z "${COSIGN_SIGN_KEY}" ]]; then
+  echo "Signing key is provided"
+fi
+if [[ -z "${COSIGN_VERIFY_KEY}" ]]; then
+  echo "Verification key is provided"
+fi
+if [[ -z "${COSIGN_PASSWORD}" ]]; then
+  echo "Key passphrase is provided"
+fi
+if [[ -z "${COSIGN_ATTESTATIONS}" ]]; then
+  echo "Additional attestations are provided"
+fi
 echo
 
 # Extract all targets and their tags
@@ -23,18 +35,34 @@ jq -r '
   | @tsv
 ' "$BAKEFILE" |
 while IFS=$'\t' read -r target_name raw_tag; do
-
-  # Resolve bake variables
   image_ref="$raw_tag"
+
+  # Replace bakefile var reference with actual VAR value.
+  # We define it twice to support both ${TAG} and $TAG
   image_ref="${image_ref//\$\{TAG\}/$TAG}"
   image_ref="${image_ref//\$TAG/$TAG}"
+
+  # pick up any other ENV should they exist in the defition (allow more customization)
   image_ref="$(eval echo "$image_ref")"
+
   echo "Target: ${target_name}"
   echo "Source image: ${image_ref}"
 
-  # sign image
-  #docker buildx imagetools create -t "${release_image_ref}" "${image_ref%@*}@${digest}"
+# Obtain manifest index digest
+  digest=$(oras manifest fetch --descriptor "${image_ref}" | jq -r '.digest')
 
-  echo "Success"
+  if [[ -z "$digest" ]]; then
+    echo "❌ Unable to resolve digest for ${image_ref}"
+    exit 1
+  fi
+
+  echo "Signing digest reference: ${image_ref%@*}@${digest}"
+  # sign image
+  cosign sign --key "${COSIGN_SIGN_KEY}" "${COSIGN_ATTESTATIONS}" "${image_ref%@*}@${digest}" -y
+
+  # verify signature
+  cosign verify --key "${COSIGN_VERIFY_KEY}" "${image_ref}@${digest}"
+
+  echo "Release version signed and verified"
   echo
 done

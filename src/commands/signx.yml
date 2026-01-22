@@ -10,7 +10,7 @@ parameters:
     type: string
     default: "docker-bake.json"
 
-  tag:
+  release-tag:
     description: Value for tag.
     type: string
     default: $CIRCLE_TAG
@@ -54,6 +54,12 @@ steps:
           exit 1
         fi
   - run:
-      name: Sign oci image and publish signature to registry
-      command: |
-        cosign sign --key << parameters.cosign-sign-key >> <<#parameters.cosign-attestations>><< parameters.cosign-attestations >><</parameters.cosign-attestations>> $(cat manifestid) -y
+      name: Sign release version of bake file images
+      environment:
+        BAKEFILE: << parameters.bake-file >>
+        RELEASE_TAG: << parameters.release-tag >>
+        COSIGN_SIGN_KEY: << parameters.cosign-sign-key >>
+        COSIGN_VERIFY_KEY: << parameters.cosign-verify-key >>
+        COSIGN_PASSWORD: << parameters.cosign-password >>
+        COSIGN_ATTESTATIONS: << parameters.cosign-attestations >>
+      command: <<include(scripts/sign_images.sh)>>
