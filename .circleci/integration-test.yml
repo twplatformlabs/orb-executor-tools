@@ -202,7 +202,8 @@ workflows:
           context: *context
           executor-image-name: *image-name
           bake-file: test/docker-bake.json
-          include-latest: "true"
+          release-tag: "0.0.1"
+          include-latest: "false"
           sign-image: true
           after-checkout:
             - set-environment

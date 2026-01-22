@@ -5,7 +5,7 @@
     "VERSION": { "default": "" },
     "ALPINE_BASE": { "default": "" },
     "UBUNTU_BASE": { "default": "" },
-    "TAG": { "default": "latest" }
+    "TAG": { "default": "" }
   },
 
   "group": {
