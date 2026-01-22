@@ -70,11 +70,6 @@ parameters:
     type: boolean
     default: false
 
-  cosign-attestations:
-    description: Attestations to include in signature.
-    type: string
-    default: ""
-
   cosign-sign-key:
     description: Path to private key used to sign image. Default is ./cosign.key
     type: string
@@ -132,7 +127,6 @@ steps:
         - signx:
             bake-file: << parameters.bake-file >>
             release-tag: << parameters.release-tag >>
-            cosign-attestations: << parameters.cosign-attestations >>
             cosign-sign-key: << parameters.cosign-sign-key >>
             cosign-verify-key: << parameters.cosign-verify-key >>
             cosign-password: << parameters.cosign-password >>
