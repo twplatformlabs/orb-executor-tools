@@ -32,7 +32,7 @@ steps:
         TAG: << parameters.commit-tag >>
       command: <<include(scripts/env_tag.sh)>>
   - run:
-      name: Add tag to image manifest
+      name: Add release tag to image manifest
       environment:
         BAKEFILE: << parameters.bake-file >>
         RELEASE_TAG: << parameters.release-tag >>

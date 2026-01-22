@@ -13,13 +13,14 @@ echo "release tag: $RELEASE_TAG"
 if [[ -z "${COSIGN_SIGN_KEY}" ]]; then
   echo "Signing key is provided"
 fi
+echo "COSIGN_VERIFY_KEY = ${COSIGN_VERIFY_KEY}"
 if [[ -z "${COSIGN_VERIFY_KEY}" ]]; then
   echo "Verification key is provided"
 fi
 if [[ -z "${COSIGN_PASSWORD}" ]]; then
   echo "Key passphrase is provided"
 fi
-if [[ -z "${COSIGN_ATTESTATIONS}" ]]; then
+if [[ "${COSIGN_ATTESTATIONS}" != "" ]]; then
   echo "Additional attestations are provided"
 fi
 echo

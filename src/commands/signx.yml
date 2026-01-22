@@ -23,12 +23,12 @@ parameters:
   cosign-sign-key:
     description: Path to private key used to sign image. Default is ./cosign.key
     type: string
-    default: cosign.key
+    default: "cosign.key"
 
   cosign-verify-key:
     description: Path to public key used to verify signature. Default is ./cosign.pub
     type: string
-    default: cosign.pub
+    default: "cosign.pub"
 
   cosign-password:
     description: Environment variable containing signing key passphrase. Default is COSIGN_PASSWORD.
