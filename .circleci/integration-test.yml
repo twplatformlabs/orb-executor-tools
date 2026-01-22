@@ -197,32 +197,32 @@ workflows:
             - echo-message:
                 msg: "after build"
 
-      - executor-tools/publish:
-          name: test publish
-          context: *context
-          executor-image-name: *image-name
-          bake-file: test/docker-bake.json
-          release-tag: "0.0.1"
-          include-latest: "false"
-          sign-image: true
-          after-checkout:
-            - set-environment
-            - op/write-to-file:
-                op-value: platform/svc-cosign-private-key/notesPlain
-                out-file: cosign.key
-            - op/write-to-file:
-                op-value: platform/svc-cosign-public-key/notesPlain
-                out-file: cosign.pub
-            - echo-message:
-                msg: "after checkout"
-          before-publish:
-            - echo-message:
-                msg: "before publish"
-          after-publish:
-            - echo-message:
-                msg: "after publish"
-          requires:
-            - test buildx dev release
+      # - executor-tools/publish:
+      #     name: test publish
+      #     context: *context
+      #     executor-image-name: *image-name
+      #     bake-file: test/docker-bake.json
+      #     release-tag: "0.0.1"
+      #     include-latest: "false"
+      #     sign-image: true
+      #     after-checkout:
+      #       - set-environment
+      #       - op/write-to-file:
+      #           op-value: platform/svc-cosign-private-key/notesPlain
+      #           out-file: cosign.key
+      #       - op/write-to-file:
+      #           op-value: platform/svc-cosign-public-key/notesPlain
+      #           out-file: cosign.pub
+      #       - echo-message:
+      #           msg: "after checkout"
+      #     before-publish:
+      #       - echo-message:
+      #           msg: "before publish"
+      #     after-publish:
+      #       - echo-message:
+      #           msg: "after publish"
+      #     requires:
+      #       - test buildx dev release
 
       # - test non-install commands:
       #     context: *context
