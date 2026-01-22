@@ -65,16 +65,6 @@ parameters:
     type: string
     default: "false"
 
-  extra-release-args:
-    description: Extra flags to pass to gren.
-    type: string
-    default: ""
-
-  before-release:
-    description: Optional steps to run prior to gren release.
-    type: steps
-    default: []
-
   sign-image:
     description: Sign OCI image using cosign. Default is false.
     type: boolean
@@ -100,28 +90,18 @@ parameters:
     type: env_var_name
     default: COSIGN_PASSWORD
 
-  sbom:
-    description: Include a software bill of materials with the signature. Default is false.
-    type: boolean
-    default: false
-
-  sbom-filename:
-    description: Name of sbom file. Default is sbom.spdx
-    type: string
-    default: sbom.spdx
-
   after-checkout:
     description: Optional steps to run after checking out the code.
     type: steps
     default: []
 
   before-publish:
-    description: Optional steps to run before publishing the docker image.
+    description: Optional steps to run prior to tagging release versions of image.
     type: steps
     default: []
 
   after-publish:
-    description: Optional steps to run after publishing the docker image.
+    description: Optional steps to run after tagging the docker image.
     type: steps
     default: []
 
@@ -136,26 +116,27 @@ steps:
       registry: << parameters.registry >>
       registry-login: << parameters.registry-login >>
       registry-password: << parameters.registry-password >>
-
+  - when:
+      name: Run before-publish lifecycle hook steps
+      condition: << parameters.before-publish >>
+      steps: << parameters.before-publish >>
   - tagx:
       bake-file: << parameters.bake-file >>
       commit-tag: << parameters.commit-tag >>
       release-tag: << parameters.release-tag >>
       include-latest: << parameters.include-latest >>
-
+  - when:
+      name: Sign image using Cosign
+      condition: << parameters.sign-image >>
+      steps:
+        - signx:
+            bake-file: << parameters.bake-file >>
+            release-tag: << parameters.release-tag >>
+            cosign-attestations: << parameters.cosign-attestations >>
+            cosign-sign-key: << parameters.cosign-sign-key >>
+            cosign-verify-key: << parameters.cosign-verify-key >>
+            cosign-password: << parameters.cosign-password >>
   - when:
       name: Run after-publish lifecycle hook steps
       condition: << parameters.after-publish >>
       steps: << parameters.after-publish >>
-  # - when:
-  #     name: Sign image using Cosign
-  #     condition: << parameters.sign-image >>
-  #     steps:
-  #       - sign:
-  #           registry: << parameters.registry >>
-  #           image: << parameters.image >>
-  #           tag: << parameters.release-tag >>
-  #           cosign-attestations: << parameters.cosign-attestations >>
-  #           cosign-sign-key: << parameters.cosign-sign-key >>
-  #           cosign-verify-key: << parameters.cosign-verify-key >>
-  #           cosign-password: << parameters.cosign-password >>
