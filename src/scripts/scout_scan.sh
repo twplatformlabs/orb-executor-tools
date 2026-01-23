@@ -11,6 +11,9 @@ echo "Using bake file: $BAKEFILE"
 echo "Using TAG=${TAG}"
 echo "Output file: $OUTFILE"
 
+# confirm dockerhub credentials
+echo ${DOCKER_PASSWORD} | docker login -u ${DOCKER_LOGIN} --password-stdin docker.io
+
 # the results from the scan are all written to a file which will be uploaded as a pipeline artifact
 # Clear/create output file with header
 {

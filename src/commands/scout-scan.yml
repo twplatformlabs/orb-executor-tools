@@ -4,6 +4,7 @@
 description: |
   Run Docker Scout CVE scan based on contents of docker-bake file.
   Optionally, upload scan log as save artifact and persist to pipeline workspace.
+  Specifically requires dockerhub credentials.
 
   Log file name: << parameters.tag >>_snyk_log.txt
 
@@ -19,10 +20,22 @@ parameters:
     type: string
     default: "scout.out"
 
+  docker-login:
+    description: Environment variable containing Username for Dockerhub access. Default is DOCKER_LOGIN.
+    type: env_var_name
+    default: DOCKER_LOGIN
+
+  docker-password:
+    description: Environment variable containing Password for Dockerhub access. Default is DOCKER_PASSWORD.
+    type: env_var_name
+    default: DOCKER_PASSWORD
+
 steps:
   - run:
       name: Docker Scout CVE scan based on docker bake file targets
       environment:
+        DOCKER_LOGIN: << parameters.docker-login >>
+        DOCKER_PASSWORD: << parameters.docker-password >>
         BAKEFILE: << parameters.bake-file >>
         OUTFILE: << parameters.outfile >>
       command: <<include(scripts/scout_scan.sh)>>

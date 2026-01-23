@@ -177,6 +177,8 @@ workflows:
           context: *context
           executor-image-name: *image-name
           registry: ghcr.io
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
           dockerfiles-path: test/Dockerfile.*
           bake-file: test/docker-bake.json
           target: executors
