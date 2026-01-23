@@ -2,31 +2,12 @@
 # yamllint disable rule:line-length
 ---
 description: |
-  Uses buildx with a bake file for advanced builds. Defaults to docker-bake.json and can override.
+  Uses buildx with a bake file for advanced builds. Defaults to docker-bake.json, can override.
 
   Persists the log file to the pipeline workspace and makes available as artifact.
   Log file name: << parameters.tag >>_build_log.txt
 
 parameters:
-
-  # dockerfile:
-  #   description: Name of dockerfile. Default is Dockerfile.
-  #   type: string
-  #   default: Dockerfile
-
-  # path:
-  #   description: Path to the directory containing your Dockerfile and build context. Default is "."
-  #   type: string
-  #   default: .
-
-  # registry:
-  #   description: Name of registry. Default is docker.io
-  #   type: string
-  #   default: docker.io
-
-  # image:
-  #   description: Name of image.
-  #   type: string
 
   tag:
     description: Value for image tag. Default is dev.${CIRCLE_SHA1:0:7}.
@@ -57,7 +38,7 @@ steps:
   - run:
       name: Buildx based on docker bake file configuration.
       command: |
-        str="bake.<< parameters.tag >>.build.out"
+        str="<< parameters.bake-file >>.<< parameters.target >>.build.out"
         outfile=${str#*/}
         docker -v
         docker buildx create --name builder --driver docker-container --bootstrap --use

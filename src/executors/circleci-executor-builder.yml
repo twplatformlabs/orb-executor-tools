@@ -35,3 +35,4 @@ docker:
     auth:
       username: ${<< parameters.registry-login >>}
       password: ${<< parameters.registry-password >>}
+

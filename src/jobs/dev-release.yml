@@ -1,7 +1,22 @@
 # src/jobs/dev-release.yml
 # yamllint disable rule:line-length
 ---
-description: Continuous integration and development build of circleci remote-docker executor.
+description: |
+  Continuous integration and development build of circleci remote-docker executor.
+
+  Buildx based on Docker bake file for simultaneous build of multiple images and architectures.
+
+  Principle job activities:
+  - Hadolint Dockerfiles
+  - Buildx
+    - Set $TAG to dev.SHA:0:7 (default)
+    - Define builder as --name builder --driver docker-container --bootstrap
+    - bake with file << parameters.target >> including provenance and bill of materials
+    - push dev builds to registry
+    - (Optional) Docker Scout CVE scan (stdout saved to job artifacts)
+    - (Optional) Bats tests against running containers
+
+    See parameter details for additional customiation options.
 
 executor:
   name: circleci-executor-builder
@@ -38,7 +53,7 @@ parameters:
   target:
     description: Bake file build target. Default is default.
     type: string
-    default: "default"
+    default: "executors"
 
   op-version:
     description: Specify specific 1Password CLI version. Default assumes version already installed on executor.
@@ -197,8 +212,5 @@ steps:
       name: Run after-build lifecycle hook steps.
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
-  - persist_to_workspace:
-      root: .
-      paths:
-        - "*"
-#  - persist-workspace
+  - store_artifacts:
+      path: ~/project/workspace

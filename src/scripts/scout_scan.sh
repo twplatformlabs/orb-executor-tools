@@ -6,23 +6,21 @@ if [[ ! -f "$BAKEFILE" ]]; then
   exit 1
 fi
 
+OUTFILE="workspace/$OUTFILE"
 echo "Running Docker Scout CVE scan against images based on docker bake file targets."
 echo "Using bake file: $BAKEFILE"
 echo "Using TAG=${TAG}"
 echo "Output file: $OUTFILE"
 
-# confirm dockerhub credentials
+# confirm dockerhub credentials. redundant when also using Dockerhub as registry but required otherwise.
 echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_LOGIN}" --password-stdin docker.io
 
-# the results from the scan are all written to a file which will be uploaded as a pipeline artifact
-# Clear/create output file with header
 {
   echo "=== Docker Scout CVE Scan Results ==="
-  echo "Generated: $(date)"
   echo "Bake file: $BAKEFILE"
   echo "TAG: $TAG"
   echo
-} > "workspace/$OUTFILE"
+} > "${OUTFILE}"
 
 # Extract all targets and their tags, append scan results to OUTFILE
 jq -r '
@@ -60,8 +58,7 @@ while IFS=$'\t' read -r target_name raw_tag; do
     echo "view scout output in pipeline artifacts for details"
     echo "--- End of ${target_name} scan ---"
     echo
-  } >> "workspace/$OUTFILE"
-
+  } >> "${OUTFILE}"
 done
 
-echo "All scans complete. Results saved to: workspace/$OUTFILE"
+echo "Success"

@@ -1,7 +1,22 @@
 # src/jobs/dev-release.yml
 # yamllint disable rule:line-length
 ---
-description: Continuous integration and development build of circleci remote-docker executor.
+description: |
+  Continuous integration and development build of circleci remote-docker executor.
+
+  Basic 'docker build' for building a single image in Remote-Docker environment. 
+
+  Principle job activities:
+  - Hadolint Dockerfile
+  - (Optional) Populate org.opencontainer labels Created, Version, Source
+  - Build (stdout saved to job artifacts)
+  - (Optional) Snyk scan (stdout saved to job artifacts)
+  - (Optional) Trivy scan (stdout saved to job artifacts)
+  - (optional) Grype scan (stdout saved to job artifacts)
+  - (Optional) Bats tests against running container
+  - Push dev build to registry
+
+  See parameter details for additional customiation options.
 
 executor:
   name: circleci-executor-builder
