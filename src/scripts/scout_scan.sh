@@ -43,7 +43,7 @@ while IFS=$'\t' read -r target_name raw_tag; do
   # pick up any other ENV should they exist in the defition (allows more customization)
   image_ref="$(eval echo "$image_ref")"
 
-  echo "Scanning Target: ${target_name}  Image: ${image_ref}" | tee -a "workspace/$OUTFILE"
+  echo "Scanning Target: ${target_name}  Image: ${image_ref}" | tee -a "$OUTFILE"
   if ! docker buildx imagetools inspect "$image_ref" >/dev/null 2>&1; then
       echo "❌ $image_ref not found in registry"
       exit 1
