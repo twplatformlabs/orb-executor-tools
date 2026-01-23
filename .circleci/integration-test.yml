@@ -227,6 +227,7 @@ workflows:
                 msg: "before publish"
           after-publish:
             - do/gh-buildx-image-release-notes:
+                title: "0.0.3"
                 bake-file: test/docker-bake.json
                 notes-from-file: test/release.md
                 include-commit-msg: true
