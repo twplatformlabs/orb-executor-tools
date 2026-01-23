@@ -226,7 +226,7 @@ workflows:
             - echo-message:
                 msg: "before publish"
           after-publish:
-            - do/gh-buildx-image-release:
+            - do/gh-buildx-image-release-notes:
                 notes-from-file: test/release.md
                 include-commit-msg: true
                 include-sbom: true
