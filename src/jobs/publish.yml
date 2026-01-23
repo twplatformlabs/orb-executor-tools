@@ -1,7 +1,16 @@
 # src/jobs/publish.yml
 # yamllint disable rule:line-length
 ---
-description: Tag and publish a release version.
+description: |
+  Tag development build with semantic release version.
+
+  Use witih dev-release job to publish release versions of executors on bake file configuration.
+
+  Principle job activities:
+  - Selects image manifest based on dev build commit tag (default)
+  - Adds semantic release tag to manifest based on triggering git tag (Default)
+  - (Optional) Add 'latest' tag to manifest
+  - (Optional) Sign image manifest using cosign and provided cosign-generated keys
 
 executor:
   name: circleci-executor-builder
