@@ -176,6 +176,7 @@ workflows:
           name: test buildx dev release
           context: *context
           executor-image-name: *image-name
+          registry: ghcr.io
           dockerfiles-path: test/Dockerfile.*
           bake-file: test/docker-bake.json
           target: executors
@@ -201,6 +202,7 @@ workflows:
           name: test publish
           context: *context
           executor-image-name: *image-name
+          registry: ghcr.io
           bake-file: test/docker-bake.json
           release-tag: "0.0.1"
           include-latest: "false"
