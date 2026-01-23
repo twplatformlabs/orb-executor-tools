@@ -227,6 +227,7 @@ workflows:
                 msg: "before publish"
           after-publish:
             - do/gh-buildx-image-release-notes:
+                bake-file: test/docker-bake.json
                 notes-from-file: test/release.md
                 include-commit-msg: true
                 include-sbom: true
