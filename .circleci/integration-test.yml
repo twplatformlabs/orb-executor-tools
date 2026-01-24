@@ -4,7 +4,6 @@ version: 2.1
 orbs:
   executor-tools: twdps/executor-tools@dev:<<pipeline.git.revision>>
   op: twdps/onepassword@3.0.0
-  do: twdps/pipeline-events@dev:alpha
 
 globals:
   - &context orb-publishing
@@ -209,7 +208,7 @@ workflows:
           registry-login: GHCR_LOGIN
           registry-password: GHCR_PASSWORD
           bake-file: test/docker-bake.json
-          release-tag: "$CIRCLE_SHA1"
+          release-tag: "0.0.4"
           include-latest: "false"
           sign-image: true
           after-checkout:
@@ -226,12 +225,6 @@ workflows:
             - echo-message:
                 msg: "before publish"
           after-publish:
-            - do/gh-buildx-image-release-notes:
-                title: "$CIRCLE_SHA1"
-                bake-file: test/docker-bake.json
-                notes-from-file: test/release.md
-                include-commit-msg: true
-                include-sbom: true
             - echo-message:
                 msg: "after publish"
           requires:
