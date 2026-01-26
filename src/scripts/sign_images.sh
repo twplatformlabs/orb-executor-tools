@@ -54,9 +54,10 @@ while IFS=$'\t' read -r target_name raw_tag; do
     exit 1
   fi
 
+  export COSIGN_EXPERIMENTAL=1
   echo "Signing digest reference: ${image_ref%@*}@${digest}"
   # sign image
-  cosign sign --key "${COSIGN_SIGN_KEY}" "${image_ref%@*}@${digest}" -y
+  cosign sign --registry-referrers-mode=oci-1-1 --key "${COSIGN_SIGN_KEY}" "${image_ref%@*}@${digest}" -y
 
   # verify signature
   cosign verify --key "${COSIGN_VERIFY_KEY}" "${image_ref}@${digest}"
