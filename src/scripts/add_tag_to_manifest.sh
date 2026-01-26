@@ -8,10 +8,10 @@ if [[ ! -f "$BAKEFILE" ]]; then
   exit 1
 fi
 
+eval "RELEASE_TAG=\"$RELEASE_TAG\""
 echo "Using bake file: $BAKEFILE"
 echo "commit tag: ${TAG}"
 echo "release tag: $RELEASE_TAG"
-echo
 
 # Extract all targets and their tags
 jq -r '
