@@ -1,6 +1,6 @@
 FROM mirror.gcr.io/alpine:3
 
-# hadolint ignore=DL3018,DL3004,DL4006
+# hadolint ignore=DL3018
 RUN apk add --no-cache \
         bash \
         git \
@@ -9,7 +9,4 @@ RUN apk add --no-cache \
         gzip \
         curl \
         jq \
-        ca-certificates && \
-    download_url=$(curl -s "https://api.github.com/repos/hadolint/hadolint/releases/latest" | jq -r ".assets[] | select(.name == \"hadolint-linux-x86_64\") | .browser_download_url") && \
-    curl -LO "${download_url}" && \
-    chmod +x hadolint-linux-x86_64 && mv hadolint-linux-x86_64 /usr/local/bin/hadolint
+        ca-certificates
