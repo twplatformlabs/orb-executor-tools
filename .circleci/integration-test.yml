@@ -307,7 +307,7 @@ workflows:
           requires:
             - test buildx publish
 
-      - executor-tools/publish:
+      - executor-tools/publish-build:
           name: test publish
           context: *context
           registry: *registry
