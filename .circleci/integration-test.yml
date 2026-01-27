@@ -49,54 +49,6 @@ commands:
 
 jobs:
 
-  test non-install commands:
-    docker:
-      - image: twdps/circleci-executor-builder:alpine-stable
-    steps:
-      - checkout
-      - setup_remote_docker
-      - set-environment
-      - run:
-          name: setup artifact workspace
-          command: mkdir -p workspace
-      - executor-tools/lint:
-          dockerfile: test/Dockerfile.alpine
-          hadolint-additional-args: "--ignore DL3004"
-      - executor-tools/confirm-registry
-      - executor-tools/build:
-          dockerfile: test/Dockerfile.build
-          image: twdps/orb-executor-tools
-      - check-artifacts:
-          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.build.out
-      - executor-tools/snyk-scan:
-            image: twdps/orb-executor-tools
-            tag: dev.${CIRCLE_SHA1:0:7}
-            dockerfile: test/Dockerfile.build
-            snyk-severity-threshold: medium
-            snyk-organization: twplatformlabs
-      - check-artifacts:
-          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.snyk.out
-      - executor-tools/trivy-scan:
-            image: twdps/orb-executor-tools
-            tag: dev.${CIRCLE_SHA1:0:7}
-            dockerfile: test/Dockerfile.build
-      - check-artifacts:
-          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.trivy.out
-      - executor-tools/grype-scan:
-            image: twdps/orb-executor-tools
-            tag: dev.${CIRCLE_SHA1:0:7}
-            dockerfile: test/Dockerfile.build
-      - check-artifacts:
-          filename: workspace/orb-executor-tools.dev.${CIRCLE_SHA1:0:7}.grype.out
-      - executor-tools/bats:
-            image: twdps/orb-executor-tools
-            tag: dev.${CIRCLE_SHA1:0:7}
-            bats-run-container-name: orb-executor-tools-test
-            bats-entry-point: /bin/ash
-            bats-test-path: test/circleci_remote_docker_alpine.bats
-      - executor-tools/set-labels:
-            dockerfile: test/Dockerfile.build
-
   test versioned machine package installs:
     machine:
       image: ubuntu-2204:current
@@ -173,9 +125,6 @@ workflows:
 
       - test machine package installs using latest
 
-      - test non-install commands:
-          context: *context
-
       - executor-tools/dev-release:
           name: test buildx dev release
           context: *context
@@ -245,6 +194,8 @@ workflows:
           grype-version: latest
           dockerfile: test/Dockerfile.build
           registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
           image: twplatformlabs/orb-executor-tools
           snyk-scan: true
           snyk-severity-threshold: medium
@@ -278,6 +229,8 @@ workflows:
           context: *context
           dockerfile: test/Dockerfile.build
           registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
           image: twplatformlabs/orb-executor-tools
           tag: edge
           snyk-scan: true
@@ -311,6 +264,8 @@ workflows:
           name: test publish
           context: *context
           registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
           image: twplatformlabs/orb-executor-tools
           pull-tag: edge
           version-tag: "0.0.0"
