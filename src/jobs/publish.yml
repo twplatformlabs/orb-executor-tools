@@ -4,7 +4,7 @@
 description: |
   Tag development build with semantic release version.
 
-  Use witih dev-release job to publish release versions of executors on bake file configuration.
+  Use witih dev-release job to publish release versions of executors based on bake file configuration.
 
   Principle job activities:
   - Selects image manifest based on dev build commit tag (default)
