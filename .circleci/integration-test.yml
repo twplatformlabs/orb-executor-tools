@@ -183,7 +183,7 @@ workflows:
       #     requires:
       #       - test buildx dev release
 
-      - executor-tools/machine-executor-dev-build-release:
+      - executor-tools/machine-executor-dev-build:
           name: test machine executor dev release
           context: *context
           op-version: latest
