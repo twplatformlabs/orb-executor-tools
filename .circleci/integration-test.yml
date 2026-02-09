@@ -125,102 +125,102 @@ workflows:
 
       # - test machine package installs using latest
 
-      - executor-tools/dev-buildx:
-          name: test buildx dev release
-          context: *context
-          executor-image-name: *image-name
-          registry: *registry
-          registry-login: GHCR_LOGIN
-          registry-password: GHCR_PASSWORD
-          dockerfiles-path: test/Dockerfile.*
-          bake-file: test/docker-bake.json
-          target: executors
-          scout-scan: true
-          bats-test: true
-          bats-entry-point: /bin/bash
-          bats-test-path: test/circleci_remote_docker.bats
-          after-checkout:
-            - set-environment
-            - echo-message:
-                msg: "after checkout"
-          before-build:
-            - run:
-                name: ENV values for bake file LABELS
-                command: bash test/set_labels.sh
-            - echo-message:
-                msg: "before build"
-          after-build:
-            - echo-message:
-                msg: "after build"
-
-      - executor-tools/releasex:
-          name: test buildx release
-          context: *context
-          executor-image-name: *image-name
-          registry: *registry
-          registry-login: GHCR_LOGIN
-          registry-password: GHCR_PASSWORD
-          bake-file: test/docker-bake.json
-          release-tag: "0.0.0"
-          include-latest: "false"
-          sign-image: true
-          after-checkout:
-            - set-environment
-            - op/write-to-file:
-                op-value: platform/svc-cosign-private-key/notesPlain
-                out-file: cosign.key
-            - op/write-to-file:
-                op-value: platform/svc-cosign-public-key/notesPlain
-                out-file: cosign.pub
-            - echo-message:
-                msg: "after checkout"
-          before-publish:
-            - echo-message:
-                msg: "before publish"
-          after-publish:
-            - echo-message:
-                msg: "after publish"
-          requires:
-            - test buildx dev release
-
-      # - executor-tools/machine-executor-dev-build:
-      #     name: test machine executor dev release
+      # - executor-tools/dev-buildx:
+      #     name: test buildx dev release
       #     context: *context
-      #     op-version: latest
-      #     snyk-version: latest
-      #     bats-version: latest
-      #     hadolint-version: latest
-      #     trivy-version: latest
-      #     grype-version: latest
-      #     dockerfile: test/Dockerfile.build
+      #     executor-image-name: *image-name
       #     registry: *registry
       #     registry-login: GHCR_LOGIN
       #     registry-password: GHCR_PASSWORD
-      #     image: twplatformlabs/orb-executor-tools
-      #     snyk-scan: true
-      #     snyk-severity-threshold: medium
-      #     snyk-organization: twdps
-      #     trivy-scan: true
-      #     grype-scan: true
+      #     dockerfiles-path: test/Dockerfile.*
+      #     bake-file: test/docker-bake.json
+      #     target: executors
+      #     scout-scan: true
       #     bats-test: true
-      #     bats-run-container-name: container-test
-      #     bats-entry-point: /bin/ash
-      #     bats-test-path: test/circleci_remote_docker_alpine.bats
-      #     opencontainer-labels: true
-      #     security-scan-nofail: true
+      #     bats-entry-point: /bin/bash
+      #     bats-test-path: test/circleci_remote_docker.bats
       #     after-checkout:
       #       - set-environment
       #       - echo-message:
       #           msg: "after checkout"
       #     before-build:
+      #       - run:
+      #           name: ENV values for bake file LABELS
+      #           command: bash test/set_labels.sh
       #       - echo-message:
       #           msg: "before build"
       #     after-build:
       #       - echo-message:
       #           msg: "after build"
-      #     after-push:
+
+      # - executor-tools/releasex:
+      #     name: test buildx release
+      #     context: *context
+      #     executor-image-name: *image-name
+      #     registry: *registry
+      #     registry-login: GHCR_LOGIN
+      #     registry-password: GHCR_PASSWORD
+      #     bake-file: test/docker-bake.json
+      #     release-tag: "0.0.0"
+      #     include-latest: "false"
+      #     sign-image: true
+      #     after-checkout:
+      #       - set-environment
+      #       - op/write-to-file:
+      #           op-value: platform/svc-cosign-private-key/notesPlain
+      #           out-file: cosign.key
+      #       - op/write-to-file:
+      #           op-value: platform/svc-cosign-public-key/notesPlain
+      #           out-file: cosign.pub
       #       - echo-message:
-      #           msg: "after push"
+      #           msg: "after checkout"
+      #     before-publish:
+      #       - echo-message:
+      #           msg: "before publish"
+      #     after-publish:
+      #       - echo-message:
+      #           msg: "after publish"
+      #     requires:
+      #       - test buildx dev release
+
+      - executor-tools/machine-executor-dev-build:
+          name: test machine executor dev release
+          context: *context
+          op-version: latest
+          snyk-version: latest
+          bats-version: latest
+          hadolint-version: latest
+          trivy-version: latest
+          grype-version: latest
+          dockerfile: test/Dockerfile.build
+          registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
+          image: twplatformlabs/orb-executor-tools
+          snyk-scan: true
+          snyk-severity-threshold: medium
+          snyk-organization: twdps
+          trivy-scan: true
+          grype-scan: true
+          bats-test: true
+          bats-run-container-name: container-test
+          bats-entry-point: /bin/ash
+          bats-test-path: test/circleci_remote_docker_alpine.bats
+          opencontainer-labels: true
+          security-scan-nofail: true
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"
+          after-push:
+            - echo-message:
+                msg: "after push"
           # requires:
           #   - test buildx publish
 
