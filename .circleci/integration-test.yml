@@ -260,7 +260,7 @@ workflows:
       #     requires:
       #       - test buildx publish
 
-      - executor-tools/publish-build:
+      - executor-tools/release:
           name: test release job
           context: *context
           registry: *registry
