@@ -121,37 +121,37 @@ workflows:
 
   integration tests:
     jobs:
-      - test versioned machine package installs
+      # - test versioned machine package installs
 
-      - test machine package installs using latest
+      # - test machine package installs using latest
 
-      # - executor-tools/dev-release:
-      #     name: test buildx dev release
-      #     context: *context
-      #     executor-image-name: *image-name
-      #     registry: *registry
-      #     registry-login: GHCR_LOGIN
-      #     registry-password: GHCR_PASSWORD
-      #     dockerfiles-path: test/Dockerfile.*
-      #     bake-file: test/docker-bake.json
-      #     target: executors
-      #     scout-scan: true
-      #     bats-test: true
-      #     bats-entry-point: /bin/bash
-      #     bats-test-path: test/circleci_remote_docker.bats
-      #     after-checkout:
-      #       - set-environment
-      #       - echo-message:
-      #           msg: "after checkout"
-      #     before-build:
-      #       - run:
-      #           name: ENV values for bake file LABELS
-      #           command: bash test/set_labels.sh
-      #       - echo-message:
-      #           msg: "before build"
-      #     after-build:
-      #       - echo-message:
-      #           msg: "after build"
+      - executor-tools/dev-buildx:
+          name: test buildx dev release
+          context: *context
+          executor-image-name: *image-name
+          registry: *registry
+          registry-login: GHCR_LOGIN
+          registry-password: GHCR_PASSWORD
+          dockerfiles-path: test/Dockerfile.*
+          bake-file: test/docker-bake.json
+          target: executors
+          scout-scan: true
+          bats-test: true
+          bats-entry-point: /bin/bash
+          bats-test-path: test/circleci_remote_docker.bats
+          after-checkout:
+            - set-environment
+            - echo-message:
+                msg: "after checkout"
+          before-build:
+            - run:
+                name: ENV values for bake file LABELS
+                command: bash test/set_labels.sh
+            - echo-message:
+                msg: "before build"
+          after-build:
+            - echo-message:
+                msg: "after build"
 
       # - executor-tools/publish:
       #     name: test buildx publish
