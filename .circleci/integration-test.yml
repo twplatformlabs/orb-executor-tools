@@ -221,8 +221,8 @@ workflows:
           after-push:
             - echo-message:
                 msg: "after push"
-          requires:
-            - test buildx publish
+          # requires:
+          #   - test buildx publish
 
       # - executor-tools/dev-build-release:
       #     name: test dev release
