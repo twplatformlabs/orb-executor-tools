@@ -1,4 +1,4 @@
-# src/jobs/publish.yml
+# src/jobs/release.yml
 # yamllint disable rule:line-length
 ---
 description: Tag and publish a release version.

@@ -1,30 +1,15 @@
-# src/jobs/dev-release.yml
+# src/jobs/machine-executor-dev-build.yml
 # yamllint disable rule:line-length
 ---
 description: |
-  Continuous integration and development build of circleci remote-docker executor.
-
-  Basic 'docker build' for building a single image in Remote-Docker environment. 
-
-  Principle job activities:
-  - Hadolint Dockerfile
-  - (Optional) Populate org.opencontainer labels Created, Version, Source
-  - Build (stdout saved to job artifacts)
-  - (Optional) Snyk scan (stdout saved to job artifacts)
-  - (Optional) Trivy scan (stdout saved to job artifacts)
-  - (optional) Grype scan (stdout saved to job artifacts)
-  - (Optional) Bats tests against running container
-  - Push dev build to registry
-
-  See parameter details for additional customiation options.
+  Machine executor build environment for continuous integration and development build of
+  circleci remote-docker executor. Certain languages are more stable during image
+  build if run on VM rather than remote-docker.
 
 executor:
-  name: circleci-executor-builder
-  image: << parameters.executor-image-name >>
+  name: machine-image
+  image-name: << parameters.executor-image-name >>
   resource-class: << parameters.executor-resource-class >>
-  registry-login: << parameters.registry-login >>
-  registry-password: << parameters.registry-password >>
-
 shell: << parameters.shell >>
 
 parameters:
@@ -35,14 +20,14 @@ parameters:
     default: /bin/bash -eo pipefail
 
   executor-image-name:
-    description: Remote-docker executor image. Default is twdps/circleci-executor-builder:latest.
+    description: Machine executor image. Default is ubuntu-2204:current.
     type: string
-    default: twdps/circleci-executor-builder:latest
+    default: ubuntu-2204:current
 
   executor-resource-class:
     description: Executor resource class. Default is medium.
     type: enum
-    enum: [medium, medium+, large, xlarge, 2xlarge, 2xlarge+]
+    enum: [medium, large, xlarge, 2xlarge, 2xlarge+]
     default: medium
 
   op-version:
@@ -245,7 +230,6 @@ parameters:
 
 steps:
   - checkout
-  - setup_remote_docker
   - install:
       op-version: << parameters.op-version >>
       vault-version: << parameters.vault-version >>
@@ -344,7 +328,7 @@ steps:
             bats-entry-point: << parameters.bats-entry-point >>
             bats-test-path: << parameters.bats-test-path >>
   - when:
-      name: Run after-build lifecycle hook steps.
+      name: Run after-build lifecycle hook steps
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
   - push:

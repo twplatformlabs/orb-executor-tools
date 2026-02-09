@@ -1,4 +1,4 @@
-# src/jobs/dev-release.yml
+# src/jobs/dev-buildx.yml
 # yamllint disable rule:line-length
 ---
 description: |
