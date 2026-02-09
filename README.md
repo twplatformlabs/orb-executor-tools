@@ -12,33 +12,55 @@
 
 See [orb registry](https://circleci.com/developer/orbs/orb/twdps/executor-tools) for detailed usage examples.  
 
-By default, executor-tools jobs use the `twdps/circleci-executor-tools` image that has all the necessary tools supported by the orb pre-installed.  
+> NOTE: v6 is a breaking change. Review documentation in detail before upgrading.
 
-Feature options include:
+In the new release, jobs have new names and new commands have been added. The new jobs support the use of `docker bake` for multi-image and multi-arch builds through a single configuration file. The Bake method jobs make use of Scout for performing vulnerability scans and use Docker CLI features to create both provenance and bill of material manifest details. The historial simple `build` process will continue to be supported though also with new job names.
 
-- [hadolint](https://github.com/hadolint/hadolint) scan of Dockerfile
-- runtime configuration testing using [bats](https://github.com/bats-core/bats-core)
-- [snyk](https://github.com/snyk/cli) vulnerability scan
-- aquasec/[trivy](https://github.com/aquasecurity/trivy) image scan
-- anchore/[grype](https://github.com/anchore/grype) image scane
-- support for non-breaking scans
-- image signing with sigstore/[cosign](https://github.com/sigstore/cosign)
-- sbom generation using anchore/[syft](https://github.com/anchore/syft)
-- upload sbom to container registry using [oras](https://github.com/oras-project/oras)
-- automated release notes via [github-release-notes](https://github.com/github-tools/github-release-notes)
-- support for machine executor as build environment
-- secrets management tools; [1password](https://1password.com), [vault](https://www.vaultproject.io)
-- build and scan logs persisted to artifact workspace
+By default, executor-tools jobs use the `twdps/circleci-executor-tools` image that has all the necessary tools supported by the orb pre-installed. The install command allows install of the dependent packages at pipeline runtime to support building on CircleCI machine images, if needed, using the _base-packages_ orb.  
+
+Feature jobs:
+
+* dev-buildx
+  * Lint scan of Dockerfile using [hadolint](https://github.com/hadolint/hadolint)
+  * Buildx using [Bake](https://docs.docker.com/build/bake/) configuration file
+    * Automatic generation of bill of matierals and provenance
+    * Concurrent build of multiples images and architectures
+  * (Optional) [Scout](https://docs.docker.com/scout/quickstart/) CVE scan
+    * Results persisted to artifact store
+  * (Optional) Runtime configuration testing of image using [Bats](https://github.com/bats-core/bats-core)
+  * Build and scan logs uploaded to artifact store
+* releasex
+  * Add release Tag to existing image manifest based on bakefile configuration
+    * (Optional) include latest
+  * (Optional) Sign manifest using [cosign](https://github.com/sigstore/cosign)
+
+* dev-build, machine-executor-dev-build
+  * Lint scan of Dockerfile using [hadolint](https://github.com/hadolint/hadolint)
+  * (Optional) Set orb-opencontainer CREATED, VERSION (SHA), Image BASE values
+  * Build image using `Docker Build`, support for add'l build arg
+  * (Optional) Scan image using [snyk test](https://docs.snyk.io/developer-tools/snyk-cli/commands/test)
+  * (Optional) Scan image using [trivy image](https://github.com/aquasecurity/trivy)
+  * (Optional) scan image using [grype](https://github.com/anchore/grype)
+  * (Optional) Runtime configuration testing of image using [Bats](https://github.com/bats-core/bats-core)
+* release
+  * Add release Tag to existing image manifest based on bakefile configuration
+    * (Optional) include latest
+  * (Optional) Sign manifest using [cosign](https://github.com/sigstore/cosign)
+  * (Optional) Generate bill of materials using [syft](https://github.com/anchore/syft) and include in attestation 
+
+* (Optional) direct installation of tools or dependencies (buildx uses base-packages orb)
+  * 1Password
+  * Bats
+  * Cosign
+  * GH
+  * Grype
+  * Hadolint
+  * Oras
+  * Snyk
+  * Syft
+  * Trivy
+  * Vault (Hashi)
+
+* (Optional) Use `security-scan-nofail` in standard Dockerfile build to prevent scan results from failing build. 
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
-
-NOTE: v5.x.x is a breaking change. Review documentation in detail before upgrading.
-
-In the v5 release, the default behavior of the dev-release, machine-executor-dev-release, and publish jobs is refactored for buildx-based bake file manifest multi-image builds that incorporate the buildx --provenance and --sbom generation.  
-
-The historical, simple build jobs will remain with new names: (_note the inclusion of the word build to indicate use of simple docker build command._)  
-- dev-build-release
-- machine-executor-dev-release
-- publish-build
-
-Also, the buildx jobs demonstrate the docker scout sve scan capability. The snyk, trivy, and grype examples will remain in the simple build jobs.  
