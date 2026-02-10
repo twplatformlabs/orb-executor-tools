@@ -16,7 +16,7 @@ See [orb registry](https://circleci.com/developer/orbs/orb/twdps/executor-tools)
 
 In the new release, jobs have new names and new commands have been added. The new jobs support the use of `docker bake` for multi-image and multi-arch builds through a single configuration file. The Bake method jobs make use of Scout for performing vulnerability scans and use Docker CLI features to create both provenance and bill of material manifest details. The historial simple `build` process will continue to be supported though also with new job names.
 
-By default, executor-tools jobs use the `twdps/circleci-executor-tools` image that has all the necessary tools supported by the orb pre-installed. The install command allows install of the dependent packages at pipeline runtime to support building on CircleCI machine images, if needed, using the _base-packages_ orb.  
+By default, executor-tools jobs use the `twdps/circleci-executor-tools` image that has all the necessary tools supported by the orb pre-installed. The basic Docker Build jobs have a built-in install command for the dependent packages at pipeline runtime to support building on CircleCI machine images, if needed. Use a custom step parameters and the _base-packages_ orb to install dependent packages in buildx jobs.  
 
 Feature jobs:
 
@@ -45,22 +45,20 @@ Feature jobs:
 * release
   * Add release Tag to existing image manifest based on bakefile configuration
     * (Optional) include latest
+  * (Optional) direct installation of tools or dependencies (buildx uses base-packages orb)
+    * 1Password
+    * Bats
+    * Cosign
+    * GH
+    * Grype
+    * Hadolint
+    * Oras
+    * Snyk
+    * Syft
+    * Trivy
+    * Vault (Hashi)
   * (Optional) Sign manifest using [cosign](https://github.com/sigstore/cosign)
   * (Optional) Generate bill of materials using [syft](https://github.com/anchore/syft) and include in attestation 
-
-* (Optional) direct installation of tools or dependencies (buildx uses base-packages orb)
-  * 1Password
-  * Bats
-  * Cosign
-  * GH
-  * Grype
-  * Hadolint
-  * Oras
-  * Snyk
-  * Syft
-  * Trivy
-  * Vault (Hashi)
-
-* (Optional) Use `security-scan-nofail` in standard Dockerfile build to prevent scan results from failing build. 
+  * (Optional) Use `security-scan-nofail` in standard Dockerfile build to prevent scan results from failing build. 
 
 _Incorporates concepts from circleci/docker-publish@0.1.2_
