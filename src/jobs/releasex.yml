@@ -112,6 +112,8 @@ parameters:
 steps:
   - checkout
   - setup_remote_docker
+  - attach_workspace:
+      at: ~/project/workspace
   - when:
       name: Run after-checkout lifecycle hook steps.
       condition: << parameters.after-checkout >>

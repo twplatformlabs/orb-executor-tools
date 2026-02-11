@@ -212,5 +212,10 @@ steps:
       name: Run after-build lifecycle hook steps.
       condition: << parameters.after-build >>
       steps: << parameters.after-build >>
+  - persist_to_workspace:
+      root: ~/project/workspace
+      paths:
+        - "*.out"
   - store_artifacts:
       path: ~/project/workspace
+      destination: logs
